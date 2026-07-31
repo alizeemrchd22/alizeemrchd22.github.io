@@ -36,7 +36,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "values.authenticity.text": "I value honesty, respect and meaningful collaboration. I believe the best ideas emerge when different perspectives challenge each other and everyone is empowered to contribute their unique strengths.",
     "values.curious.title": "Curious",
     "values.curious.text": "I'm driven by the desire to understand how things work. I enjoy exploring complex problems, connecting ideas across disciplines and continuously learning to build better, more thoughtful solutions.",
-    "values.adventurous.title": "Adventurious",
+    "values.adventurous.title": "Adventurous",
     "values.adventurous.text": "I embrace new challenges with curiosity and determination. Whether it's a new industry, technology or responsibility, I'm always eager to learn, adapt and stay ahead in a fast-changing world.",
 
     "projects.title": "Data Science Projects",
@@ -84,7 +84,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
 
     "digcta.eyebrow": "Say hello",
     "digcta.title": "Think we would get along?",
-    "digcta.sub": "So I’m always up for a call or a good iced coffee…",
+    "digcta.sub": "I’m always up for a coffee, call or good iced coffee.",
 
     "footer.copyright": "© 2025 ALIZEE MARCHAND. All rights reserved.",
   },

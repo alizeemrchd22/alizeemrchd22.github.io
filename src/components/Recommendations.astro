@@ -1,5 +1,6 @@
 ---
 import Arrow from "./Arrow.astro";
+import { site } from "../data/content";
 
 const linkedinUrl = "https://www.linkedin.com/in/alizée-marchand-b8822a220";
 
@@ -65,7 +66,7 @@ const suns = Array.from({ length: 16 }, () => ({
       <h2 class="section-title" data-i18n="recommendations.title">Straight from the people I’ve worked with</h2>
       <p class="reco__intro" data-i18n="recommendations.intro">A couple of words from colleagues and managers — the kind of feedback that means more than any portfolio line.</p>
       <div class="reco__cta">
-        <a href="mailto:alizee.mrchd@icloud.com" class="btn btn--primary"><span data-i18n="common.letsWorkTogether">Let’s work together</span> <Arrow /></a>
+        <a href={`mailto:${site.email}`} class="btn btn--primary"><span data-i18n="common.letsWorkTogether">Let’s work together</span> <Arrow /></a>
       </div>
     </header>
 

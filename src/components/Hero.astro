@@ -1,5 +1,6 @@
 ---
 import Arrow from "./Arrow.astro";
+import { site } from "../data/content";
 
 // Titre découpé en mots pour la révélation en cascade ("practical solutions." en jaune)
 const titleParts = [
@@ -33,8 +34,8 @@ const words = titleParts.flatMap((p) =>
       </h1>
     </div>
     <div class="hero__cta">
-      <a href="#projects" class="btn btn--primary"><span data-i18n="common.letsCall">Let’s call</span> <Arrow /></a>
-      <a href="mailto:alizee.mrchd@icloud.com" class="btn btn--outline"><span data-i18n="common.mailMe">Mail Me</span> <Arrow /></a>
+      <a href={site.phoneHref} class="btn btn--primary"><span data-i18n="common.letsCall">Let’s call</span> <Arrow /></a>
+      <a href={`mailto:${site.email}`} class="btn btn--outline"><span data-i18n="common.mailMe">Mail Me</span> <Arrow /></a>
     </div>
   </div>
 
