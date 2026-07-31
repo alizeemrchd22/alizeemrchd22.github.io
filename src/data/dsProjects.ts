@@ -51,8 +51,8 @@ export const dsProjects: DsProject[] = [
       { name: "XGBoost", metric: "ROC-AUC", value: "0.96" },
     ],
     keywords: ["Classification", "Data leakage", "Feature engineering", "Cross-validation", "Cybersecurity"],
-    codeUrl: "#",
-    pdfUrl: "#",
+    codeUrl: "/projects/phishing-code.html",
+    pdfUrl: "/projects/phishing-report.pdf",
   },
   {
     id: "social-media",
@@ -102,8 +102,10 @@ export const dsProjects: DsProject[] = [
       { name: "Dummy (majority class)", metric: "PR-AUC", value: "0.113", baseline: true },
     ],
     keywords: ["Imbalanced classification", "PR-AUC", "Data leakage", "GridSearchCV", "Top-K targeting", "Feature importance"],
-    codeUrl: "#",
-    pdfUrl: "#",
+    // Notebook exporté en HTML (lisible directement dans le navigateur, avec
+    // les graphiques) + rapport PDF. Fichiers dans public/projects/.
+    codeUrl: "/projects/marketing-campaign-code.html",
+    pdfUrl: "/projects/marketing-campaign-report.pdf",
   },
 ];
 
