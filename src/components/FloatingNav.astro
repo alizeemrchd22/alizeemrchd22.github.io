@@ -1,0 +1,128 @@
+---
+// Barre de navigation flottante — présente sur tout le site.
+// Se masque après quelques secondes d'inactivité (hors haut de page)
+// et réapparaît au moindre scroll / mouvement de souris / touche.
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+
+const items = [
+  { label: "Home", href: "/", i18n: "nav.home" },
+  { label: "My Competencies", href: "/competencies", i18n: "nav.competencies" },
+  { label: "Professional Experience", href: "/about", i18n: "common.professionalExperience" },
+  { label: "My Portfolio", href: "/portfolio", i18n: "nav.portfolio" },
+  { label: "About Me", href: "/about-me", i18n: "nav.aboutme" },
+];
+
+function isActive(href: string): boolean {
+  if (href === "/") return path === "/";
+  return path === href || path.startsWith(href + "/");
+}
+---
+
+<nav class="fnav" id="floating-nav" aria-label="Primary">
+  <button class="fnav__burger" aria-expanded="false" aria-controls="fnav-menu" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="fnav__menu" id="fnav-menu">
+    {items.map((n) => (
+      <li>
+        <a href={n.href} data-i18n={n.i18n} class:list={["fnav__link", { "fnav__link--active": isActive(n.href) }]}>{n.label}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .fnav {
+    position: fixed; top: 28px; left: 50%; z-index: 80;
+    transform: translateX(-50%);
+    transition: transform .5s cubic-bezier(.22,1,.36,1), opacity .4s ease;
+  }
+  .fnav.fnav--hidden { transform: translate(-50%, -180%); opacity: 0; pointer-events: none; }
+
+  .fnav__menu {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(25, 25, 25, 0.85);
+    backdrop-filter: blur(13px);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 80px;
+    /* padding uniforme : la pastille active est cerclée du même liseré sombre
+       sur les 4 côtés (avant : 6px en haut/bas mais 18px sur les extrémités) */
+    padding: 6px;
+  }
+  .fnav__link {
+    display: inline-block;
+    padding: 14px 20px;
+    border-radius: 40px;
+    font-size: 17px;
+    color: var(--white);
+    white-space: nowrap;
+    transition: background .2s, color .2s;
+  }
+  .fnav__link:hover { color: var(--primary); }
+  .fnav__link--active { background: var(--primary); color: #000; }
+  .fnav__link--active:hover { color: #000; }
+
+  .fnav__burger { display: none; }
+
+  @media (max-width: 1024px) {
+    .fnav { left: auto; right: 20px; top: 20px; transform: none; }
+    .fnav.fnav--hidden { transform: translateY(-180%); }
+    .fnav__burger {
+      display: inline-flex; flex-direction: column; justify-content: center; gap: 5px;
+      width: 56px; height: 56px; padding: 16px; border: none; cursor: pointer;
+      background: rgba(25,25,25,0.85); backdrop-filter: blur(13px); border-radius: 999px;
+      margin-left: auto;
+    }
+    .fnav__burger span { display: block; height: 2px; width: 100%; background: var(--white); border-radius: 2px; transition: transform .3s, opacity .3s; }
+    .fnav__menu {
+      position: absolute; top: 68px; right: 0;
+      flex-direction: column; align-items: stretch; gap: 4px;
+      padding: 12px; border-radius: 24px;
+      max-height: 0; opacity: 0; overflow: hidden; pointer-events: none;
+      transition: max-height .35s ease, opacity .25s ease;
+    }
+    .fnav[data-open="true"] .fnav__menu { max-height: 480px; opacity: 1; pointer-events: auto; }
+    .fnav[data-open="true"] .fnav__burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .fnav[data-open="true"] .fnav__burger span:nth-child(2) { opacity: 0; }
+    .fnav[data-open="true"] .fnav__burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  }
+</style>
+
+<script>
+  const nav = document.getElementById("floating-nav");
+  const burger = nav?.querySelector(".fnav__burger");
+
+  // Burger mobile
+  burger?.addEventListener("click", () => {
+    const open = nav.getAttribute("data-open") === "true";
+    nav.setAttribute("data-open", String(!open));
+    burger.setAttribute("aria-expanded", String(!open));
+    burger.setAttribute("aria-label", open ? "Open menu" : "Close menu");
+  });
+
+  // Auto-hide : disparaît après inactivité, réapparaît au moindre mouvement
+  if (nav) {
+    let timer = null;
+    let hovering = false;
+
+    const hide = () => {
+      const menuOpen = nav.getAttribute("data-open") === "true";
+      if (window.scrollY > 250 && !hovering && !menuOpen) {
+        nav.classList.add("fnav--hidden");
+      }
+    };
+    const show = () => {
+      nav.classList.remove("fnav--hidden");
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(hide, 2800);
+    };
+
+    nav.addEventListener("mouseenter", () => { hovering = true; show(); });
+    nav.addEventListener("mouseleave", () => { hovering = false; show(); });
+
+    ["scroll", "mousemove", "keydown", "touchstart", "wheel"].forEach((evt) => {
+      window.addEventListener(evt, show, { passive: true });
+    });
+    show();
+  }
+</script>

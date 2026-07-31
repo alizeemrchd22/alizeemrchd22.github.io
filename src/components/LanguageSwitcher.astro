@@ -1,0 +1,184 @@
+---
+// Sélecteur de langue — présent sur tout le site, aligné sur la barre de nav.
+// ⚠️ Pour l'instant c'est UNIQUEMENT l'interface : aucune traduction n'est
+// branchée. Choisir une langue mémorise la préférence (localStorage +
+// attribut lang sur <html>) et émet un évènement `langchange`.
+// Quand on fera l'i18n : brancher ici la redirection vers /fr, /es, /zh
+// (voir le commentaire TODO dans le <script> en bas de ce fichier).
+const languages = [
+  { code: "en", short: "EN", label: "English" },
+  { code: "fr", short: "FR", label: "Français" },
+  { code: "es", short: "ES", label: "Español" },
+  { code: "zh", short: "中文", label: "中文" },
+];
+---
+
+<div class="lang" id="lang-switcher">
+  <button
+    class="lang__toggle"
+    id="lang-toggle"
+    aria-expanded="false"
+    aria-controls="lang-menu"
+    aria-label="Change language"
+  >
+    <svg class="lang__globe" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />
+      <path d="M3 12h18" stroke="currentColor" stroke-width="1.5" />
+      <path d="M12 3c2.5 2.4 3.8 5.5 3.8 9S14.5 18.6 12 21c-2.5-2.4-3.8-5.5-3.8-9S9.5 5.4 12 3Z" stroke="currentColor" stroke-width="1.5" />
+    </svg>
+    <span class="lang__current" id="lang-current">EN</span>
+    <svg class="lang__chevron" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+      <path d="M1 1.5 6 6.5l5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+    </svg>
+  </button>
+
+  <ul class="lang__menu" id="lang-menu" role="menu">
+    {languages.map((l) => (
+      <li role="none">
+        <button
+          class="lang__option"
+          role="menuitem"
+          data-lang={l.code}
+          data-short={l.short}
+        >
+          <span class="lang__name">{l.label}</span>
+          <span class="lang__code">{l.short}</span>
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  /* Même hauteur et même matière que .fnav__menu pour un alignement parfait */
+  .lang {
+    position: fixed; top: 28px; right: 28px; z-index: 81;
+  }
+
+  .lang__toggle {
+    display: inline-flex; align-items: center; gap: 10px;
+    /* 20px vertical = même hauteur totale que la barre de nav (6px + 14px) */
+    margin: 0; padding: 20px;
+    background: rgba(25, 25, 25, 0.85);
+    backdrop-filter: blur(13px);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 80px;
+    color: var(--white);
+    font-family: var(--font); font-size: 17px; font-weight: 400; line-height: 1.5;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+  }
+  .lang__toggle:hover { color: var(--primary); border-color: rgba(252, 255, 64, 0.28); }
+
+  .lang__globe { width: 19px; height: 19px; flex: none; }
+  .lang__current { min-width: 26px; text-align: left; }
+  .lang__chevron {
+    width: 11px; height: 8px; flex: none;
+    transition: transform .3s cubic-bezier(.22,1,.36,1);
+  }
+  .lang[data-open="true"] .lang__chevron { transform: rotate(180deg); }
+
+  /* Menu déroulant */
+  .lang__menu {
+    position: absolute; top: calc(100% + 10px); right: 0;
+    min-width: 190px;
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 8px;
+    background: rgba(25, 25, 25, 0.92);
+    backdrop-filter: blur(13px);
+    border: 0.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    max-height: 0; opacity: 0; overflow: hidden; pointer-events: none;
+    transform: translateY(-8px);
+    transition: max-height .35s ease, opacity .25s ease, transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  .lang[data-open="true"] .lang__menu {
+    max-height: 320px; opacity: 1; pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .lang__option {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    width: 100%; padding: 11px 16px;
+    background: transparent; border: none; border-radius: 40px;
+    color: var(--white);
+    font-family: var(--font); font-size: 16px; line-height: 1.5;
+    text-align: left; cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .lang__option:hover { color: var(--primary); background: rgba(252, 255, 64, 0.07); }
+  .lang__option[aria-current="true"] { background: var(--primary); color: #000; }
+  .lang__option[aria-current="true"]:hover { color: #000; background: var(--primary); }
+  .lang__code { font-size: 13px; letter-spacing: .06em; opacity: .6; }
+  .lang__option[aria-current="true"] .lang__code { opacity: .75; }
+
+  /* Sur mobile la nav passe à droite (burger) : on met le sélecteur à gauche */
+  @media (max-width: 1024px) {
+    .lang { top: 20px; right: auto; left: 20px; }
+    .lang__menu { right: auto; left: 0; }
+  }
+</style>
+
+<script>
+  const root = document.getElementById("lang-switcher");
+  const toggle = document.getElementById("lang-toggle");
+  const current = document.getElementById("lang-current");
+  const options = Array.from(root?.querySelectorAll(".lang__option") || []);
+  const STORAGE_KEY = "site-lang";
+  // Seules les pages avec un dictionnaire branché (voir Layout.astro prop
+  // `translated`) savent afficher autre chose que l'anglais. Sur les autres
+  // pages, on retombe automatiquement sur l'anglais par défaut — jamais de
+  // page cassée ou de contenu à moitié traduit — tout en gardant en mémoire
+  // la langue réellement choisie pour la réappliquer dès qu'une page
+  // traduite est de nouveau visitée.
+  const pageIsTranslated = document.documentElement.hasAttribute("data-i18n-ready");
+
+  if (root && toggle && current) {
+    const open = (state) => {
+      root.setAttribute("data-open", String(state));
+      toggle.setAttribute("aria-expanded", String(state));
+    };
+
+    const apply = (code) => {
+      const opt = options.find((o) => o.getAttribute("data-lang") === code) || options[0];
+      const chosen = opt.getAttribute("data-lang");
+      // Langue réellement affichée sur CETTE page (repli sur l'anglais si
+      // la page n'a pas de traduction disponible).
+      const effective = pageIsTranslated ? chosen : "en";
+      const effectiveOpt = options.find((o) => o.getAttribute("data-lang") === effective) || options[0];
+
+      current.textContent = effectiveOpt.getAttribute("data-short");
+      document.documentElement.setAttribute("lang", effective);
+      options.forEach((o) => o.setAttribute("aria-current", String(o === effectiveOpt)));
+      // On mémorise le choix réel de l'utilisateur (pas le repli), pour que
+      // les prochaines pages traduites l'appliquent automatiquement.
+      try { localStorage.setItem(STORAGE_KEY, chosen); } catch {}
+      window.dispatchEvent(new CustomEvent("langchange", { detail: { lang: effective } }));
+    };
+
+    // Restaure la préférence enregistrée (anglais par défaut)
+    let saved = "en";
+    try { saved = localStorage.getItem(STORAGE_KEY) || "en"; } catch {}
+    apply(saved);
+
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      open(root.getAttribute("data-open") !== "true");
+    });
+
+    options.forEach((o) => {
+      o.addEventListener("click", () => {
+        apply(o.getAttribute("data-lang"));
+        open(false);
+      });
+    });
+
+    // Fermeture au clic extérieur / Échap
+    document.addEventListener("click", (e) => {
+      if (!root.contains(e.target)) open(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") open(false);
+    });
+  }
+</script>

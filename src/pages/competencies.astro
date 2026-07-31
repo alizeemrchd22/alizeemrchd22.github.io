@@ -1,0 +1,168 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Arrow from "../components/Arrow.astro";
+import PageHero from "../components/PageHero.astro";
+import DigCta from "../components/DigCta.astro";
+import Footer from "../components/Footer.astro";
+import { site } from "../data/content";
+
+// Illustrations officielles exportées de la maquette Figma (glassy, translucides)
+const uxui = [
+  { title: "Wireframes", img: "illu-wireframe.png", desc: "Low-fi structures that map every screen and flow before a pixel is polished." },
+  { title: "User Flow", img: "illu-flow.png", desc: "Clear journeys connecting screens, states and decisions end-to-end." },
+  { title: "Composant Library", img: "illu-lib.png", desc: "A fully organized Figma file with reusable components and detailed specs to speed up development and strengthen your design system." },
+  { title: "Website", img: "illu-website.png", desc: "Responsive, on-brand websites designed to convert and easy to maintain." },
+  { title: "Webapp", img: "illu-webapp.png", desc: "Data-rich product interfaces — dashboards, tools and flows usable at scale." },
+];
+
+const pm = [
+  { title: "Roadmap & Scope", img: "illu-flow.png", desc: "Turning goals into a clear, prioritized plan with milestones everyone can follow." },
+  { title: "Agile & Sprints", img: "illu-lib.png", desc: "Organising sprints, ceremonies and backlogs to keep delivery steady and focused." },
+  { title: "Stakeholder Alignment", img: "illu-wireframe.png", desc: "Keeping business, design and dev teams in sync around shared objectives." },
+  { title: "Delivery & QA", img: "illu-website.png", desc: "Coordinating testing, releases and follow-up to ship reliable results." },
+  { title: "Quality & Docs", img: "illu-webapp.png", desc: "Specs, cahiers des charges and documentation that make the work last." },
+];
+---
+
+<Layout title={`My competencies — ${site.name}`} description="UX/UI design and project management services by Alizée Marchand.">
+  <main id="main">
+    <PageHero
+      eyebrow="Design & Project Management"
+      title="My competencies"
+      sub="From wireframes to shipped products: I design clear, user-centric interfaces and keep the projects behind them on track — aligning clients, designers and developers around the same goal."
+      ctas={[
+        { label: "Let’s work together", href: `mailto:${site.email}` },
+        { label: "See my portfolio", href: "/portfolio" },
+      ]}
+    />
+
+    <!-- UX/UI SERVICES -->
+    <section class="svc" id="uxui">
+      <div class="container">
+        <div class="svc__grid">
+          <div class="svc__intro">
+            <h2 class="svc__heading">My UX/UI Services</h2>
+            <p class="svc__text">I deliver efficient, user-centric solutions, fully immersed in the client’s industry, products, and goals. I translate complex needs into coherent, engaging experiences. My Figma files are organized and component-based, providing developers with ready-to-implement assets that streamline and accelerate their process.</p>
+            <div class="svc__cta">
+              <a href={`mailto:${site.email}`} class="btn btn--primary">Let’s call <Arrow /></a>
+            </div>
+          </div>
+          {uxui.map((c) => (
+            <article class="svc-card">
+              <span class="svc-card__glow" aria-hidden="true"></span>
+              <img class="svc-card__illus" src={`/assets/illus/${c.img}`} alt="" aria-hidden="true" loading="lazy" />
+              <div class="svc-card__body">
+                <p class="svc-card__desc">{c.desc}</p>
+                <h3 class="svc-card__title">{c.title}</h3>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT MANAGEMENT -->
+    <section class="svc svc--pm" id="project-management">
+      <div class="container">
+        <div class="svc__grid">
+          <div class="svc__intro">
+            <h2 class="svc__heading">Project Management</h2>
+            <p class="svc__text">For me, project management is about orchestrating synergy: it aligns client expectations, business objectives, and the operational realities of design and development teams.</p>
+            <div class="svc__cta">
+              <a href={`mailto:${site.email}`} class="btn btn--primary">Let’s call <Arrow /></a>
+            </div>
+          </div>
+          {pm.map((c) => (
+            <article class="svc-card">
+              <span class="svc-card__glow" aria-hidden="true"></span>
+              <img class="svc-card__illus" src={`/assets/illus/${c.img}`} alt="" aria-hidden="true" loading="lazy" />
+              <div class="svc-card__body">
+                <p class="svc-card__desc">{c.desc}</p>
+                <h3 class="svc-card__title">{c.title}</h3>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <DigCta />
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* SECTIONS SERVICES */
+  .svc { background: var(--bg); padding-block: clamp(3.5rem, 7vw, 6.5rem); }
+  .svc__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; }
+  /* Colonne d'intro : titre → texte → bouton, tout enchaîné en haut (plus de bouton qui pendouille) */
+  .svc__intro { display: flex; flex-direction: column; align-items: flex-start; }
+  .svc__heading { font-family: var(--font); font-weight: 300; font-size: clamp(1.7rem, 2.6vw, 2.4rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--white); }
+  .svc__text { margin-top: 18px; color: rgba(255,255,255,.6); font-size: 15px; line-height: 1.55; }
+  .svc__cta { margin-top: 28px; }
+  .svc__cta .btn { padding: 20px 24px; }
+
+  /* --- Cartes services (fidèles Figma : glassy + double halo "Planet") --- */
+  .svc-card {
+    position: relative; overflow: hidden;
+    background: rgba(255,255,255,0.04);
+    border-radius: 32px;
+    height: 385px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 40px;
+    transition: transform .45s cubic-bezier(.22,1,.36,1);
+  }
+
+  /* Double halo façon maquette : deux foyers radiaux jaune→olive superposés */
+  .svc-card__glow {
+    position: absolute; inset: -20%;
+    background:
+      radial-gradient(29% 26% at 108% -8%,
+        rgba(252, 255, 64, 0.55) 0%,
+        rgba(190, 205, 30, 0.35) 38%,
+        rgba(135, 146, 0, 0.18) 62%,
+        transparent 78%),
+      radial-gradient(32% 30% at 78% 26%,
+        rgba(224, 235, 60, 0.34) 0%,
+        rgba(160, 172, 20, 0.20) 45%,
+        rgba(120, 130, 8, 0.10) 65%,
+        transparent 80%);
+    filter: blur(28px);
+    transition: opacity .5s ease, transform .6s cubic-bezier(.22,1,.36,1);
+    pointer-events: none;
+  }
+
+  .svc-card__illus {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .55s cubic-bezier(.22,1,.36,1), filter .4s ease, opacity .4s ease;
+    pointer-events: none;
+  }
+
+  .svc-card__body { position: relative; z-index: 1; }
+  .svc-card__title {
+    font-family: var(--font); font-weight: 300;
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem); line-height: 1.1; color: var(--white);
+    transition: color .4s ease;
+  }
+  .svc-card__desc {
+    color: rgba(255,255,255,.85); font-size: 16px; line-height: 1.5;
+    max-height: 0; opacity: 0; overflow: hidden; margin-bottom: 0;
+    transition: max-height .5s cubic-bezier(.22,1,.36,1), opacity .4s ease, margin-bottom .5s ease;
+  }
+
+  /* Hover — sobre : l'illustration s'efface, le texte blanc prend sa place */
+  .svc-card:hover { transform: translateY(-6px); }
+  .svc-card:hover .svc-card__glow { opacity: .55; transform: translateY(3%) scale(1.05); }
+  .svc-card:hover .svc-card__illus { transform: translate(3%, -2%) scale(1.03); opacity: .05; }
+  .svc-card:hover .svc-card__desc { max-height: 180px; opacity: 1; margin-bottom: 14px; }
+
+  @media (max-width: 900px) {
+    .svc__grid { grid-template-columns: repeat(2, 1fr); }
+    .svc__intro { grid-column: 1 / -1; }
+  }
+  @media (max-width: 600px) {
+    .svc__grid { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,353 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Arrow from "../components/Arrow.astro";
+import PageHero from "../components/PageHero.astro";
+import DigCta from "../components/DigCta.astro";
+import Footer from "../components/Footer.astro";
+import { site } from "../data/content";
+
+// Carrousel "What I live for ..." — la photo au centre est sélectionnée,
+// le label + la légende en dessous décrivent la photo centrale.
+const slides = [
+  { img: "live-1.jpeg", label: "HIKING", caption: "Whenever I need to recharge, you’ll probably find me on a hiking trail or somewhere in the mountains. Nature helps me disconnect, clear my mind and come back with fresh energy and new ideas." },
+  { img: "live-2.jpeg", label: "DANCING", caption: "Dancing has always been a huge part of my life. Whether it’s Salsa, Bachata or Kizomba, it has taught me far more than rhythm. It has strengthened my confidence, communication and ability to connect with people." },
+  { img: "live-3.jpeg", label: "TRIATHLON", caption: "I’ve been practicing triathlon for several years, starting with the Spanish National Duathlon Championships. Today, my next goal is to complete the Ironman 70.3 Sydney." },
+  { img: "live-4.jpeg", label: "MOTORBIKE", caption: "I finally got my motorcycle licence! I absolutely love my new bike and the freedom it brings. I promise I’m a careful rider." },
+  { img: "live-5.jpeg", label: "HARD TECHNO", caption: "I recently discovered a new passion for Hard techno music." },
+  { img: "live-6.jpeg", label: "TRAIL RUNNING", caption: "Trail running combines everything I love: nature, endurance and exploration. It’s a passion my father passed on to me, and one that has shaped who I am. My ultimate dream? One day crossing the finish line of La Diagonale des Fous, like my father did!" },
+];
+const startIndex = 2; // CYCLING au centre, comme la maquette
+// Décalages verticaux (quinconce) — la photo active revient toujours au centre
+const offsets = [30, -22, 0, 28, -18, 16];
+
+// Positions calées sur les points jaunes de la carte (en % de l'image recadrée)
+const places = [
+  { name: "United States", x: 21.1, y: 33.5, side: "right" },
+  { name: "Panama", x: 26.0, y: 53.0, side: "right" },
+  { name: "Spain", x: 48.1, y: 30.9, side: "left" },
+  { name: "France", x: 49.7, y: 22.5, side: "right" },
+  { name: "Australia", x: 97.5, y: 81.6, side: "left" },
+];
+---
+
+<Layout title={`About me — ${site.name}`} description="What I live for — and the places that shaped the way I work.">
+  <main id="main">
+    <PageHero
+      eyebrow="Alizée Marchand"
+      title="Who am I?"
+      sub="Curious by nature, a little bit crazy, always smiling, and never saying no to a new adventure."
+      ctas={[
+        { label: "Let’s call", href: `mailto:${site.email}` },
+        { label: "My portfolio", href: "/portfolio" },
+      ]}
+    />
+
+    <!-- ============ WHAT I LIVE FOR (carrousel) ============ -->
+    <section class="live" id="live">
+      <h2 class="section-title live__title">What I live for ...</h2>
+
+      <div
+        class="live__carousel"
+        id="live-carousel"
+        tabindex="0"
+        role="group"
+        aria-label="Photos — use left and right arrow keys to browse"
+      >
+        <ul class="live__track" id="live-track">
+          {slides.map((s, i) => (
+            <li class:list={["live__item", { "is-active": i === startIndex }]} data-index={i} style={`--off:${offsets[i]}px`}>
+              <img src={`/assets/live/${s.img}`} alt={s.label.toLowerCase()} loading="lazy" />
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Curseur custom : rond jaune + flèche, orientée selon le côté de l'écran -->
+      <div class="live__cursor" id="live-cursor" data-dir="right" aria-hidden="true">
+        <span class="live__cursor-dot" id="live-cursor-dot">
+          <svg class="live__cursor-arrow" viewBox="0 0 24 24" fill="none">
+            <path d="M4 12h15M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+      </div>
+
+      <div class="live__meta" id="live-meta">
+        <span class="live__label" id="live-label">{slides[startIndex].label}</span>
+        <p class="live__caption" id="live-caption">{slides[startIndex].caption}</p>
+      </div>
+    </section>
+
+    <!-- ============ PLACES THAT SHAPED ME ============ -->
+    <section class="places" id="places">
+      <div class="container">
+        <header class="places__head">
+          <h2 class="section-title">Places That Shaped Me</h2>
+          <p class="places__sub">I don’t collect countries. I collect perspectives.</p>
+        </header>
+
+        <div class="places__map">
+          <img src="/assets/live/worldmap.png" alt="Carte du monde — les pays où j’ai vécu et travaillé" width="1143" height="572" loading="lazy" />
+          {places.map((p) => (
+            <span class:list={["places__pin", { "places__pin--left": p.side === "left" }]} style={`left:${p.x}%; top:${p.y}%`}>
+              <span class="places__dot" aria-hidden="true"></span>
+              {p.name}
+            </span>
+          ))}
+        </div>
+
+        <div class="places__paras">
+          <p>Each culture has taught me something different: a new way to communicate, to solve problems, to collaborate, or simply to see the world through another lens.</p>
+          <p>Today, those experiences shape the way I approach every project. They remind me that there is rarely one right answer—only better questions, different perspectives, and stronger solutions built together.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Texte : celui par défaut du composant (DigCta.astro) -->
+    <DigCta />
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ---------- WHAT I LIVE FOR ---------- */
+  .live { background: var(--bg); padding-block: clamp(3.5rem, 7vw, 6rem) clamp(3rem, 6vw, 5rem); overflow: hidden; }
+  .live__title { text-align: center; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+
+  .live__carousel { width: 100%; }
+  .live__track {
+    display: flex; align-items: center; gap: 24px;
+    width: max-content;
+    transition: transform .8s cubic-bezier(.22,1,.36,1);
+    will-change: transform;
+  }
+  .live__item {
+    flex: none;
+    height: clamp(280px, 32vw, 460px);
+    border-radius: 24px; overflow: hidden;
+    cursor: pointer;
+    opacity: .4;
+    transform: translateY(var(--off, 0)) scale(.9);
+    transition: opacity .6s ease, transform .7s cubic-bezier(.22,1,.36,1);
+  }
+  .live__item img { height: 100%; width: auto; max-width: 70vw; object-fit: cover; display: block; }
+  .live__item.is-active { opacity: 1; transform: translateY(0) scale(1); }
+
+  /* ---------- Curseur du carrousel ---------- */
+  .live__cursor {
+    position: fixed; top: 0; left: 0; z-index: 90;
+    pointer-events: none; will-change: transform;
+  }
+  .live__cursor-dot {
+    display: flex; align-items: center; justify-content: center;
+    width: 78px; height: 78px;
+    border-radius: 50%;
+    background: var(--primary); color: #191919;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+    transition: opacity .3s ease, transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  .live__cursor-arrow {
+    width: 30px; height: 30px;
+    transition: transform .3s cubic-bezier(.22,1,.36,1);
+  }
+  /* Flèche vers la gauche quand la souris est sur la moitié gauche */
+  .live__cursor[data-dir="left"] .live__cursor-arrow { transform: rotate(180deg); }
+
+  @media (pointer: fine) {
+    .live.cursor-on .live__carousel,
+    .live.cursor-on .live__item { cursor: none; }
+  }
+  @media (max-width: 768px) {
+    .live__cursor { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .live__cursor { display: none; }
+  }
+
+  .live__meta {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+    text-align: center;
+    transition: opacity .25s ease;
+  }
+  .live__meta.is-swapping { opacity: 0; }
+  .live__label {
+    display: inline-flex; align-items: center;
+    padding: 8px 20px; border-radius: 999px;
+    background: rgba(252, 255, 64, 0.05);
+    border: 1px solid rgba(252, 255, 64, 0.22);
+    color: var(--primary);
+    font-family: var(--font); font-weight: 600; font-size: 15px; letter-spacing: .08em;
+  }
+  .live__caption { max-width: 560px; color: rgba(255,255,255,.7); font-size: 18px; line-height: 1.5; }
+
+  /* ---------- PLACES ---------- */
+  /* Panneau sombre surélevé à gros angle : reste en dark tout en se démarquant */
+  .places {
+    position: relative;
+    background: #1f1f1f;
+    border-top: 1px solid rgba(255,255,255,.06);
+    border-top-left-radius: var(--section-radius);
+    border-bottom-right-radius: var(--section-radius);
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    overflow: hidden;
+  }
+  .places__head { position: relative; text-align: center; max-width: 700px; margin: 0 auto clamp(2.5rem, 5vw, 4rem); }
+  .places__sub { margin-top: 20px; color: rgba(255,255,255,.6); font-size: 18px; }
+
+  .places__map { position: relative; max-width: 1100px; margin-inline: auto; }
+  .places__map img { width: 100%; height: auto; filter: brightness(2.1); }
+  .places__pin {
+    position: absolute; transform: translate(-4px, -50%);
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 5px 12px 5px 6px; border-radius: 999px;
+    background: rgba(15,15,15,.78); backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,.10);
+    font-size: clamp(12px, 1.3vw, 15px); font-weight: 500;
+    color: rgba(255,255,255,.92); white-space: nowrap;
+  }
+  .places__pin--left {
+    flex-direction: row-reverse;
+    padding: 5px 6px 5px 12px;
+    transform: translate(calc(-100% + 12px), -50%);
+  }
+  .places__dot {
+    width: 8px; height: 8px; border-radius: 999px; flex: none;
+    background: var(--primary);
+    box-shadow: 0 0 10px 2px rgba(252,255,64,.5);
+    animation: pin-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes pin-pulse {
+    0%, 100% { box-shadow: 0 0 7px 1px rgba(252,255,64,.35); }
+    50% { box-shadow: 0 0 15px 4px rgba(252,255,64,.6); }
+  }
+
+  .places__paras {
+    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 6rem);
+    max-width: 1236px; margin: clamp(1.25rem, 2.5vw, 2rem) auto 0;
+    border-top: 1px solid rgba(255,255,255,.08);
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .places__paras p { color: rgba(250,250,250,.68); font-size: 18px; line-height: 1.6; max-width: 52ch; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .places__dot { animation: none; }
+  }
+  @media (max-width: 900px) {
+    .places { border-top-left-radius: clamp(60px,12vw,90px); border-bottom-right-radius: clamp(60px,12vw,90px); }
+    .places__paras { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  // ------- Carrousel : rotation auto + clic pour sélectionner -------
+  const track = document.getElementById("live-track");
+  const carousel = document.getElementById("live-carousel");
+  const meta = document.getElementById("live-meta");
+  const labelEl = document.getElementById("live-label");
+  const captionEl = document.getElementById("live-caption");
+  const items = Array.from(track ? track.querySelectorAll(".live__item") : []);
+
+  const data = items.map((el) => ({
+    label: el.querySelector("img")?.alt?.toUpperCase() || "",
+  }));
+  // Légendes injectées côté serveur : on les lit depuis un JSON inline
+  const slidesData = JSON.parse(document.getElementById("live-data")?.textContent || "[]");
+
+  let active = 2;
+  let timer = null;
+  const noMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function center(i, animate = true) {
+    if (!track || !items[i]) return;
+    active = i;
+    const wrap = carousel.getBoundingClientRect();
+    const el = items[i];
+    const target = wrap.width / 2 - (el.offsetLeft + el.offsetWidth / 2);
+    if (!animate) track.style.transitionDuration = "0s";
+    track.style.transform = `translateX(${target}px)`;
+    if (!animate) requestAnimationFrame(() => (track.style.transitionDuration = ""));
+    items.forEach((it, j) => it.classList.toggle("is-active", j === i));
+    // Swap label + caption avec un petit fondu
+    meta.classList.add("is-swapping");
+    setTimeout(() => {
+      const s = slidesData[i];
+      if (s) { labelEl.textContent = s.label; captionEl.textContent = s.caption; }
+      meta.classList.remove("is-swapping");
+    }, 250);
+  }
+
+  function next() { center((active + 1) % items.length); }
+  function prev() { center((active - 1 + items.length) % items.length); }
+  function play() { if (!noMotion && !timer) timer = setInterval(next, 3800); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+  // ------- Curseur custom : rond jaune + flèche gauche/droite -------
+  const cur = document.getElementById("live-cursor");
+  const curDot = document.getElementById("live-cursor-dot");
+  const live = document.getElementById("live");
+  const fine = window.matchMedia("(pointer: fine)").matches;
+  let dir = "right"; // côté de l'écran où se trouve la souris
+
+  if (carousel && cur && curDot && live && fine) {
+    let raf = 0, tx = 0, ty = 0;
+
+    carousel.addEventListener("mousemove", (e) => {
+      tx = e.clientX; ty = e.clientY;
+      const rect = carousel.getBoundingClientRect();
+      dir = e.clientX < rect.left + rect.width / 2 ? "left" : "right";
+      cur.setAttribute("data-dir", dir);
+      if (!raf) raf = requestAnimationFrame(() => {
+        cur.style.transform = `translate(${tx}px, ${ty}px)`;
+        raf = 0;
+      });
+    });
+
+    carousel.addEventListener("mouseenter", () => {
+      live.classList.add("cursor-on");
+      curDot.style.opacity = "1";
+      curDot.style.transform = "translate(-50%, -50%) scale(1)";
+    });
+    carousel.addEventListener("mouseleave", () => {
+      live.classList.remove("cursor-on");
+      curDot.style.opacity = "0";
+      curDot.style.transform = "translate(-50%, -50%) scale(0.2)";
+    });
+    // Petit retour visuel au clic
+    carousel.addEventListener("mousedown", () => {
+      curDot.style.transform = "translate(-50%, -50%) scale(0.85)";
+    });
+    carousel.addEventListener("mouseup", () => {
+      curDot.style.transform = "translate(-50%, -50%) scale(1)";
+    });
+  }
+
+  if (track && items.length) {
+    // Clic à gauche → carte précédente, clic à droite → carte suivante
+    carousel.addEventListener("click", (e) => {
+      const rect = carousel.getBoundingClientRect();
+      stop();
+      if (e.clientX < rect.left + rect.width / 2) prev(); else next();
+      play();
+    });
+    // Navigation clavier une fois le carrousel focalisé
+    carousel.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") { stop(); prev(); play(); }
+      if (e.key === "ArrowRight") { stop(); next(); play(); }
+    });
+    carousel.addEventListener("mouseenter", stop);
+    carousel.addEventListener("mouseleave", play);
+    window.addEventListener("resize", () => center(active, false));
+    // Recentrer à chaque image chargée (les largeurs changent au fil du chargement)
+    items.forEach((el) => {
+      const img = el.querySelector("img");
+      if (img && !img.complete) img.addEventListener("load", () => center(active, false));
+    });
+    center(active, false);
+    window.addEventListener("load", () => center(active, false));
+    play();
+  }
+</script>
+
+<script is:inline type="application/json" id="live-data" set:html={JSON.stringify(slides.map(s => ({ label: s.label, caption: s.caption })))} />

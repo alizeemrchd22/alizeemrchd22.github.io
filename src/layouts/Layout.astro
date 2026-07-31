@@ -1,0 +1,70 @@
+---
+import "../styles/global.css";
+import FloatingNav from "../components/FloatingNav.astro";
+import LanguageSwitcher from "../components/LanguageSwitcher.astro";
+import { site } from "../data/content";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** true uniquement sur les pages qui ont un dictionnaire de traduction
+   *  branché (voir src/i18n/). Sert au sélecteur de langue à savoir s'il
+   *  doit retomber sur l'anglais par défaut sur les pages pas encore traduites. */
+  translated?: boolean;
+}
+const {
+  title = `${site.name} — ${site.role}`,
+  description = site.tagline,
+  translated = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-i18n-ready={translated ? "true" : undefined}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+
+    <!-- Police Kantumruy Pro (identique à la maquette) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&family=Red+Hat+Display:wght@400;500;700&family=Red+Hat+Mono:wght@400;500&family=JetBrains+Mono:wght@700&family=Manrope:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <script is:inline>
+      // Active les animations uniquement si JS tourne (fallback : tout reste visible)
+      document.documentElement.classList.add("js");
+    </script>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <FloatingNav />
+    <LanguageSwitcher />
+    <slot />
+
+    <script>
+      // Révélation douce au scroll (respecte prefers-reduced-motion via le CSS)
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("is-visible");
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

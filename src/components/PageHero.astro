@@ -1,0 +1,130 @@
+---
+// Hero commun à toutes les pages internes (la home garde le sien).
+// Recette : photo à droite qui respire + voile dégradé dense à gauche pour
+// la lisibilité du texte + halo jaune montant du bas (effet "on entre dans l'espace").
+// Seul le coin bas-droite est arrondi.
+import Arrow from "./Arrow.astro";
+
+interface Cta {
+  label: string;
+  href: string;
+  download?: boolean;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  sub?: string;
+  ctas?: Cta[];
+  logo?: string;
+  photo?: string;
+  objectPosition?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  sub,
+  ctas = [],
+  logo,
+  photo = "/assets/competencies-hero.jpeg",
+  objectPosition = "62% 32%",
+} = Astro.props;
+---
+
+<section class="phero">
+  <img class="phero__photo" src={photo} alt="Alizée Marchand" style={`object-position:${objectPosition}`} />
+  <span class="phero__veil" aria-hidden="true"></span>
+  <span class="phero__glow" aria-hidden="true"></span>
+
+  <div class="phero__inner">
+    {eyebrow && <p class="phero__eyebrow">{eyebrow}</p>}
+    <div class="phero__titlerow">
+      {logo && <img class="phero__logo" src={logo} alt="" width="56" height="56" />}
+      <h1 class="phero__title" set:html={title} />
+    </div>
+    {sub && <p class="phero__sub">{sub}</p>}
+
+    {ctas.length > 0 && (
+      <div class="phero__cta">
+        {ctas.map((c, i) => (
+          <a href={c.href} class:list={["btn", i === 0 ? "btn--primary" : "btn--outline"]} download={c.download}>
+            {c.label} <Arrow />
+          </a>
+        ))}
+      </div>
+    )}
+
+    <slot />
+  </div>
+</section>
+
+<style>
+  .phero {
+    position: relative;
+    width: 100%;
+    /* hauteur souple : le hero grandit si la page passe du contenu en plus (slot) */
+    min-height: min(62vh, 620px);
+    display: flex; align-items: center;
+    /* le padding-top dégage la navbar flottante */
+    padding-block: clamp(130px, 15vh, 175px) clamp(70px, 9vh, 110px);
+    overflow: hidden;
+    isolation: isolate;
+    /* seul le coin bas-droite est arrondi */
+    border-bottom-right-radius: var(--section-radius);
+  }
+
+  .phero__photo {
+    position: absolute; inset: 0; z-index: -3;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  /* Voile : dense à gauche (texte lisible), transparent à droite (photo nette) */
+  .phero__veil {
+    position: absolute; inset: 0; z-index: -2;
+    background: linear-gradient(100deg,
+      rgba(20,20,20,.94) 0%,
+      rgba(20,20,20,.86) 38%,
+      rgba(25,25,25,.55) 62%,
+      rgba(25,25,25,.3) 100%);
+  }
+
+  /* Halo jaune qui monte du bas : on "entre dans l'espace" */
+  .phero__glow {
+    position: absolute; inset: auto 0 0 0; z-index: -1;
+    height: 62%;
+    background:
+      radial-gradient(70% 100% at 42% 108%, rgba(252,255,64,.30), rgba(252,255,64,.10) 40%, transparent 72%),
+      linear-gradient(to top, rgba(252,255,64,.10), transparent 65%);
+    pointer-events: none;
+  }
+
+  .phero__inner {
+    position: relative;
+    width: 100%;
+    max-width: calc(var(--content) + var(--gutter) * 2);
+    padding-inline: var(--gutter);
+    display: flex; flex-direction: column; align-items: flex-start;
+    text-align: left;
+  }
+
+  .phero__eyebrow {
+    color: var(--primary); font-size: 14px; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase;
+  }
+  .phero__titlerow { margin-top: 14px; display: flex; align-items: center; gap: 22px; }
+  .phero__logo { width: 56px; height: 56px; border-radius: 12px; flex: none; }
+  .phero__title {
+    font-weight: 300;
+    font-size: clamp(2.1rem, 4.4vw, 3.4rem); line-height: 1.06;
+    letter-spacing: -0.03em; color: var(--white); max-width: 20ch;
+  }
+  .phero__sub { margin-top: 20px; max-width: 46ch; color: rgba(250,250,250,.74); font-size: 17px; line-height: 1.55; }
+  .phero__cta { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 32px; }
+
+  @media (max-width: 900px) {
+    .phero { border-bottom-right-radius: clamp(60px, 12vw, 90px); }
+    .phero__title { max-width: none; }
+  }
+</style>

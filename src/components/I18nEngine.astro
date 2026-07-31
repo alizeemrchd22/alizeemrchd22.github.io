@@ -1,0 +1,44 @@
+---
+// Applique le dictionnaire de traduction (voir src/i18n/) sur tous les
+// éléments marqués data-i18n de la page. Switch instantané côté client,
+// pas de rechargement, pas de nouvelles URLs.
+interface Props {
+  dict: Record<string, Record<string, string>>;
+}
+const { dict } = Astro.props;
+---
+
+<script define:vars={{ dict }}>
+  function translatePage(lang) {
+    const table = dict[lang] || dict.en;
+
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const key = el.getAttribute("data-i18n");
+      const value = table[key];
+      if (value != null) el.textContent = value;
+    });
+
+    // Cas particulier : le titre du Hero est découpé mot par mot pour son
+    // animation d'entrée. On ne peut pas juste remplacer le textContent —
+    // on reconstruit un titre statique (main + accent jaune) hors anglais,
+    // et on restaure le markup animé d'origine en repassant en anglais.
+    const heroTitle = document.querySelector("[data-i18n-hero]");
+    if (heroTitle) {
+      if (heroTitle.dataset.originalHtml === undefined) {
+        heroTitle.dataset.originalHtml = heroTitle.innerHTML;
+      }
+      if (lang === "en") {
+        heroTitle.innerHTML = heroTitle.dataset.originalHtml;
+      } else {
+        const main = table["hero.titleMain"] || "";
+        const accent = table["hero.titleAccent"] || "";
+        heroTitle.innerHTML =
+          `<span style="display:inline">${main}</span> ` +
+          `<span style="display:inline;color:var(--primary)">${accent}</span>`;
+      }
+    }
+  }
+
+  translatePage(document.documentElement.lang || "en");
+  window.addEventListener("langchange", (e) => translatePage(e.detail.lang));
+</script>

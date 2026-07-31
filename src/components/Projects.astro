@@ -1,0 +1,108 @@
+---
+import Arrow from "./Arrow.astro";
+import { site } from "../data/content";
+
+import { dsProjects } from "../data/dsProjects";
+
+// Les 3 cartes reprennent les vrais projets de la page /portfolio
+const pitchKey: Record<string, string> = {
+  phishing: "projects.pitch.phishing",
+  "social-media": "projects.pitch.socialMedia",
+  marketing: "projects.pitch.marketing",
+};
+const cards = dsProjects.map((p) => ({
+  title: p.title,
+  text: p.pitch,
+  i18nText: pitchKey[p.id],
+  tags: p.stack.slice(0, 4),
+  href: `/portfolio#${p.id}`,
+}));
+---
+
+<section class="projects" id="projects">
+  <img class="projects__graphic" src="/assets/dsc-graphic.png" alt="" aria-hidden="true" />
+  <div class="projects__inner">
+    <header class="projects__head">
+      <h2 class="section-title projects__title" data-i18n="projects.title">Data Science Projects</h2>
+      <div class="projects__cta">
+        <a href={`mailto:${site.email}`} class="btn btn--primary"><span data-i18n="common.letsCall">Let’s call</span> <Arrow /></a>
+        <a href="/about" class="btn btn--outline-dark"><span data-i18n="common.professionalExperience">Professional Experience</span> <Arrow /></a>
+      </div>
+    </header>
+
+    <ul class="projects__grid">
+      {cards.map((c) => (
+        <li class="pcard reveal">
+          <div class="pcard__body">
+            <h3 class="pcard__title">{c.title}</h3>
+            <p class="pcard__text" data-i18n={c.i18nText}>{c.text}</p>
+            <ul class="pcard__tags">
+              {c.tags.map((t) => <li class="chip-mono">{t}</li>)}
+            </ul>
+          </div>
+          <a href={c.href} class="btn btn--primary pcard__cta"><span data-i18n="common.viewProject">View Project</span> <Arrow /></a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .projects {
+    position: relative;
+    background: var(--cream);
+    color: var(--ink);
+    border-top-left-radius: var(--section-radius);
+    border-bottom-right-radius: var(--section-radius);
+    overflow: hidden;
+    padding-block: clamp(3.5rem, 7vw, 6.5rem);
+  }
+  .projects__graphic {
+    position: absolute; top: 0; right: 0;
+    width: min(760px, 55%); height: auto;
+    opacity: 0.5; pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+  .projects__inner {
+    position: relative;
+    width: 100%; max-width: 1236px; margin-inline: auto;
+    padding-inline: 24px;
+  }
+  .projects__head { text-align: center; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+  .projects__title { color: var(--ink); }
+  .projects__cta { display: inline-flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin-top: 32px; }
+
+  .projects__grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .pcard {
+    background: #fffefc;
+    border-radius: 40px;
+    padding: 40px;
+    display: flex; flex-direction: column; gap: 48px;
+    transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s;
+  }
+  .pcard:hover { transform: translateY(-6px); box-shadow: 0 24px 48px -20px rgba(0,0,0,.2); }
+  .pcard__body { display: flex; flex-direction: column; gap: 24px; }
+  .pcard__title { font-family: "Red Hat Display", var(--font); font-weight: 700; font-size: 18.4px; line-height: 27.6px; color: var(--ink); }
+  .pcard__text { color: #7a7571; font-size: 18px; line-height: 1.5; }
+  .pcard__tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pcard__cta { align-self: flex-start; }
+
+  .chip-mono {
+    font-family: "Red Hat Mono", monospace;
+    font-size: 11.52px;
+    line-height: 17.28px;
+    letter-spacing: 0.576px;
+    color: #7a7571;
+    background: rgba(41, 35, 34, 0.06);
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+
+  @media (max-width: 900px) {
+    .projects { border-top-left-radius: clamp(60px, 12vw, 90px); border-bottom-right-radius: clamp(60px, 12vw, 90px); }
+    .projects__grid { grid-template-columns: 1fr; }
+    .projects__graphic { width: 70%; }
+  }
+</style>

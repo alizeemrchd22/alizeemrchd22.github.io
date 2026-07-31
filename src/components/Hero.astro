@@ -1,0 +1,181 @@
+---
+import Arrow from "./Arrow.astro";
+
+// Titre découpé en mots pour la révélation en cascade ("practical solutions." en jaune)
+const titleParts = [
+  { text: "I help transform complex information into better decisions, better products and", accent: false },
+  { text: "practical solutions.", accent: true },
+];
+let wordIndex = 0;
+const words = titleParts.flatMap((p) =>
+  p.text.split(" ").map((w) => ({ w, accent: p.accent, i: wordIndex++ }))
+);
+---
+
+<section class="hero" id="top">
+  <img class="hero__photo" src="/assets/hero.jpeg" alt="Alizée Marchand" />
+  <div class="hero__overlay" aria-hidden="true"></div>
+
+  <!-- Contenu -->
+  <div class="hero__content">
+    <div class="hero__text">
+      <p class="hero__signature">
+        <span class="hero__name">Alizée Marchand</span>
+        <span class="hero__rule" aria-hidden="true"></span>
+        <span class="hero__roles" data-i18n="hero.roles">Data Science · UX/UI · Project Management</span>
+      </p>
+      <h1 class="hero__title" data-i18n-hero>
+        {words.map(({ w, accent, i }) => (
+          <span class="hero__word">
+            <span class:list={["hero__word-inner", { "hero__word--accent": accent }]} style={`animation-delay:${0.15 + i * 0.045}s`}>{w}</span>
+          </span>
+        ))}
+      </h1>
+    </div>
+    <div class="hero__cta">
+      <a href="#projects" class="btn btn--primary"><span data-i18n="common.letsCall">Let’s call</span> <Arrow /></a>
+      <a href="mailto:alizee.mrchd@icloud.com" class="btn btn--outline"><span data-i18n="common.mailMe">Mail Me</span> <Arrow /></a>
+    </div>
+  </div>
+
+  <!-- Indicateur de scroll -->
+  <a href="#services" class="hero__scroll" aria-label="Scroll down">
+    <span class="hero__scroll-dot" aria-hidden="true"></span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1512 / 853;
+    min-height: 620px;
+    overflow: hidden;
+    border-top-left-radius: var(--section-radius);
+    border-bottom-right-radius: var(--section-radius);
+    isolation: isolate;
+  }
+  .hero__photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    /* remonté : le visage passe au-dessus du titre */
+    object-position: 50% 42%;
+    z-index: -2;
+    transform: scale(1.07);
+    animation: hero-zoom 2.4s cubic-bezier(.22,1,.36,1) .1s forwards;
+  }
+  @keyframes hero-zoom { to { transform: scale(1); } }
+
+  .hero__overlay {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(60% 45% at 50% 38%, rgba(252, 255, 64, 0.18), rgba(222, 104, 10, 0.10) 55%, transparent 75%),
+      rgba(25, 25, 25, 0.51);
+  }
+
+  /* ---- Contenu ---- */
+  .hero__content {
+    position: absolute; left: 50%; top: 52%;
+    transform: translate(-50%, -50%);
+    width: min(994px, 88%);
+    z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 40px;
+  }
+  .hero__text { width: 100%; display: flex; flex-direction: column; gap: 20px; }
+
+  /* Signature : nom + rôles, même eyebrow que les heroes des autres pages */
+  .hero__signature {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    opacity: 0;
+    animation: cta-in .8s cubic-bezier(.22,1,.36,1) .05s forwards;
+  }
+  .hero__name {
+    font-size: 15px; font-weight: 600;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--primary);
+  }
+  .hero__rule { width: 56px; height: 1px; background: rgba(252,255,64,.45); }
+  .hero__roles {
+    font-size: 13px; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: rgba(255,255,255,.58);
+  }
+
+  .hero__title {
+    font-weight: 300;
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    line-height: 1.12;
+    letter-spacing: -0.05em;
+    color: var(--white);
+    text-align: left;
+    width: 100%;
+  }
+  /* Révélation mot à mot (masque) */
+  .hero__word { display: inline-block; overflow: hidden; vertical-align: bottom; margin-right: 0.28em; }
+  .hero__word-inner {
+    display: inline-block;
+    transform: translateY(115%);
+    animation: word-in .75s cubic-bezier(.22,1,.36,1) forwards;
+  }
+  .hero__word--accent { color: var(--primary); }
+  @keyframes word-in { to { transform: translateY(0); } }
+
+  .hero__cta {
+    display: flex; flex-wrap: wrap; gap: 24px; justify-content: center;
+    opacity: 0;
+    animation: cta-in .8s cubic-bezier(.22,1,.36,1) 1.15s forwards;
+  }
+  @keyframes cta-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ---- Indicateur de scroll ---- */
+  .hero__scroll {
+    position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%);
+    z-index: 2;
+    width: 28px; height: 46px;
+    border: 1.5px solid rgba(255,255,255,.5);
+    border-radius: 999px;
+    display: flex; justify-content: center;
+    opacity: 0;
+    animation: cta-in .8s ease 1.6s forwards;
+    transition: border-color .3s;
+  }
+  .hero__scroll:hover { border-color: var(--primary); }
+  .hero__scroll-dot {
+    width: 4px; height: 8px; border-radius: 999px;
+    background: var(--primary);
+    margin-top: 8px;
+    animation: scroll-dot 1.8s cubic-bezier(.45,0,.55,1) infinite;
+  }
+  @keyframes scroll-dot {
+    0% { transform: translateY(0); opacity: 1; }
+    70% { transform: translateY(18px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__photo, .hero__word-inner, .hero__cta, .hero__scroll, .hero__signature { animation: none; }
+    .hero__signature { opacity: 1; }
+    .hero__photo { transform: none; }
+    .hero__word-inner { transform: none; }
+    .hero__cta { opacity: 1; }
+    .hero__scroll { opacity: 1; }
+    .hero__scroll-dot { animation: none; }
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 1024px) {
+    .hero { border-top-left-radius: 140px; border-bottom-right-radius: 140px; }
+  }
+  @media (max-width: 768px) {
+    .hero { aspect-ratio: auto; min-height: 600px; height: 90vh; border-top-left-radius: 80px; border-bottom-right-radius: 80px; }
+    /* pas de place pour le filet : nom au-dessus, rôles en dessous */
+    .hero__rule { display: none; }
+    .hero__signature { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .hero__content { top: auto; bottom: 130px; transform: translateX(-50%); width: 88%; gap: 28px; }
+    .hero__cta { justify-content: flex-start; }
+    .hero__scroll { display: none; }
+  }
+</style>
+

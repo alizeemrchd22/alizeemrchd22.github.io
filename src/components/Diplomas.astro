@@ -1,0 +1,83 @@
+---
+import Arrow from "./Arrow.astro";
+
+const cards = [
+  { logo: "logo-uts.png",    logoH: 80, school: "UTS", degree: "Master of Data Science and Innovation", year: "2026-2027" },
+  { logo: "logo-ipag.png",   logoH: 80, school: "IPAG Business School", degree: "Master in Corporate Finance", year: "2024-2026" },
+  { logo: "logo-cesine.png", logoH: 40, school: "CESINE", degree: "Double Bachelor (Honours), International Business", year: "2023-2024" },
+  { logo: "logo-lmu.png",    logoH: 50, school: "London Metropolitan University", degree: "Double Bachelor (Honours), International Business", year: "2023-2024" },
+  { logo: "logo-udemy.png",  logoH: 80, school: "Udemy", degree: "The Complete Python Pro Bootcamp", year: "2025" },
+  { logo: "logo-udemy.png",  logoH: 80, school: "Udemy", degree: "Advanced UX/UI Design", year: "2025" },
+];
+---
+
+<section class="diplomas" id="diplomas">
+  <div class="diplomas__inner">
+    <header class="diplomas__head">
+      <h2 class="section-title diplomas__title" data-i18n="diplomas.title">Diplomas &amp; Certifications</h2>
+      <p class="diplomas__intro" data-i18n="diplomas.intro">From international business and corporate finance to data science, my academic journey has taken me across countries — and across disciplines.</p>
+      <div class="diplomas__cta">
+        <a href="/portfolio" class="btn btn--primary"><span data-i18n="diplomas.cta">My Data Science Project</span> <Arrow /></a>
+      </div>
+    </header>
+
+    <ul class="diplomas__grid">
+      {cards.map((c) => (
+        <li class="dcard reveal">
+          <img class="dcard__medal" src="/assets/medal.png" alt="" aria-hidden="true" width="80" height="77" />
+          <img class="dcard__logo" src={`/assets/${c.logo}`} alt={`${c.school} logo`} style={`height:${c.logoH}px`} />
+          <div class="dcard__text">
+            <p class="dcard__school">{c.school}</p>
+            <p class="dcard__line">{c.degree}</p>
+            <p class="dcard__line dcard__year">{c.year}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .diplomas {
+    position: relative;
+    z-index: 2; /* au-dessus de la photo prolongée de la section Languages */
+    background: var(--cream);
+    color: var(--ink);
+    border-top-left-radius: var(--section-radius);
+    border-bottom-right-radius: var(--section-radius);
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .diplomas__inner { width: 100%; max-width: 1223px; margin-inline: auto; padding-inline: 24px; }
+  .diplomas__head { text-align: center; max-width: 782px; margin: 0 auto clamp(2.5rem, 5vw, 3.5rem); }
+  .diplomas__title { color: var(--ink); }
+  .diplomas__intro { margin-top: 24px; color: #4f4b47; font-size: 18px; line-height: 1.5; }
+  .diplomas__cta { display: inline-flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin-top: 32px; }
+
+  .diplomas__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+  .dcard {
+    position: relative;
+    background: #fffefc;
+    border-radius: 40px;
+    padding: 40px;
+    min-height: 272px;
+    overflow: hidden;
+    display: flex; flex-direction: column; gap: 24px;
+    transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;
+  }
+  .dcard:hover { transform: translateY(-6px); box-shadow: 0 24px 48px -24px rgba(0,0,0,.25); }
+  .dcard__medal { position: absolute; top: -6px; right: 24px; width: 80px; height: auto; opacity: .9; pointer-events: none; }
+  .dcard__logo { width: auto; max-width: 65%; object-fit: contain; object-position: left center; }
+  .dcard__text { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+  .dcard__school { font-family: var(--font); font-weight: 600; font-size: 18px; line-height: 1.5; color: #191919; }
+  .dcard__line { font-size: 18px; line-height: 1.5; color: #3f3b38; }
+  .dcard__year { color: #7a7571; }
+
+  @media (max-width: 900px) {
+    .diplomas { border-top-left-radius: clamp(60px, 12vw, 90px); border-bottom-right-radius: clamp(60px, 12vw, 90px); }
+    .diplomas__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 620px) {
+    .diplomas__grid { grid-template-columns: 1fr; max-width: 400px; margin-inline: auto; }
+  }
+</style>

@@ -1,0 +1,162 @@
+---
+const cards = [
+  { img: "portfolio-1.png", alt: "Projet UI/UX — plateforme CMS, conception et build", href: "/projects/saphes", cursor: "Saphes" },
+  { img: "portfolio-2.png", alt: "Projet Cahier des Charges & UI/UX — Diététicienne SII, Poopcast", href: "/projects/dieteticienne", cursor: "Diététicienne SII" },
+  { img: "portfolio-3.png", alt: "Projet AGILE & Project Management — PEFtrust, stratégie SKU LCA", href: "/projects/peftrust", cursor: "PEFtrust" },
+  // Pas encore de page dédiée pour ce projet — carte "à venir" en attendant.
+  { comingSoon: true, title: "ISO 27001", tags: ["Project Management", "ISO 27001", "Cybersecurity"] },
+];
+---
+
+<section class="portfolio" id="portfolio">
+  <div class="portfolio__wrap">
+    <ul class="portfolio__grid">
+      {cards.map((c) => (
+        c.comingSoon ? (
+          <li class="portfolio__card portfolio__card--soon reveal">
+            <span class="soon__badge">Coming soon</span>
+            <span class="soon__title">{c.title}</span>
+            <ul class="soon__tags">
+              {c.tags!.map((t) => <li class="chip chip--dark">{t}</li>)}
+            </ul>
+          </li>
+        ) : (
+          <li class="portfolio__card reveal" data-cursor={c.cursor}>
+            {c.href ? (
+              <a href={c.href} class="portfolio__link" aria-label={c.alt}>
+                <img src={`/assets/${c.img}`} alt={c.alt} width="1260" height="1088" loading="lazy" />
+              </a>
+            ) : (
+              <img src={`/assets/${c.img}`} alt={c.alt} width="1260" height="1088" loading="lazy" />
+            )}
+          </li>
+        )
+      ))}
+    </ul>
+  </div>
+  <div class="pf-cursor" aria-hidden="true"><span class="pf-cursor__dot"><span class="pf-cursor__text">View ↗</span></span></div>
+</section>
+
+<style>
+  .portfolio { background: var(--bg); padding-block: clamp(2rem, 4vw, 3.5rem); }
+  .portfolio__wrap { width: 100%; max-width: 1284px; margin-inline: auto; padding-inline: 24px; }
+  .portfolio__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+
+  .portfolio__link { display: block; }
+  .portfolio__card {
+    border-radius: 24px;
+    overflow: hidden;
+    transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
+  }
+  .portfolio__card img {
+    width: 100%; height: auto; display: block;
+    transition: transform .6s cubic-bezier(.22,1,.36,1);
+    transform-origin: center;
+  }
+  .portfolio__card:hover { box-shadow: 0 30px 60px -25px rgba(0,0,0,.7); }
+  .portfolio__card:hover img { transform: scale(1.06); }
+
+  /* Carte "à venir" — projet pas encore publié */
+  .portfolio__card--soon {
+    aspect-ratio: 1260 / 1088;
+    background: rgba(255,255,255,.03);
+    border: 1.5px dashed rgba(255,255,255,.16);
+    display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
+    gap: 16px;
+    padding: clamp(24px, 4vw, 40px);
+    cursor: default;
+  }
+  .portfolio__card--soon:hover { box-shadow: none; }
+  .soon__badge {
+    display: inline-flex; align-items: center;
+    padding: 8px 18px; border-radius: 999px;
+    border: 1px solid rgba(252,255,64,.35);
+    color: var(--primary);
+    font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  }
+  .soon__title {
+    font-family: var(--font); font-weight: 300; font-size: clamp(1.5rem, 3vw, 2rem);
+    color: rgba(255,255,255,.5);
+  }
+  .soon__tags { display: flex; flex-wrap: wrap; gap: 12px; }
+  .soon__tags .chip { opacity: .55; }
+
+  /* Curseur personnalisé (au survol des cartes) */
+  .portfolio { position: relative; }
+  .pf-cursor {
+    position: fixed; top: 0; left: 0; z-index: 90;
+    pointer-events: none; will-change: transform;
+  }
+  /* Cercle parfait : diamètre calculé en JS selon la longueur du libellé */
+  .pf-cursor__dot {
+    display: flex; align-items: center; justify-content: center;
+    width: 112px; height: 112px;
+    padding: 0 16px;
+    border-radius: 50%;
+    background: var(--primary); color: #191919;
+    font-weight: 600; font-size: 15px; letter-spacing: 0.02em;
+    text-align: center; line-height: 1.3;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+    transition: opacity .3s ease, transform .35s cubic-bezier(.22,1,.36,1), width .3s ease, height .3s ease;
+  }
+  /* Texte + flèche dans un même flux : tout reste centré, la flèche suit le texte */
+  .pf-cursor__text { display: block; text-wrap: balance; }
+
+  @media (pointer: fine) {
+    .portfolio.cursor-on .portfolio__card,
+    .portfolio.cursor-on .portfolio__link { cursor: none; }
+  }
+  @media (max-width: 768px) {
+    .portfolio__grid { grid-template-columns: 1fr; }
+    .pf-cursor { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pf-cursor { display: none; }
+  }
+</style>
+
+<script>
+  const section = document.querySelector(".portfolio");
+  const cursor = section?.querySelector(".pf-cursor");
+  const dot = cursor?.querySelector(".pf-cursor__dot");
+  const label = cursor?.querySelector(".pf-cursor__text");
+  const fine = window.matchMedia("(pointer: fine)").matches;
+  if (section && cursor && dot && label && fine) {
+    let raf = 0, tx = 0, ty = 0;
+    const move = (e) => {
+      tx = e.clientX; ty = e.clientY;
+      if (!raf) raf = requestAnimationFrame(() => {
+        cursor.style.transform = `translate(${tx}px, ${ty}px)`;
+        raf = 0;
+      });
+    };
+    // Diamètre : assez large pour contenir le mot le plus long, borné pour rester harmonieux
+    const diameterFor = (text) => {
+      const longest = text.split(" ").reduce((a, w) => (w.length > a.length ? w : a), "");
+      return Math.round(Math.min(170, Math.max(112, longest.length * 8.4 + 46)));
+    };
+
+    const show = (card) => {
+      const text = card.getAttribute("data-cursor") || "View";
+      label.textContent = text + " ↗";
+      const d = diameterFor(text) + "px";
+      dot.style.width = d;
+      dot.style.height = d;
+      section.classList.add("cursor-on");
+      dot.style.opacity = "1";
+      dot.style.transform = "translate(-50%, -50%) scale(1)";
+    };
+    const hide = () => {
+      section.classList.remove("cursor-on");
+      dot.style.opacity = "0";
+      dot.style.transform = "translate(-50%, -50%) scale(0.2)";
+    };
+    // Le curseur s'affiche sur chaque carte, avec le nom du projet correspondant
+    section.querySelectorAll(".portfolio__card:not(.portfolio__card--soon)").forEach((card) => {
+      card.addEventListener("mouseenter", () => show(card));
+      card.addEventListener("mouseleave", hide);
+    });
+    section.addEventListener("mousemove", move);
+  }
+</script>

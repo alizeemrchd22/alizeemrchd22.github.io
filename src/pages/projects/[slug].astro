@@ -1,0 +1,210 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PageHero from "../../components/PageHero.astro";
+import Footer from "../../components/Footer.astro";
+import { site } from "../../data/content";
+import { projects } from "../../data/projects";
+
+export function getStaticPaths() {
+  return Object.entries(projects).map(([slug, project]) => ({
+    params: { slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const ctas = [
+  { label: "Visit Website", href: project.url },
+  ...(project.secondaryCta ? [project.secondaryCta] : []),
+];
+---
+
+<Layout title={`${project.title} — ${site.name}`} description={project.subtitle}>
+
+  <main id="main">
+    <PageHero
+      eyebrow={project.date}
+      title={project.title}
+      sub={project.subtitle}
+      logo={project.logo}
+      ctas={ctas}
+    />
+
+    <!-- ============ APERÇU DU SITE (optionnel) ============ -->
+    {project.screenshot && (
+      <section class="pshot">
+        <img src={project.screenshot} alt={`Aperçu du site ${project.title}`} loading="lazy" />
+      </section>
+    )}
+
+    <!-- ============ BRIEF DU PROJET (optionnel) — comble la transition
+         quand il n'y a pas de grand screenshot ============ -->
+    {project.context && (
+      <section class="pcontext">
+        <div class="pcontext__inner">
+          <span class="pcontext__eyebrow">{project.context.eyebrow}</span>
+          <p class="pcontext__text">{project.context.text}</p>
+        </div>
+      </section>
+    )}
+
+    <!-- ============ GALERIE (texte HTML + mockups HD) ============ -->
+    <section class="pgallery">
+      <div class="pgallery__inner">
+        {project.gallery.map((row) => (
+          row.full ? (
+            <div class="pgallery__full">
+              {row.imgs ? (
+                <div class="pgallery__carousel" data-carousel>
+                  {row.imgs.map((src, i) => (
+                    <img
+                      src={`/assets/projects/${src}`}
+                      alt={row.alt}
+                      loading="lazy"
+                      class:list={["pgallery__carousel-img", { "is-active": i === 0 }]}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <img src={`/assets/projects/${row.img}`} alt={row.alt} loading="lazy" />
+              )}
+            </div>
+          ) : (
+            <div class:list={["pgallery__row", { "pgallery__row--flip": row.side === "right", "pgallery__row--text-only": !row.img && !row.imgs }]}>
+              {row.imgs ? (
+                <div class="pgallery__media">
+                  <div class="pgallery__carousel" data-carousel>
+                    {row.imgs.map((src, i) => (
+                      <img
+                        src={`/assets/projects/${src}`}
+                        alt={row.alt}
+                        loading="lazy"
+                        class:list={["pgallery__carousel-img", { "is-active": i === 0 }]}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ) : row.img && (
+                <div class="pgallery__media">
+                  <img src={`/assets/projects/${row.img}`} alt={row.alt} loading="lazy" />
+                </div>
+              )}
+              <div class="pgallery__text">
+                {(row.texts || []).map((t) => <p>{t}</p>)}
+              </div>
+            </div>
+          )
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  // Mini-carrousels de la galerie (fondu automatique) — générique, marche
+  // pour n'importe quel nombre d'images.
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((car) => {
+    const imgs = Array.from(car.querySelectorAll<HTMLElement>(".pgallery__carousel-img"));
+    if (imgs.length < 2 || reduceMotion) return;
+    let active = 0;
+    setInterval(() => {
+      imgs[active].classList.remove("is-active");
+      active = (active + 1) % imgs.length;
+      imgs[active].classList.add("is-active");
+    }, 3000);
+  });
+</script>
+
+<style>
+  /* ---------- APERÇU ---------- */
+  .pshot {
+    background: var(--bg);
+    display: flex; justify-content: center;
+    padding: clamp(3rem, 6vw, 6rem) var(--gutter) 0;
+  }
+  .pshot img {
+    width: 100%; max-width: 1156px; height: auto;
+    border-radius: 24px;
+  }
+
+  /* ---------- BRIEF : fait la transition entre le hero et la galerie ---------- */
+  .pcontext {
+    background: var(--bg);
+    padding: clamp(3rem, 6vw, 5rem) var(--gutter) clamp(2rem, 5vw, 3.5rem);
+  }
+  .pcontext__inner { max-width: 700px; text-align: left; }
+  .pcontext__eyebrow {
+    display: block;
+    font-size: 14px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--primary); margin-bottom: 20px;
+  }
+  .pcontext__text { color: rgba(255,255,255,.8); font-size: 18px; line-height: 1.6; }
+
+  /* ---------- GALERIE : section claire, vrai texte + mockups HD alternés ---------- */
+  .pgallery {
+    background: var(--cream);
+    border-top-left-radius: var(--section-radius);
+    border-bottom-right-radius: var(--section-radius);
+    margin-top: clamp(2.5rem, 6vw, 5rem);
+    padding-block: clamp(3rem, 6vw, 5.5rem);
+    overflow: hidden;
+  }
+  .pgallery__inner {
+    width: 100%; max-width: 1236px; margin-inline: auto; padding-inline: 24px;
+    display: flex; flex-direction: column; gap: clamp(3rem, 6vw, 5.5rem);
+  }
+
+  .pgallery__row {
+    display: grid; grid-template-columns: 1.25fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+  .pgallery__row--flip .pgallery__media { order: 2; }
+  .pgallery__row--flip .pgallery__text { order: 1; }
+  .pgallery__row--text-only { grid-template-columns: 1fr; }
+  .pgallery__row--text-only .pgallery__text p { max-width: 62ch; }
+
+  .pgallery__media img { width: 100%; height: auto; display: block; border-radius: var(--radius-card); }
+
+  /* Mini-carrousel (fondu automatique, piloté en JS — voir <script> plus bas) */
+  .pgallery__carousel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2000 / 1126;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+  .pgallery__full .pgallery__carousel {
+    max-width: 1090px; margin-inline: auto;
+    border-radius: 24px;
+  }
+  .pgallery__carousel-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  .pgallery__carousel-img.is-active { opacity: 1; }
+  .pgallery__text { display: flex; flex-direction: column; gap: 24px; }
+  .pgallery__text p {
+    color: #4f4b47; font-size: 18px; line-height: 1.6; max-width: 46ch;
+  }
+
+  .pgallery__full { display: flex; justify-content: center; }
+  .pgallery__full img {
+    width: 100%; max-width: 1090px; height: auto; display: block;
+    border-radius: 24px;
+  }
+
+  @media (max-width: 860px) {
+    .pgallery__row { grid-template-columns: 1fr; gap: 1.5rem; }
+    .pgallery__row--flip .pgallery__media { order: 1; }
+    .pgallery__row--flip .pgallery__text { order: 2; }
+    .pgallery__text p { max-width: none; }
+  }
+  @media (max-width: 768px) {
+  }
+</style>

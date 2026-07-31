@@ -1,0 +1,146 @@
+---
+const values = [
+  { key: "authenticity", icon: "value-sun.svg", title: "Authenticity", text: "I value honesty, respect and meaningful collaboration. I believe the best ideas emerge when different perspectives challenge each other and everyone is empowered to contribute their unique strengths." },
+  { key: "curious", icon: "value-eyes.svg", title: "Curious", text: "I'm driven by the desire to understand how things work. I enjoy exploring complex problems, connecting ideas across disciplines and continuously learning to build better, more thoughtful solutions." },
+  { key: "adventurous", icon: "value-adventure.svg", title: "Adventurious", text: "I embrace new challenges with curiosity and determination. Whether it's a new industry, technology or responsibility, I'm always eager to learn, adapt and stay ahead in a fast-changing world." },
+];
+// État "entrechoqué" au chargement (rotation + rapprochement), aligné au scroll
+const scatter = [
+  { rot: "-5deg", tx: "60px", ty: "26px", z: 1 },
+  { rot: "3.5deg", tx: "0px", ty: "-8px", z: 3 },
+  { rot: "-2.5deg", tx: "-60px", ty: "18px", z: 2 },
+];
+---
+
+<section class="values" id="services">
+  <div class="container">
+    <ul class="values__grid">
+      {values.map((v, i) => (
+        <li class="value" data-tilt style={`--rot:${scatter[i].rot}; --tx:${scatter[i].tx}; --ty:${scatter[i].ty}; z-index:${scatter[i].z}`}>
+          <span class="value__spot" aria-hidden="true"></span>
+          <img class="value__icon" src={`/assets/${v.icon}`} alt="" width="80" height="80" />
+          <div class="value__body">
+            <h3 class="value__title" data-i18n={`values.${v.key}.title`}>{v.title}</h3>
+            <p class="value__text" data-i18n={`values.${v.key}.text`}>{v.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .values {
+    position: relative;
+    z-index: 2;
+    background: transparent;
+    margin-top: clamp(-220px, -14vw, -120px);
+    padding-bottom: clamp(3rem, 6vw, 5.5rem);
+  }
+  .values__grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    perspective: 1100px;
+  }
+  .value {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+    border-radius: 40px;
+    padding: 40px;
+    display: flex; flex-direction: column; gap: 48px;
+    box-shadow: 0 18px 44px -26px rgba(0,0,0,0.45);
+    transform: translate(var(--tx, 0), var(--ty, 0)) rotate(var(--rot, 0deg));
+    transition: transform .9s cubic-bezier(.22,1,.36,1);
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  /* Au scroll : les cartes se remettent droites et alignées */
+  .values.is-aligned .value { transform: none; }
+
+  /* Spotlight jaune qui suit la souris */
+  .value__spot {
+    position: absolute; inset: 0;
+    background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 0%),
+      rgba(252, 255, 64, 0.12),
+      rgba(252, 255, 64, 0.04) 45%,
+      transparent 70%);
+    opacity: 0;
+    transition: opacity .4s ease;
+    pointer-events: none;
+  }
+  .value:hover .value__spot { opacity: 1; }
+
+  .value__icon {
+    width: 80px; height: 80px;
+    position: relative; z-index: 1;
+  }
+  .value:hover .value__icon { animation: icon-wiggle .7s cubic-bezier(.36,.07,.19,.97); }
+  @keyframes icon-wiggle {
+    0% { transform: rotate(0deg) scale(1); }
+    30% { transform: rotate(-9deg) scale(1.1); }
+    60% { transform: rotate(6deg) scale(1.06); }
+    100% { transform: rotate(0deg) scale(1); }
+  }
+
+  .value__body { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 24px; }
+  .value__title {
+    font-family: "Red Hat Display", var(--font);
+    font-weight: 700; font-size: 18.4px; line-height: 27.6px; color: var(--white);
+  }
+  .value__text { color: #7a7571; font-size: 18px; line-height: 1.5; max-width: 254px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .value { transform: none; transition: none; }
+    .value:hover .value__icon { animation: none; }
+    .value__spot { display: none; }
+  }
+  @media (max-width: 900px) {
+    .values { margin-top: -50px; }
+    .values__grid { grid-template-columns: 1fr; gap: 16px; }
+    .value { padding: 28px; gap: 24px; transform: none; }
+    .value__text { max-width: none; }
+  }
+</style>
+
+<script>
+  const fine = window.matchMedia("(pointer: fine)").matches;
+  const noMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Alignement au scroll (réversible : elles se ré-entrechoquent en haut de page)
+  const section = document.querySelector(".values");
+  if (section) {
+    if (noMotion) {
+      section.classList.add("is-aligned");
+    } else {
+      const onScroll = () => {
+        section.classList.toggle("is-aligned", window.scrollY > 120);
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+  }
+
+  // Tilt 3D + spotlight suivant la souris (desktop uniquement)
+  if (fine && !noMotion) {
+    document.querySelectorAll("[data-tilt]").forEach((card) => {
+      let raf = 0;
+      card.addEventListener("mousemove", (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        if (!raf) raf = requestAnimationFrame(() => {
+          const rx = (0.5 - py) * 7;
+          const ry = (px - 0.5) * 9;
+          card.style.transform = `translateY(-6px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+          card.style.setProperty("--mx", `${(px * 100).toFixed(1)}%`);
+          card.style.setProperty("--my", `${(py * 100).toFixed(1)}%`);
+          raf = 0;
+        });
+      });
+      card.addEventListener("mouseleave", () => {
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+        card.style.transform = "";
+      });
+    });
+  }
+</script>

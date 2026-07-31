@@ -1,0 +1,166 @@
+---
+// Catégories de compétences — clique sur un cercle pour l'amener au centre.
+const categories = [
+  { key: "pm", label: "Project Management", slot: "left",
+    chips: ["Agile", "Scrum", "Jira", "Sprint Planning", "Backlog Management", "Functional Specifications", "Client Workshops", "Testing", "Framework Training"] },
+  { key: "ds", label: "Data Science", slot: "center",
+    chips: ["Python", "SQL", "Data Visualization", "Exploratory Data Analysis (EDA)", "Statistical Analysis", "Feature Engineering", "Scikit-learn", "Pandas", "NumPy", "Prompt Engineering"] },
+  { key: "design", label: "Design", slot: "right",
+    chips: ["UX Design", "UI Design", "Figma", "Design Systems", "Wireframing", "Prototyping", "User Flows", "Brand Identity", "Visual Identity", "Responsive Design", "Developer Handoff", "Accessibility"] },
+];
+const active = categories.find((c) => c.slot === "center");
+---
+
+<section class="backpack" id="backpack">
+  <div class="container">
+    <header class="backpack__head">
+      <h2 class="section-title" data-i18n="backpack.title">What’s in my backpack ?</h2>
+      <p class="backpack__intro" data-i18n="backpack.intro">A mix of code, design and project tools I’ve picked up along the way — and actually use to get things done.</p>
+    </header>
+
+    <div class="backpack__circles" role="tablist" aria-label="Skill categories">
+      {categories.map((c) => (
+        <button
+          type="button"
+          class:list={["bp-circle", `bp-circle--${c.slot}`]}
+          data-cat={c.key}
+          data-chips={JSON.stringify(c.chips)}
+          role="tab"
+          aria-selected={c.slot === "center"}
+          aria-label={`Show ${c.label} skills`}
+        >
+          <span class="bp-circle__label">
+            <span class="bp-circle__bar" aria-hidden="true"></span>
+            <span class="bp-circle__text" data-i18n={`backpack.${c.key}`}>{c.label}</span>
+          </span>
+        </button>
+      ))}
+    </div>
+
+    <ul class="backpack__tools" id="backpack-tools" aria-live="polite">
+      {active.chips.map((t) => <li class="chip chip--dark">{t}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .backpack { background: var(--bg); padding-block: clamp(3.5rem, 7vw, 6rem); overflow: hidden; }
+  .backpack__head { text-align: center; max-width: 760px; margin: 0 auto; }
+  .backpack__intro { margin-top: 24px; color: rgba(240,239,233,.8); font-size: 18px; line-height: 1.5; }
+
+  .backpack__circles {
+    position: relative;
+    width: 100%; max-width: 1037px; height: 477px;
+    margin: clamp(2rem, 5vw, 4rem) auto clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .bp-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.015);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: left .55s cubic-bezier(.22,1,.36,1), top .55s cubic-bezier(.22,1,.36,1),
+                width .55s cubic-bezier(.22,1,.36,1), height .55s cubic-bezier(.22,1,.36,1),
+                border-color .4s ease, background .4s ease;
+    animation: bp-float 7s ease-in-out infinite;
+  }
+  .bp-circle:focus-visible { outline: 3px solid var(--primary); outline-offset: 4px; }
+
+  .bp-circle--left   { left: 0;    top: 68px; width: 340px; height: 340px; z-index: 1; animation-delay: -1s; }
+  .bp-circle--right  { left: 697px; top: 68px; width: 340px; height: 340px; z-index: 1; animation-delay: -3.5s; }
+  .bp-circle--center {
+    left: 280px; top: 0; width: 477px; height: 477px; z-index: 3;
+    border-color: rgba(252,255,64,0.25);
+    background: radial-gradient(closest-side, rgba(252,255,64,0.06), rgba(255,255,255,0.02) 60%, transparent);
+    cursor: default;
+  }
+
+  @keyframes bp-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .bp-circle { animation: none; } }
+
+  .bp-circle__label { display: inline-flex; align-items: center; gap: 24px; pointer-events: none; }
+  .bp-circle__bar {
+    width: 6px; height: 20px; border-radius: 999px; background: var(--primary);
+    box-shadow: 0 0 8px 0 rgba(252,255,64,0.6); flex: none;
+    transition: height .4s ease;
+  }
+  .bp-circle__text {
+    font-family: var(--font); font-weight: 600; font-size: 18px; color: #f0efe9; white-space: nowrap;
+    transition: font-size .4s ease;
+  }
+  .bp-circle--center .bp-circle__text { font-size: 22px; }
+  .bp-circle--center .bp-circle__bar { height: 26px; }
+
+  .backpack__tools {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;
+    max-width: 820px; margin: 0 auto; min-height: 44px;
+    transition: opacity .25s ease;
+  }
+  .backpack__tools.is-swapping { opacity: 0; }
+
+  @media (max-width: 920px) {
+    .backpack__circles {
+      height: auto; display: flex; flex-direction: column; align-items: stretch; gap: 12px; max-width: 460px;
+    }
+    .bp-circle {
+      position: static; width: 100% !important; height: auto !important;
+      border-radius: 999px; padding: 20px 28px; justify-content: flex-start;
+      animation: none; backdrop-filter: none;
+    }
+    .bp-circle--center { background: rgba(252,255,64,0.06); }
+    .bp-circle--center .bp-circle__text { font-size: 18px; }
+    .bp-circle--center .bp-circle__bar { height: 20px; }
+  }
+</style>
+
+<script>
+  const wrap = document.querySelector(".backpack__circles");
+  const tools = document.getElementById("backpack-tools");
+  if (wrap && tools) {
+    const circles = Array.from(wrap.querySelectorAll(".bp-circle"));
+    const slotClass = ["bp-circle--left", "bp-circle--center", "bp-circle--right"];
+
+    function getSlot(el) {
+      return slotClass.find((c) => el.classList.contains(c));
+    }
+
+    function renderChips(el) {
+      let chips = [];
+      try { chips = JSON.parse(el.getAttribute("data-chips") || "[]"); } catch {}
+      tools.classList.add("is-swapping");
+      setTimeout(() => {
+        tools.innerHTML = "";
+        chips.forEach((c) => {
+          const li = document.createElement("li");
+          li.className = "chip chip--dark";
+          li.textContent = c;
+          tools.appendChild(li);
+        });
+        tools.classList.remove("is-swapping");
+      }, 250);
+    }
+
+    circles.forEach((circle) => {
+      circle.addEventListener("click", () => {
+        if (circle.classList.contains("bp-circle--center")) return;
+        const center = circles.find((c) => c.classList.contains("bp-circle--center"));
+        const clickedSlot = getSlot(circle);
+        // swap slots between clicked and current center
+        circle.classList.remove(clickedSlot);
+        circle.classList.add("bp-circle--center");
+        center.classList.remove("bp-circle--center");
+        center.classList.add(clickedSlot);
+        // aria
+        circles.forEach((c) => c.setAttribute("aria-selected", String(c.classList.contains("bp-circle--center"))));
+        renderChips(circle);
+      });
+    });
+  }
+</script>

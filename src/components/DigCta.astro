@@ -1,0 +1,137 @@
+---
+// Section CTA partagée (portfolio + homepage) : rectangle sombre, photo en fond
+// voilée, et découpe d'Alizée à gauche qui sort du cadre par le haut.
+// Un seul endroit à modifier pour les deux pages.
+import Arrow from "./Arrow.astro";
+import { site } from "../data/content";
+
+interface Cta {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  sub?: string;
+  ctas?: Cta[];
+  /** Passer false quand la découpe fait doublon avec une section voisine. */
+  cutout?: boolean;
+}
+
+const {
+  cutout = true,
+  // Texte par défaut = celui de la page About Me (validé). Toutes les pages
+  // l'utilisent, sauf Professional Experience qui passe son propre texte.
+  eyebrow = "Say hello",
+  title = "Think we would get along?",
+  sub = "So I’m always up for a call or a good iced coffee…",
+  // Par défaut : contact direct. C'est le rôle de cette section de clôture —
+  // le prospect n'a pas à chercher où écrire.
+  ctas = [
+    { label: site.phone, href: site.phoneHref },
+    { label: site.email, href: `mailto:${site.email}` },
+  ],
+} = Astro.props;
+---
+
+<section class="dcta">
+  <div class="container">
+    <div class="dcta__panel reveal">
+      <!-- fond : clippé par le rectangle -->
+      <span class="dcta__bg" aria-hidden="true">
+        <img src="/assets/cta-bg.jpeg" alt="" loading="lazy" />
+        <span class="dcta__veil"></span>
+        <span class="dcta__glow"></span>
+      </span>
+
+      <!-- découpe : volontairement hors du fond clippé, elle sort du rectangle -->
+      {cutout && (
+        <img class="dcta__cutout" src="/assets/workethic-cutout.png" alt="" aria-hidden="true" loading="lazy" width="1000" height="1369" />
+      )}
+
+      <div class:list={["dcta__inner", { "dcta__inner--full": !cutout }]}>
+        {eyebrow && <p class="dcta__eyebrow" data-i18n="digcta.eyebrow">{eyebrow}</p>}
+        <h2 class="dcta__title" data-i18n="digcta.title">{title}</h2>
+        {sub && <p class="dcta__sub" data-i18n="digcta.sub">{sub}</p>}
+        <div class="dcta__buttons">
+          {ctas.map((c, i) => (
+            <a href={c.href} class:list={["btn", i === 0 ? "btn--primary" : "btn--outline"]}>
+              {c.label} <Arrow />
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Le padding haut laisse la place à la découpe qui dépasse du rectangle. */
+  .dcta { background: var(--bg); padding-block: clamp(4.5rem, 9vw, 8rem) clamp(3.5rem, 7vw, 6rem); }
+  .dcta__panel {
+    position: relative; isolation: isolate;
+    /* pas d'overflow:hidden ici : la découpe doit pouvoir sortir du cadre */
+    background: #1c1c1c;
+    border-radius: 40px;
+    padding: clamp(2.75rem, 6vw, 4.75rem) clamp(1.5rem, 4vw, 3rem);
+  }
+
+  /* Fond photo + voile, clippé par le rectangle */
+  .dcta__bg {
+    position: absolute; inset: 0; z-index: -1;
+    overflow: hidden; border-radius: 40px;
+    pointer-events: none;
+  }
+  .dcta__bg img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    /* décalé à droite : on garde surtout la texture du mur, pas un 2e portrait */
+    object-position: 78% 28%;
+  }
+  /* La photo doit rester une texture d'ambiance, pas une 2e scène :
+     voile dense + assombrissement supplémentaire derrière le texte. */
+  .dcta__veil {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(52% 74% at 56% 50%, rgba(14,14,14,.72), rgba(16,16,16,.3) 72%, transparent 100%),
+      linear-gradient(90deg, rgba(20,20,20,.93) 0%, rgba(20,20,20,.84) 42%, rgba(22,22,22,.78) 100%);
+  }
+  .dcta__glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(46% 62% at 56% 34%, rgba(252,255,64,.13), rgba(252,255,64,.05) 45%, transparent 72%);
+  }
+
+  /* Découpe : dimensionnée en hauteur, pieds sur le bas du cadre, tête au-dessus */
+  .dcta__cutout {
+    position: absolute; left: clamp(6px, 1.5%, 30px); bottom: 0; z-index: 1;
+    height: calc(100% + 88px); width: auto;
+    /* garde-fou : sur un titre qui passe sur 3 lignes, la découpe ne doit pas
+       grandir jusqu'à manger la colonne de texte */
+    max-height: 640px; max-width: 34%;
+    filter: drop-shadow(0 26px 46px rgba(0,0,0,.55));
+    pointer-events: none;
+  }
+
+  /* Le texte reste centré dans l'espace qui reste à droite de la découpe */
+  .dcta__inner {
+    position: relative; z-index: 2;
+    text-align: center; display: flex; flex-direction: column; align-items: center;
+    padding-left: clamp(190px, 30%, 380px);
+  }
+  .dcta__inner--full { padding-left: 0; }
+  .dcta__eyebrow {
+    color: var(--primary); font-size: 13px; font-weight: 600;
+    letter-spacing: .18em; text-transform: uppercase; margin-bottom: 16px;
+  }
+  .dcta__title { font-weight: 300; font-size: clamp(1.9rem, 3.6vw, 2.75rem); letter-spacing: -.02em; color: var(--white); }
+  .dcta__sub { margin-top: 16px; max-width: 52ch; color: rgba(255,255,255,.62); font-size: 18px; }
+  .dcta__buttons { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 36px; }
+
+  @media (max-width: 860px) {
+    /* pas la place pour la découpe : on la retire et le texte se recentre */
+    .dcta__cutout { display: none; }
+    .dcta__inner { padding-left: 0; }
+  }
+</style>

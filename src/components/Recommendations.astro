@@ -1,0 +1,354 @@
+---
+import Arrow from "./Arrow.astro";
+
+const linkedinUrl = "https://www.linkedin.com/in/alizée-marchand-b8822a220";
+
+// Recommandations LinkedIn — texte conservé tel quel (seuls les artefacts de
+// copier-coller comme le "O" parasite après le nom / titre ont été retirés).
+// Chaque personne a 2 extraits différents ; le carrousel boucle sur les 4
+// pour donner envie de lire, sans jamais montrer le pavé de texte complet —
+// clic sur la carte = renvoi vers la recommandation complète sur LinkedIn.
+const slides = [
+  {
+    initials: "MM",
+    name: "Mathilde Mével",
+    role: "Head of Product at Petrust® · Eco-design Engineer for Goods & Services",
+    pull: "Add to that real creativity, contagious energy, and a kindness that is anything but incidental: she makes a team better.",
+  },
+  {
+    initials: "PW",
+    name: "Paul Weinsberg",
+    role: "Web Architect — Developer & DevOps · Performance & Reliability as key metrics",
+    pull: "In short, she is a trustable and valuable collaborator who can elevate any team with her dynamism and collaborative mindset.",
+  },
+  {
+    initials: "MM",
+    name: "Mathilde Mével",
+    role: "Head of Product at Petrust® · Eco-design Engineer for Goods & Services",
+    pull: "Alizée has no patience for work done halfway. She sees things through, even when no one asks her to, and it shows in what she delivers.",
+  },
+  {
+    initials: "PW",
+    name: "Paul Weinsberg",
+    role: "Web Architect — Developer & DevOps · Performance & Reliability as key metrics",
+    pull: "Her enthusiasm is infectious, and her interpersonal strengths foster open, effective communication within the team.",
+  },
+];
+
+// Pluie de soleils (icône "Authenticity") en fond — rejouée à chaque fois que
+// la section entre à l'écran. Positions/tailles/délais randomisés pour éviter
+// l'effet "alignés en ligne".
+function rand(min, max) { return min + Math.random() * (max - min); }
+const suns = Array.from({ length: 16 }, () => ({
+  left: `${rand(-2, 96).toFixed(1)}%`,
+  top: `${rand(-260, -30).toFixed(0)}px`,
+  size: Math.round(rand(56, 116)),
+  delay: `${rand(0, 2).toFixed(2)}s`,
+  duration: `${rand(2.6, 4).toFixed(2)}s`,
+  rotate: Math.round(rand(220, 420)),
+}));
+---
+
+<section class="reco" id="recommendations">
+  <div class="reco__suns" id="reco-suns" aria-hidden="true">
+    {suns.map((s) => (
+      <img
+        class="reco__sun"
+        src="/assets/value-sun.svg"
+        alt=""
+        style={`left:${s.left}; top:${s.top}; width:${s.size}px; height:${s.size}px; animation-delay:${s.delay}; animation-duration:${s.duration}; --rot:${s.rotate}deg;`}
+      />
+    ))}
+  </div>
+  <div class="container">
+    <header class="reco__head">
+      <h2 class="section-title" data-i18n="recommendations.title">Straight from the people I’ve worked with</h2>
+      <p class="reco__intro" data-i18n="recommendations.intro">A couple of words from colleagues and managers — the kind of feedback that means more than any portfolio line.</p>
+      <div class="reco__cta">
+        <a href="mailto:alizee.mrchd@icloud.com" class="btn btn--primary"><span data-i18n="common.letsWorkTogether">Let’s work together</span> <Arrow /></a>
+      </div>
+    </header>
+
+    <div class="reco__stage">
+      <button type="button" class="reco__nav reco__nav--prev" id="reco-prev" aria-label="Previous recommendation">
+        <Arrow />
+      </button>
+
+      <a
+        class="reco__card"
+        id="reco-card"
+        href={linkedinUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Recommendation from ${slides[0].name} — read the full text on LinkedIn`}
+      >
+        <span class="reco__glow" aria-hidden="true"></span>
+
+        <div class="reco__content">
+          <span class="reco__quote" aria-hidden="true">“</span>
+          <p class="reco__pull" id="reco-pull">{slides[0].pull}</p>
+          <span class="reco__hint">
+            <span data-i18n="recommendations.hint">View full recommendation on LinkedIn</span> <Arrow />
+          </span>
+        </div>
+
+        <footer class="reco__person">
+          <span class="reco__avatar" id="reco-avatar" aria-hidden="true">{slides[0].initials}</span>
+          <div class="reco__meta">
+            <span class="reco__name" id="reco-name">{slides[0].name}</span>
+            <span class="reco__role" id="reco-role">{slides[0].role}</span>
+          </div>
+        </footer>
+      </a>
+
+      <button type="button" class="reco__nav reco__nav--next" id="reco-next" aria-label="Next recommendation">
+        <Arrow />
+      </button>
+    </div>
+
+    <div class="reco__dots" id="reco-dots" role="tablist" aria-label="Choose a recommendation">
+      {slides.map((s, i) => (
+        <button
+          type="button"
+          class:list={["reco__dot", { "is-active": i === 0 }]}
+          data-index={i}
+          role="tab"
+          aria-selected={i === 0}
+          aria-label={`Show excerpt ${i + 1} from ${s.name}`}
+        ></button>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ slides }}>
+  const card = document.getElementById("reco-card");
+  const pullEl = document.getElementById("reco-pull");
+  const avatarEl = document.getElementById("reco-avatar");
+  const nameEl = document.getElementById("reco-name");
+  const roleEl = document.getElementById("reco-role");
+  const prevBtn = document.getElementById("reco-prev");
+  const nextBtn = document.getElementById("reco-next");
+  const dots = Array.from(document.querySelectorAll(".reco__dot"));
+
+  let active = 0;
+  let timer = null;
+
+  function render() {
+    const s = slides[active];
+    card.classList.add("is-swapping");
+    setTimeout(() => {
+      pullEl.textContent = s.pull;
+      avatarEl.textContent = s.initials;
+      nameEl.textContent = s.name;
+      roleEl.textContent = s.role;
+      card.setAttribute("aria-label", `Recommendation from ${s.name} — read the full text on LinkedIn`);
+      dots.forEach((d, i) => {
+        d.classList.toggle("is-active", i === active);
+        d.setAttribute("aria-selected", String(i === active));
+      });
+      card.classList.remove("is-swapping");
+    }, 200);
+  }
+
+  function go(delta) {
+    active = (active + delta + slides.length) % slides.length;
+    render();
+  }
+
+  function stop() { clearInterval(timer); }
+  function play() { timer = setInterval(() => go(1), 7000); }
+
+  prevBtn?.addEventListener("click", (e) => { e.preventDefault(); stop(); go(-1); play(); });
+  nextBtn?.addEventListener("click", (e) => { e.preventDefault(); stop(); go(1); play(); });
+  dots.forEach((d) => d.addEventListener("click", (e) => {
+    e.preventDefault();
+    stop();
+    active = Number(d.dataset.index);
+    render();
+    play();
+  }));
+  card?.addEventListener("mouseenter", stop);
+  card?.addEventListener("mouseleave", play);
+
+  play();
+
+  // Pluie de soleils : rejouée à chaque fois que la section entre à l'écran
+  // (scroll vers le bas jusqu'à elle, on ressort, on revient → ça rejoue).
+  const sunsWrap = document.getElementById("reco-suns");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const section = document.getElementById("recommendations");
+  if (sunsWrap && section && !reduceMotion && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Reflow forcé pour pouvoir relancer l'animation CSS depuis le début.
+          sunsWrap.classList.remove("is-playing");
+          void sunsWrap.offsetWidth;
+          sunsWrap.classList.add("is-playing");
+        } else {
+          sunsWrap.classList.remove("is-playing");
+        }
+      });
+    }, { threshold: 0.25 });
+    io.observe(section);
+  }
+</script>
+
+<style>
+  .reco {
+    position: relative;
+    background: var(--bg);
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    overflow: hidden;
+  }
+  /* Curseur "soleil" amusant partout dans la section — même icône SVG que
+     la card "Authenticity" / la pluie de soleils (value-sun.svg), pas un emoji. */
+  .reco, .reco * {
+    cursor: url("data:image/svg+xml,%3Csvg%20preserveAspectRatio%3D%22none%22%20overflow%3D%22visible%22%20style%3D%22display%3A%20block%3B%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2080%2080%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20id%3D%22noun-sun-3607%201%22%20clip-path%3D%22url%28%23clip0_0_12%29%22%3E%3Cpath%20id%3D%22Vector%22%20d%3D%22M53.074%2040.2073C53.074%2047.798%2046.9323%2053.9207%2039.3533%2053.9207C31.7743%2053.9207%2025.6373%2047.7983%2025.6373%2040.2073C25.6373%2032.638%2031.7741%2026.492%2039.3533%2026.492C46.9326%2026.492%2053.074%2032.6376%2053.074%2040.2073Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_2%22%20d%3D%22M40.556%2077.1933C40.556%2077.7709%2040.0896%2078.2373%2039.5055%2078.2373H38.4549C37.8773%2078.2373%2037.4101%2077.7701%2037.4101%2077.1933L37.4104%2058.092C37.4104%2057.5144%2037.8776%2057.0472%2038.4552%2057.0472H39.5057C40.0888%2057.0472%2040.5563%2057.5152%2040.5563%2058.092L40.556%2077.1933Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_3%22%20d%3D%22M40.556%2021.9107C40.556%2022.4844%2040.0896%2022.9547%2039.5055%2022.9547H38.4549C37.8773%2022.9547%2037.4101%2022.4844%2037.4101%2021.9107L37.4104%202.79933C37.4104%202.23137%2037.8776%201.76187%2038.4552%201.76187H39.5057C40.0888%201.76187%2040.5563%202.23218%2040.5563%202.79933L40.556%2021.9107Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_4%22%20d%3D%22M1.044%2042.9367C0.461706%2042.9367%20-1.19209e-06%2042.4807%20-1.19209e-06%2041.8997V40.8517C-1.19209e-06%2040.2718%200.461719%2039.8077%201.044%2039.8077H20.152C20.7296%2039.8077%2021.1895%2040.2718%2021.1895%2040.8517V41.8997C21.1895%2042.4804%2020.7296%2042.9364%2020.152%2042.9364L1.044%2042.9367Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_5%22%20d%3D%22M10.3433%2017.1013C9.92562%2016.6933%209.92562%2016.0357%2010.3433%2015.6303L11.0689%2014.8782C11.4728%2014.4766%2012.1553%2014.4766%2012.5545%2014.8782L26.0612%2028.3902C26.4724%2028.8053%2026.4724%2029.4621%2026.0612%2029.8678L25.3299%2030.6103C24.9122%2031.016%2024.2612%2031.016%2023.8435%2030.6103L10.3433%2017.1013Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_6%22%20d%3D%22M12.972%2067.1933C12.5608%2067.6045%2011.8983%2067.6045%2011.4921%2067.1933L10.7553%2066.4509C10.3441%2066.0397%2010.3441%2065.3805%2010.7553%2064.9693L24.2673%2051.4627C24.672%2051.0515%2025.3299%2051.0515%2025.7418%2051.4569L26.4785%2052.2121C26.8778%2052.6179%2026.8778%2053.2754%2026.4785%2053.6793L12.972%2067.1933Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_7%22%20d%3D%22M78.9467%2041.7067C79.5196%2041.7067%2079.9972%2041.2356%2079.9972%2040.6499V39.6186C79.9972%2039.029%2079.5188%2038.5553%2078.9467%2038.5553L59.8387%2038.5556C59.2611%2038.5556%2058.7955%2039.0293%2058.7955%2039.6189V40.6501C58.7955%2041.2366%2059.2619%2041.7069%2059.8387%2041.7069L78.9467%2041.7067Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_8%22%20d%3D%22M69.6533%2015.858C70.0661%2015.446%2070.0661%2014.7893%2069.6533%2014.3739L68.9174%2013.6337C68.5046%2013.229%2067.8429%2013.229%2067.4359%2013.6337L53.9239%2027.1471C53.5173%2027.5528%2053.5173%2028.2096%2053.9239%2028.6301L54.6663%2029.3614C55.0736%2029.7726%2055.7359%2029.7726%2056.1528%2029.3614L69.6533%2015.858Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_9%22%20d%3D%22M67.02%2065.9533C67.4369%2066.3653%2068.0945%2066.3653%2068.5057%2065.9533L69.2431%2065.2117C69.6496%2064.7981%2069.6496%2064.1349%2069.2431%2063.7125L55.7378%2050.2171C55.3131%2049.8059%2054.6571%2049.8059%2054.2571%2050.2106L53.5146%2050.9612C53.1081%2051.3651%2053.1081%2052.0299%2053.5146%2052.4476L67.02%2065.9533Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3C%2Fg%3E%3Cdefs%3E%3CclipPath%20id%3D%22clip0_0_12%22%3E%3Crect%20width%3D%2280%22%20height%3D%2280%22%20fill%3D%22white%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3C%2Fsvg%3E") 20 20, pointer;
+  }
+  .reco > .container { position: relative; z-index: 1; }
+
+  /* Pluie de soleils décorative — rejouée à chaque entrée dans la section */
+  .reco__suns {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .reco__sun {
+    position: absolute;
+    opacity: 0;
+    animation-name: reco-sun-fall;
+    animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+    animation-play-state: paused;
+  }
+  .reco__suns.is-playing .reco__sun { animation-play-state: running; }
+
+  @keyframes reco-sun-fall {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+    8%   { opacity: .9; }
+    75%  { opacity: .7; }
+    100% { transform: translateY(640px) rotate(var(--rot, 320deg)); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reco__sun { display: none; }
+  }
+
+  .reco__head { text-align: center; max-width: 760px; margin: 0 auto clamp(2rem, 4vw, 3rem); }
+  .reco__intro { margin-top: 24px; color: rgba(255,255,255,.8); font-size: 18px; line-height: 1.5; }
+  .reco__cta { display: inline-flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin-top: 32px; }
+
+  .reco__stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(16px, 3vw, 32px);
+    max-width: 980px;
+    margin-inline: auto;
+  }
+
+  .reco__nav {
+    flex: none;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,.2);
+    color: #fff;
+    cursor: pointer;
+    transition: border-color .3s ease, background .3s ease, transform .3s ease;
+  }
+  .reco__nav:hover { background: var(--primary); border-color: var(--primary); color: #191919; transform: translateY(-2px); }
+  .reco__nav:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+  .reco__nav--prev :global(.arrow) { transform: rotate(-135deg); }
+  .reco__nav--next :global(.arrow) { transform: rotate(45deg); }
+
+  .reco__card {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    display: block;
+    background: #1e1e1e;
+    border-radius: var(--radius-card);
+    padding: clamp(24px, 4vw, 36px) clamp(28px, 5vw, 44px);
+    text-align: center;
+    overflow: hidden;
+    cursor: pointer;
+    transition: opacity .2s ease, transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  .reco__card:hover { transform: translateY(-3px); }
+  .reco__card:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+  .reco__card.is-swapping { opacity: 0; }
+
+  .reco__content { min-width: 0; }
+
+  .reco__quote {
+    display: block;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--primary);
+  }
+
+  .reco__pull {
+    margin-top: 4px;
+    font-family: var(--font);
+    font-weight: 300;
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    line-height: 1.4;
+    color: #fff;
+    max-width: 60ch;
+    margin-inline: auto;
+  }
+
+  .reco__hint {
+    margin: 16px auto 0;
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font); font-size: 14px; color: #7a7571;
+    transition: color .25s ease;
+  }
+  .reco__hint :global(.arrow) { width: 12px; height: 12px; }
+  .reco__card:hover .reco__hint { color: var(--primary); }
+
+  .reco__person {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    display: flex; align-items: center; gap: 16px;
+    text-align: left;
+  }
+
+  .reco__avatar {
+    flex: none;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(252,255,64,.1);
+    border: 1px solid rgba(252,255,64,.3);
+    color: var(--primary);
+    font-family: var(--font); font-weight: 600; font-size: 16px;
+  }
+  .reco__meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .reco__name { font-family: var(--font); font-weight: 600; font-size: 16px; color: #fff; }
+  .reco__role { font-size: 14px; line-height: 1.4; color: #adadad; }
+
+  .reco__dots { display: flex; justify-content: center; gap: 10px; margin-top: 28px; }
+  .reco__dot {
+    width: 8px; height: 8px; border-radius: 999px;
+    background: rgba(255,255,255,.2); border: none; cursor: pointer; padding: 0;
+    transition: background .3s ease, width .3s ease;
+  }
+  .reco__dot.is-active { width: 24px; background: var(--primary); }
+
+  @media (max-width: 640px) {
+    .reco__stage { gap: 12px; }
+    .reco__nav { width: 40px; height: 40px; }
+    .reco__nav :global(.arrow) { width: 14px; height: 14px; }
+    .reco__person { flex-wrap: wrap; }
+  }
+</style>

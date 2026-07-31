@@ -1,0 +1,93 @@
+---
+import Arrow from "./Arrow.astro";
+import { site } from "../data/content";
+
+const langs = [
+  { code: "FR", name: "French", level: "Native Language", note: "Langue maternelle" },
+  { code: "ES", name: "Espagnol", level: "C1", note: "Panama - Spain" },
+  { code: "EN", name: "English", level: "C1", note: "US - Australia" },
+];
+---
+
+<section class="langs" id="languages">
+  <img class="langs__bg" src="/assets/hero.jpeg" alt="" aria-hidden="true" loading="lazy" />
+  <div class="langs__overlay" aria-hidden="true"></div>
+  <div class="container">
+    <header class="langs__head">
+      <h2 class="section-title" data-i18n="languages.title">3 Fluent Language</h2>
+      <p class="langs__intro" data-i18n="languages.intro">France, Spain, Panama, Australia — and quite a few places in between. Living and working across countries has shaped the way I communicate, adapt and approach new environments.</p>
+      <div class="langs__cta">
+        <a href={`mailto:${site.email}`} class="btn btn--primary"><span data-i18n="common.letsGetInTouch">Let’s get in Touch!</span> <Arrow /></a>
+        <a href="/about-me" class="btn btn--outline"><span data-i18n="common.moreAboutMe">More about me</span> <Arrow /></a>
+      </div>
+    </header>
+
+    <ul class="langs__grid">
+      {langs.map((l) => (
+        <li class="lcard reveal">
+          <span class="lcard__badge">{l.code}</span>
+          <div class="lcard__body">
+            <div class="lcard__top">
+              <p class="lcard__name">{l.name}</p>
+              <p class="lcard__level">{l.level}</p>
+            </div>
+            <p class="lcard__note">{l.note}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .langs {
+    position: relative;
+    z-index: 1; /* sous les sections crème voisines (z-index 2) */
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    isolation: isolate;
+  }
+  /* Photo du hero en fond, prolongée derrière les sections voisines :
+     leurs coins arrondis laissent voir la photo au lieu du noir plat */
+  .langs__bg {
+    position: absolute; z-index: -2;
+    top: -280px; bottom: -280px; left: 0; right: 0;
+    width: 100%; height: calc(100% + 560px);
+    object-fit: cover; object-position: 50% 30%;
+  }
+  .langs__overlay {
+    position: absolute; z-index: -1;
+    top: -280px; bottom: -280px; left: 0; right: 0;
+    background:
+      radial-gradient(60% 40% at 50% 50%, rgba(252,255,64,0.06), transparent 70%),
+      rgba(25, 25, 25, 0.82);
+  }
+  .langs .container { position: relative; }
+  .langs__head { text-align: center; max-width: 815px; margin: 0 auto clamp(2.5rem, 6vw, 5rem); }
+  .langs__intro { margin-top: 24px; color: rgba(255,255,255,.8); font-size: 18px; line-height: 1.5; }
+  .langs__cta { display: inline-flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin-top: 32px; }
+
+  .langs__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .lcard {
+    border: 1px solid rgba(240,239,233,.07);
+    border-radius: 40px;
+    padding: 40px;
+    display: flex; flex-direction: column; gap: 48px;
+    background-image: linear-gradient(160deg, rgba(240,239,233,.13) 10%, rgba(138,137,134,0) 85%);
+  }
+  .lcard__badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 80px; height: 80px; border-radius: 999px;
+    background: rgba(252,255,64,.1); border: 1px solid rgba(252,255,64,.2);
+    font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 28px;
+    letter-spacing: 1.1px; color: var(--primary);
+  }
+  .lcard__body { display: flex; flex-direction: column; gap: 24px; }
+  .lcard__top { display: flex; flex-direction: column; gap: 8px; }
+  .lcard__name { font-family: var(--font); font-weight: 600; font-size: 18px; color: #fff; }
+  .lcard__level { font-size: 18px; color: rgba(255,255,255,.55); }
+  .lcard__note { font-size: 18px; color: rgba(255,255,255,.25); }
+
+  @media (max-width: 860px) {
+    .langs__grid { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; }
+  }
+</style>

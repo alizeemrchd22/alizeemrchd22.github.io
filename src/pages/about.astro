@@ -1,0 +1,193 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Arrow from "../components/Arrow.astro";
+import PageHero from "../components/PageHero.astro";
+import DigCta from "../components/DigCta.astro";
+import Footer from "../components/Footer.astro";
+import { site } from "../data/content";
+
+const experiences = [
+  {
+    id: "saphes-2025", company: "Saphes IT Systems", meta: "Web & App Development · B2B",
+    year: "2025–2026", role: "Project Manager & UI/UX Designer",
+    tags: ["Project Management", "UI/UX", "Web Development", "Agile", "B2B"],
+    bullets: [
+      "Led end-to-end delivery of client web/app projects — scope, roadmap, stakeholder alignment, and delivery follow-up.",
+      "Coordinated technical teams and managed QA/testing to validate deliverables and support successful releases.",
+      "Designed UI/UX in Figma based on client needs and project constraints, ensuring usability and consistency.",
+      "Delivered an e-commerce website project (ABICAN, B2C) using the Medusa–Strapi framework, including project management, testing, and client training/handover.",
+      "Drafted specification documents for a cosmetics group website project (30–40k budget), translating business needs into clear deliverables.",
+    ],
+  },
+  {
+    id: "peftrust-iso", company: "PEFtrust", meta: "Fashion Tech SaaS",
+    year: "2023–2026", role: "ISO 27001 Project Manager",
+    tags: ["Cybersecurity", "ISO 27001", "Governance", "Project Management", "Grafana"],
+    bullets: [
+      "Led the end-to-end ISO/IEC 27001 program — gap analysis → remediation plan → audit preparation, coordinating stakeholders across engineering and operations.",
+      "Authored and implemented approximately 50 operational procedures to standardize workflows across key functions.",
+      "Developed around 20 security policies and governance documents forming the complete ISMS documentation set.",
+      "Designed and implemented a Grafana dashboard with approximately 10 cybersecurity KPIs to improve visibility and alerting.",
+      "Rolled out organization-wide ISO 27001 awareness training, developing three modules and interactive knowledge checks.",
+    ],
+  },
+  {
+    id: "maersk", company: "Maersk", meta: "E&E & LnS · Panama City",
+    year: "2025", role: "Financial Business Partner Intern",
+    tags: ["Finance", "Business Analytics", "Operations"],
+    bullets: [
+      "Partnered with operational teams to map evacuation paths and improve cost visibility by area.",
+      "Improved empty-to-full container ratios and optimized empty costs to support competitive pricing.",
+      "Controlled costs and ensured accurate accrual processes while delivering weekly P&L reporting and variance analysis across LatAm teams.",
+    ],
+  },
+  {
+    id: "peftrust-coo", company: "PEFtrust", meta: "Fashion Tech SaaS",
+    year: "2022–2023", role: "Assistant COO",
+    tags: ["Project Management", "UX/UI", "Agile", "Fundraising"],
+    bullets: [
+      "Managed the end-to-end UX/UI redesign of the company website as Project Manager, coordinating cross-functional stakeholders and external providers using Agile methods.",
+      "Drafted investor-facing fundraising materials in direct collaboration with the co-founder.",
+      "Designed and produced the complete e-learning onboarding experience, including around 40 English video tutorials and detailed user documentation.",
+    ],
+  },
+];
+---
+
+<Layout title={`${site.name} — Experience`} description="Alizée Marchand — professional experience across data, product, design and project management.">
+
+  <main id="main">
+    <PageHero
+      eyebrow="Professional Experience"
+      title="The path that led me to data."
+      sub="Four years in project management, compliance and finance taught me how organisations actually make decisions — the same instinct I now bring to data science: turning messy information into clear, defensible answers."
+      ctas={[
+        { label: "Let’s call", href: `mailto:${site.email}` },
+        { label: "My portfolio", href: "/portfolio" },
+      ]}
+    />
+
+    <!-- ============ EXPERIENCE TIMELINE ============ -->
+    <section class="axp" id="experience">
+      <div class="axp__inner">
+        <aside class="axp__rail" aria-label="Experience timeline">
+          <ul>
+            {experiences.map((e) => (
+              <li>
+                <a href={`#${e.id}`} class="rail-item" data-target={e.id}>
+                  <span class="rail-item__company">{e.company}</span>
+                  <span class="rail-item__year">{e.year}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        <div class="axp__list">
+          {experiences.map((e) => (
+            <article class="xp" id={e.id}>
+              <span class="xp__year" aria-hidden="true">{e.year}</span>
+              <header class="xp__head">
+                <h2 class="xp__company">{e.company}</h2>
+                <p class="xp__meta">{e.meta}</p>
+              </header>
+              <p class="xp__role">{e.role}</p>
+              <ul class="xp__tags">
+                {e.tags.map((t) => <li class="xp__tag">{t}</li>)}
+              </ul>
+              <ul class="xp__bullets">
+                {e.bullets.map((b) => <li>{b}</li>)}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <DigCta
+      eyebrow="Work with me"
+      title="Your 360° project manager."
+      sub="Strategy, UI/UX, delivery, data, compliance — one person who speaks every language in the room, so nothing falls through the gaps. Tell me what you are building."
+    />
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ---------- TIMELINE ---------- */
+  .axp { background: var(--bg); padding-block: clamp(3rem, 7vw, 6rem); }
+  .axp__inner {
+    max-width: 1236px; margin-inline: auto; padding-inline: var(--gutter, 138px);
+    display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+
+  .axp__rail { position: sticky; top: 40px; }
+  .axp__rail ul { display: flex; flex-direction: column; gap: 28px; }
+  .rail-item { display: flex; flex-direction: column; gap: 4px; padding-left: 16px; border-left: 2px solid rgba(255,255,255,0.12); transition: border-color .3s; }
+  .rail-item__company { font-size: 18px; font-weight: 600; color: rgba(250,250,250,0.55); transition: color .3s; }
+  .rail-item__year { font-size: 15px; color: rgba(250,250,250,0.3); }
+  .rail-item:hover .rail-item__company, .rail-item.is-active .rail-item__company { color: var(--white); }
+  .rail-item.is-active { border-left-color: var(--primary); }
+  .rail-item.is-active .rail-item__year { color: var(--primary); }
+
+  .xp { position: relative; padding-bottom: clamp(3rem, 6vw, 7rem); }
+  .xp:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: clamp(2rem, 4vw, 3.5rem); }
+  .xp__year {
+    display: block;
+    font-family: var(--font); font-weight: 300; font-size: clamp(3rem, 8vw, 5rem);
+    line-height: 1; letter-spacing: -0.05em;
+    color: rgba(250,250,250,0.07);
+    margin-bottom: 8px;
+  }
+  .xp__head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .xp__company { font-family: var(--font); font-weight: 600; font-size: 32px; line-height: 1.18; color: var(--white); }
+  .xp__meta { font-size: 18px; color: rgba(250,250,250,0.4); }
+  .xp__role { margin-top: 20px; font-size: 18px; color: var(--primary); }
+
+  .xp__tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .xp__tag {
+    font-size: 18px; line-height: 1.5; color: var(--primary);
+    background: rgba(252,255,64,0.05); border: 1px solid rgba(252,255,64,0.22);
+    padding: 8px 17px; border-radius: 999px;
+  }
+
+  .xp__bullets { max-width: 620px; margin-top: 40px; display: flex; flex-direction: column; gap: 24px; }
+  .xp__bullets li {
+    position: relative; padding-left: 24px;
+    font-size: 18px; line-height: 1.5; color: rgba(250,250,250,0.62);
+  }
+  .xp__bullets li::before {
+    content: ""; position: absolute; left: 0; top: 11px;
+    width: 5px; height: 5px; border-radius: 999px; background: rgba(252,255,64,0.55);
+  }
+
+  @media (max-width: 900px) {
+    .axp__inner { grid-template-columns: 1fr; gap: 32px; }
+    .axp__rail { position: static; }
+    .axp__rail ul { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+    .rail-item { border-left: none; border-top: 2px solid rgba(255,255,255,0.12); padding: 8px 0 0; padding-left: 0; }
+    .xp__company { font-size: 26px; }
+  }
+</style>
+
+<script>
+  // Scroll-spy : surligne l'expérience active dans le rail
+  const items = document.querySelectorAll(".rail-item");
+  const map = new Map();
+  items.forEach((it) => map.set(it.getAttribute("data-target"), it));
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          items.forEach((i) => i.classList.remove("is-active"));
+          const active = map.get(e.target.id);
+          if (active) active.classList.add("is-active");
+        }
+      });
+    },
+    { rootMargin: "-45% 0px -45% 0px" }
+  );
+  document.querySelectorAll(".xp").forEach((x) => spy.observe(x));
+</script>

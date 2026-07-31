@@ -1,0 +1,35 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import Values from "../components/Values.astro";
+import Projects from "../components/Projects.astro";
+import Portfolio from "../components/Portfolio.astro";
+import Backpack from "../components/Backpack.astro";
+import Diplomas from "../components/Diplomas.astro";
+import Languages from "../components/Languages.astro";
+import WorkEthic from "../components/WorkEthic.astro";
+import Experience from "../components/Experience.astro";
+import Recommendations from "../components/Recommendations.astro";
+import DigCta from "../components/DigCta.astro";
+import Footer from "../components/Footer.astro";
+import I18nEngine from "../components/I18nEngine.astro";
+import { homeDict } from "../i18n/home";
+---
+
+<Layout translated>
+  <main id="main">
+    <Hero />
+    <Values />
+    <Projects />
+    <Portfolio />
+    <Backpack />
+    <Experience />
+    <Diplomas />
+    <Languages />
+    <WorkEthic />
+    <Recommendations />
+    <DigCta />
+  </main>
+  <Footer />
+  <I18nEngine dict={homeDict} />
+</Layout>
