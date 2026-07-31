@@ -19,7 +19,7 @@ export const site = {
   phoneHref: "tel:+61423477305",
   socials: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/alizée-marchand-b8822a220" },
-    { label: "GitHub", href: "#" },   // À COMPLÉTER : ton URL GitHub
+    { label: "GitHub", href: "https://github.com/alizeemrchd22" },
   ],
 };
 
