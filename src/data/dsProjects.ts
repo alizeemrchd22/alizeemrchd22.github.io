@@ -84,7 +84,7 @@ export const dsProjects: DsProject[] = [
     index: "03",
     title: "Marketing Campaign Targeting",
     short: "Marketing Campaign",
-    pitch: "Predicting which bank clients subscribe to a term deposit — and turning the model into a call list that converts.",
+    pitch: "Ranking prospects in a telecom campaign so the calls go to the people most likely to subscribe.",
     period: "2025",
     type: "Machine Learning · Marketing Analytics",
     context:

@@ -42,7 +42,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "projects.title": "Data Science Projects",
     "projects.pitch.phishing": "A classifier that flags malicious URLs on the PhiUSIIL dataset — and a lesson in spotting data leakage.",
     "projects.pitch.socialMedia": "Predicting negative mental-health impact from usage patterns, then segmenting who is most at risk.",
-    "projects.pitch.marketing": "Predicting which bank clients subscribe to a term deposit — and turning the model into a call list that converts.",
+    "projects.pitch.marketing": "Ranking prospects in a telecom campaign so the calls go to the people most likely to subscribe.",
 
     "backpack.title": "What's in my backpack ?",
     "backpack.intro": "A mix of code, design and project tools I've picked up along the way — and actually use to get things done.",
@@ -105,7 +105,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "nav.aboutme": "À propos de moi",
 
     "hero.roles": "Data Science · UX/UI · Gestion de projet",
-    "hero.titleMain": "J'aide à transformer une information complexe en décisions plus éclairées, en meilleurs produits et en",
+    "hero.titleMain": "Je rends l'information complexe compréhensible : de meilleures décisions, de meilleurs produits, des",
     "hero.titleAccent": "solutions concrètes.",
 
     "values.authenticity.title": "Authenticité",
@@ -116,18 +116,18 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "values.adventurous.text": "J'aborde chaque nouveau défi avec curiosité et détermination. Qu'il s'agisse d'un nouveau secteur, d'une nouvelle technologie ou d'une nouvelle responsabilité, j'apprends et je m'adapte pour rester à la pointe dans un monde qui change vite.",
 
     "projects.title": "Projets Data Science",
-    "projects.pitch.phishing": "Un classifieur qui détecte les URL malveillantes sur le dataset PhiUSIIL — et une leçon sur les fuites de données.",
-    "projects.pitch.socialMedia": "Prédire l'impact négatif sur la santé mentale à partir des habitudes d'usage, puis identifier qui est le plus à risque.",
-    "projects.pitch.marketing": "Prédire quels clients bancaires souscrivent à un dépôt à terme — et transformer le modèle en liste d'appels qui convertit.",
+    "projects.pitch.phishing": "Détecter automatiquement les URL malveillantes, en déjouant les variables piégées qui gonflent artificiellement les performances du modèle.",
+    "projects.pitch.socialMedia": "Mesurer l'effet des réseaux sociaux sur la santé mentale, et identifier les facteurs de risque les plus déterminants.",
+    "projects.pitch.marketing": "Repérer, dans une campagne télécom, les clients à contacter en priorité — ceux qui ont le plus de chances de souscrire.",
 
-    "backpack.title": "Ce qu'il y a dans mon sac à dos ?",
-    "backpack.intro": "Un mélange d'outils de code, de design et de gestion de projet que j'ai accumulés au fil du temps — et que j'utilise vraiment au quotidien.",
+    "backpack.title": "Mes compétences couteau suisse",
+    "backpack.intro": "Data, design et gestion de projet : les outils que j'ai appris à manier au fil des projets — et dont je me sers vraiment au quotidien.",
     "backpack.pm": "Gestion de projet",
     "backpack.ds": "Data Science",
     "backpack.design": "Design",
 
-    "experience.title": "Alors, qu'est-ce que j'ai fait ces derniers temps ?",
-    "experience.intro": "Un mélange de projets, de défis et de rôles qui m'ont fait traverser plusieurs secteurs. J'ai exploré différents univers, appris de nouvelles compétences, et appris à relier le business, la tech et le design.",
+    "experience.title": "Mes expériences professionnelles",
+    "experience.intro": "Différents postes et différents rôles, qui m'ont fait traverser plusieurs secteurs et plusieurs pays. J'y ai appris de nouvelles compétences, et surtout à relier le business, la tech et le design.",
     "experience.ctaSeeFull": "Voir toute l'expérience",
     "experience.saphes.desc": "Piloter le produit et le design de bout en bout — de la recherche utilisateur aux wireframes, jusqu'aux interfaces livrées et à la coordination de projet.",
     "experience.peftrust.desc": "Diriger le programme de certification ISO 27001, traduire les normes de sécurité en processus concrets, et aider les équipes à faire de la sécurité un réflexe au quotidien.",
@@ -194,7 +194,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "projects.title": "Proyectos de Data Science",
     "projects.pitch.phishing": "Un clasificador que detecta URLs maliciosas en el dataset PhiUSIIL — y una lección sobre fugas de datos.",
     "projects.pitch.socialMedia": "Predecir el impacto negativo en la salud mental a partir de los patrones de uso, y luego identificar quién está más en riesgo.",
-    "projects.pitch.marketing": "Predecir qué clientes bancarios contratarán un depósito a plazo — y convertir el modelo en una lista de llamadas que realmente convierte.",
+    "projects.pitch.marketing": "Detectar, en una campaña de telecomunicaciones, a qué clientes llamar primero: los que tienen más probabilidades de contratar.",
 
     "backpack.title": "¿Qué llevo en mi mochila?",
     "backpack.intro": "Una mezcla de herramientas de código, diseño y gestión de proyectos que he ido reuniendo con el tiempo — y que realmente uso para sacar el trabajo adelante.",
@@ -270,7 +270,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "projects.title": "数据科学项目",
     "projects.pitch.phishing": "一个在 PhiUSIIL 数据集上识别恶意网址的分类器——也是一堂关于数据泄漏的课。",
     "projects.pitch.socialMedia": "根据使用习惯预测对心理健康的负面影响，并识别出风险最高的人群。",
-    "projects.pitch.marketing": "预测哪些银行客户会办理定期存款——并把模型转化为真正有效的电话名单。",
+    "projects.pitch.marketing": "在电信营销活动中找出最值得优先致电的客户——也就是最有可能签约的那批人。",
 
     "backpack.title": "我的工具箱里有什么？",
     "backpack.intro": "这是我一路积累下来的代码、设计和项目管理工具——而且是真正在用的那些。",
