@@ -76,8 +76,8 @@ export const dsProjects: DsProject[] = [
       { name: "K-Means (segmentation)", metric: "Silhouette", value: "0.52" },
     ],
     keywords: ["Classification", "Segmentation", "Survey data", "Feature importance", "Storytelling"],
-    codeUrl: "#",
-    pdfUrl: "#",
+    codeUrl: "/projects/social-media-code.html",
+    pdfUrl: "/projects/social-media-report.pdf",
   },
   {
     id: "marketing",
