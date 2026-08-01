@@ -82,8 +82,8 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "recommendations.intro": "A couple of words from colleagues and managers — the kind of feedback that means more than any portfolio line.",
     "recommendations.hint": "View full recommendation on LinkedIn",
 
-    "digcta.eyebrow": "Say hello",
-    "digcta.title": "Think we would get along?",
+    "digcta.eyebrow": "Alizée Marchand",
+    "digcta.title": "Let’s meet and have a talk!",
     "digcta.sub": "I’m always up for a coffee, call or good iced coffee.",
 
     "footer.copyright": "© 2025 ALIZEE MARCHAND. All rights reserved.",
@@ -158,9 +158,10 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "recommendations.intro": "Quelques mots de collègues et de managers — le genre de retour qui compte plus que n'importe quelle ligne de portfolio.",
     "recommendations.hint": "Voir la recommandation complète sur LinkedIn",
 
-    "digcta.eyebrow": "Dites bonjour",
-    "digcta.title": "On s'entendrait bien, non ?",
-    "digcta.sub": "Je suis toujours partante pour un appel ou un bon café glacé…",
+    "digcta.eyebrow": "Alizée Marchand",
+    // Titre volontairement laissé en anglais, même en version française.
+    "digcta.title": "Let’s meet and have a talk!",
+    "digcta.sub": "Je suis toujours partante pour un appel ou un bon café glacé.",
 
     "footer.copyright": "© 2025 ALIZEE MARCHAND. Tous droits réservés.",
   },
@@ -234,9 +235,9 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "recommendations.intro": "Unas palabras de colegas y responsables — el tipo de comentario que vale más que cualquier línea de un portafolio.",
     "recommendations.hint": "Ver la recomendación completa en LinkedIn",
 
-    "digcta.eyebrow": "Saluda",
-    "digcta.title": "¿Nos llevaríamos bien?",
-    "digcta.sub": "Siempre estoy lista para una llamada o un buen café helado…",
+    "digcta.eyebrow": "Alizée Marchand",
+    "digcta.title": "Let’s meet and have a talk!",
+    "digcta.sub": "Siempre estoy lista para una llamada o un buen café helado.",
 
     "footer.copyright": "© 2025 ALIZEE MARCHAND. Todos los derechos reservados.",
   },
@@ -310,9 +311,9 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "recommendations.intro": "来自同事和上级的几句话——这种反馈，比任何作品集里的一行字都更有分量。",
     "recommendations.hint": "在领英查看完整推荐",
 
-    "digcta.eyebrow": "打个招呼",
-    "digcta.title": "我们应该会很合拍，对吧？",
-    "digcta.sub": "我随时乐意接个电话，或者喝杯冰咖啡聊聊……",
+    "digcta.eyebrow": "Alizée Marchand",
+    "digcta.title": "Let’s meet and have a talk!",
+    "digcta.sub": "我随时乐意接个电话，或者喝杯冰咖啡聊聊。",
 
     "footer.copyright": "© 2025 ALIZEE MARCHAND. 保留所有权利。",
   },
