@@ -51,6 +51,13 @@ const suns = Array.from({ length: 16 }, () => ({
 ---
 
 <section class="reco" id="recommendations">
+  <!-- Gros curseur soleil qui suit la souris (même principe que le curseur
+       "View ↗" de la section Portfolio : le curseur natif est masqué et
+       remplacé par cet élément, seul moyen de dépasser la limite de taille
+       des curseurs CSS). -->
+  <div class="reco-cursor" aria-hidden="true">
+    <img class="reco-cursor__sun" src="/assets/value-sun.svg" alt="" />
+  </div>
   <div class="reco__suns" id="reco-suns" aria-hidden="true">
     {suns.map((s) => (
       <img
@@ -194,6 +201,32 @@ const suns = Array.from({ length: 16 }, () => ({
     }, { threshold: 0.25 });
     io.observe(section);
   }
+
+  // Gros curseur soleil qui suit la souris dans la section.
+  const recoCursor = section?.querySelector(".reco-cursor");
+  const finePointer = window.matchMedia("(pointer: fine)").matches;
+  if (section && recoCursor && finePointer && !reduceMotion) {
+    let raf = 0, tx = 0, ty = 0;
+
+    section.addEventListener("mousemove", (e) => {
+      tx = e.clientX; ty = e.clientY;
+      if (!raf) {
+        raf = requestAnimationFrame(() => {
+          recoCursor.style.transform = `translate(${tx}px, ${ty}px)`;
+          raf = 0;
+        });
+      }
+    });
+
+    section.addEventListener("mouseenter", () => {
+      section.classList.add("cursor-on");
+      recoCursor.classList.add("is-on");
+    });
+    section.addEventListener("mouseleave", () => {
+      section.classList.remove("cursor-on");
+      recoCursor.classList.remove("is-on");
+    });
+  }
 </script>
 
 <style>
@@ -203,12 +236,32 @@ const suns = Array.from({ length: 16 }, () => ({
     padding-block: clamp(3.5rem, 7vw, 6rem);
     overflow: hidden;
   }
-  /* Curseur "soleil" amusant partout dans la section — même icône SVG que
-     la card "Authenticity" / la pluie de soleils (value-sun.svg), pas un emoji. */
-  .reco, .reco * {
-    cursor: url("data:image/svg+xml,%3Csvg%20preserveAspectRatio%3D%22none%22%20overflow%3D%22visible%22%20style%3D%22display%3A%20block%3B%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2080%2080%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20id%3D%22noun-sun-3607%201%22%20clip-path%3D%22url%28%23clip0_0_12%29%22%3E%3Cpath%20id%3D%22Vector%22%20d%3D%22M53.074%2040.2073C53.074%2047.798%2046.9323%2053.9207%2039.3533%2053.9207C31.7743%2053.9207%2025.6373%2047.7983%2025.6373%2040.2073C25.6373%2032.638%2031.7741%2026.492%2039.3533%2026.492C46.9326%2026.492%2053.074%2032.6376%2053.074%2040.2073Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_2%22%20d%3D%22M40.556%2077.1933C40.556%2077.7709%2040.0896%2078.2373%2039.5055%2078.2373H38.4549C37.8773%2078.2373%2037.4101%2077.7701%2037.4101%2077.1933L37.4104%2058.092C37.4104%2057.5144%2037.8776%2057.0472%2038.4552%2057.0472H39.5057C40.0888%2057.0472%2040.5563%2057.5152%2040.5563%2058.092L40.556%2077.1933Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_3%22%20d%3D%22M40.556%2021.9107C40.556%2022.4844%2040.0896%2022.9547%2039.5055%2022.9547H38.4549C37.8773%2022.9547%2037.4101%2022.4844%2037.4101%2021.9107L37.4104%202.79933C37.4104%202.23137%2037.8776%201.76187%2038.4552%201.76187H39.5057C40.0888%201.76187%2040.5563%202.23218%2040.5563%202.79933L40.556%2021.9107Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_4%22%20d%3D%22M1.044%2042.9367C0.461706%2042.9367%20-1.19209e-06%2042.4807%20-1.19209e-06%2041.8997V40.8517C-1.19209e-06%2040.2718%200.461719%2039.8077%201.044%2039.8077H20.152C20.7296%2039.8077%2021.1895%2040.2718%2021.1895%2040.8517V41.8997C21.1895%2042.4804%2020.7296%2042.9364%2020.152%2042.9364L1.044%2042.9367Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_5%22%20d%3D%22M10.3433%2017.1013C9.92562%2016.6933%209.92562%2016.0357%2010.3433%2015.6303L11.0689%2014.8782C11.4728%2014.4766%2012.1553%2014.4766%2012.5545%2014.8782L26.0612%2028.3902C26.4724%2028.8053%2026.4724%2029.4621%2026.0612%2029.8678L25.3299%2030.6103C24.9122%2031.016%2024.2612%2031.016%2023.8435%2030.6103L10.3433%2017.1013Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_6%22%20d%3D%22M12.972%2067.1933C12.5608%2067.6045%2011.8983%2067.6045%2011.4921%2067.1933L10.7553%2066.4509C10.3441%2066.0397%2010.3441%2065.3805%2010.7553%2064.9693L24.2673%2051.4627C24.672%2051.0515%2025.3299%2051.0515%2025.7418%2051.4569L26.4785%2052.2121C26.8778%2052.6179%2026.8778%2053.2754%2026.4785%2053.6793L12.972%2067.1933Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_7%22%20d%3D%22M78.9467%2041.7067C79.5196%2041.7067%2079.9972%2041.2356%2079.9972%2040.6499V39.6186C79.9972%2039.029%2079.5188%2038.5553%2078.9467%2038.5553L59.8387%2038.5556C59.2611%2038.5556%2058.7955%2039.0293%2058.7955%2039.6189V40.6501C58.7955%2041.2366%2059.2619%2041.7069%2059.8387%2041.7069L78.9467%2041.7067Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_8%22%20d%3D%22M69.6533%2015.858C70.0661%2015.446%2070.0661%2014.7893%2069.6533%2014.3739L68.9174%2013.6337C68.5046%2013.229%2067.8429%2013.229%2067.4359%2013.6337L53.9239%2027.1471C53.5173%2027.5528%2053.5173%2028.2096%2053.9239%2028.6301L54.6663%2029.3614C55.0736%2029.7726%2055.7359%2029.7726%2056.1528%2029.3614L69.6533%2015.858Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3Cpath%20id%3D%22Vector_9%22%20d%3D%22M67.02%2065.9533C67.4369%2066.3653%2068.0945%2066.3653%2068.5057%2065.9533L69.2431%2065.2117C69.6496%2064.7981%2069.6496%2064.1349%2069.2431%2063.7125L55.7378%2050.2171C55.3131%2049.8059%2054.6571%2049.8059%2054.2571%2050.2106L53.5146%2050.9612C53.1081%2051.3651%2053.1081%2052.0299%2053.5146%2052.4476L67.02%2065.9533Z%22%20fill%3D%22%23FCFF40%22%2F%3E%3C%2Fg%3E%3Cdefs%3E%3CclipPath%20id%3D%22clip0_0_12%22%3E%3Crect%20width%3D%2280%22%20height%3D%2280%22%20fill%3D%22white%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3C%2Fsvg%3E") 20 20, pointer;
-  }
   .reco > .container { position: relative; z-index: 1; }
+
+  /* ---------- Gros curseur soleil (même mécanique que .pf-cursor du Portfolio) ---------- */
+  .reco-cursor {
+    position: fixed; top: 0; left: 0; z-index: 90;
+    pointer-events: none; will-change: transform;
+  }
+  .reco-cursor__sun {
+    display: block;
+    width: 112px; height: 112px;   /* même diamètre que le rond "View ↗" */
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2) rotate(-40deg);
+    transition: opacity .3s ease, transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  .reco-cursor.is-on .reco-cursor__sun {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  /* Le curseur natif est masqué uniquement quand le soleil prend le relais. */
+  @media (pointer: fine) {
+    .reco.cursor-on,
+    .reco.cursor-on * { cursor: none; }
+  }
+  /* Pas de curseur personnalisé au doigt ni en mouvement réduit. */
+  @media (max-width: 768px) { .reco-cursor { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .reco-cursor { display: none; } }
 
   /* Pluie de soleils décorative — rejouée à chaque entrée dans la section */
   .reco__suns {
