@@ -2,12 +2,12 @@
 import Arrow from "./Arrow.astro";
 
 const cards = [
-  { logo: "logo-uts.png",    logoH: 80, school: "UTS", degree: "Master of Data Science and Innovation", year: "2026-2027" },
-  { logo: "logo-ipag.png",   logoH: 80, school: "IPAG Business School", degree: "Master in Corporate Finance", year: "2024-2026" },
-  { logo: "logo-cesine.png", logoH: 40, school: "CESINE", degree: "Double Bachelor (Honours), International Business", year: "2023-2024" },
-  { logo: "logo-lmu.png",    logoH: 50, school: "London Metropolitan University", degree: "Double Bachelor (Honours), International Business", year: "2023-2024" },
-  { logo: "logo-udemy.png",  logoH: 80, school: "Udemy", degree: "The Complete Python Pro Bootcamp", year: "2025" },
-  { logo: "logo-udemy.png",  logoH: 80, school: "Udemy", degree: "Advanced UX/UI Design", year: "2025" },
+  { logo: "logo-uts.webp",    logoH: 80, school: "UTS", degree: "Master of Data Science and Innovation", year: "2026-2027" },
+  { logo: "logo-ipag.webp",   logoH: 80, school: "IPAG Business School", degree: "Master in Corporate Finance", year: "2024-2026" },
+  { logo: "logo-cesine.webp", logoH: 40, school: "CESINE", degree: "Double Bachelor (Honours), International Business", year: "2023-2024" },
+  { logo: "logo-lmu.webp",    logoH: 50, school: "London Metropolitan University", degree: "Double Bachelor (Honours), International Business", year: "2023-2024" },
+  { logo: "logo-udemy.webp",  logoH: 80, school: "Udemy", degree: "The Complete Python Pro Bootcamp", year: "2025" },
+  { logo: "logo-udemy.webp",  logoH: 80, school: "Udemy", degree: "Advanced UX/UI Design", year: "2025" },
 ];
 ---
 
@@ -24,7 +24,7 @@ const cards = [
     <ul class="diplomas__grid">
       {cards.map((c) => (
         <li class="dcard reveal">
-          <img class="dcard__medal" src="/assets/medal.png" alt="" aria-hidden="true" width="80" height="77" />
+          <img class="dcard__medal" src="/assets/medal.webp" alt="" aria-hidden="true" width="80" height="77" />
           <img class="dcard__logo" src={`/assets/${c.logo}`} alt={`${c.school} logo`} style={`height:${c.logoH}px`} />
           <div class="dcard__text">
             <p class="dcard__school">{c.school}</p>

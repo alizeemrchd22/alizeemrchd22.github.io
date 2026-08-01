@@ -40,14 +40,14 @@ const {
     <div class="dcta__panel reveal">
       <!-- fond : clippé par le rectangle -->
       <span class="dcta__bg" aria-hidden="true">
-        <img src="/assets/cta-bg.jpeg" alt="" loading="lazy" />
+        <img src="/assets/cta-bg.webp" alt="" loading="lazy" />
         <span class="dcta__veil"></span>
         <span class="dcta__glow"></span>
       </span>
 
       <!-- découpe : volontairement hors du fond clippé, elle sort du rectangle -->
       {cutout && (
-        <img class="dcta__cutout" src="/assets/workethic-cutout.png" alt="" aria-hidden="true" loading="lazy" width="1000" height="1369" />
+        <img class="dcta__cutout" src="/assets/workethic-cutout.webp" alt="" aria-hidden="true" loading="lazy" width="1000" height="1369" />
       )}
 
       <div class:list={["dcta__inner", { "dcta__inner--full": !cutout }]}>

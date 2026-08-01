@@ -77,13 +77,13 @@ export const projects: Record<string, Project> = {
       "Saphes is a software engineering company specialised in building secure, scalable and tailor-made digital solutions. From enterprise CMS platforms to e-commerce ecosystems and workflow automation.",
     date: "July 2025",
     url: "https://saphes.io/fr/",
-    logo: "/assets/projects/saphes-logo.png",
-    screenshot: "/assets/projects/saphes-screenshot.png",
+    logo: "/assets/projects/saphes-logo.webp",
+    screenshot: "/assets/projects/saphes-screenshot.webp",
     gallery: [
-      { img: "saphes-phones.png", alt: "Version mobile du site Saphes — écrans empilés", side: "left", texts: [saphesText1] },
-      { img: "saphes-laptop.png", alt: "Page équipe du site Saphes sur MacBook", side: "right", texts: [saphesText2] },
-      { img: "saphes-board.png", alt: "Sections Expertise et Programming Languages du site Saphes", full: true },
-      { img: "saphes-ipad.png", alt: "Site Saphes sur iPad", side: "right", texts: [saphesText3, saphesText4] },
+      { img: "saphes-phones.webp", alt: "Version mobile du site Saphes — écrans empilés", side: "left", texts: [saphesText1] },
+      { img: "saphes-laptop.webp", alt: "Page équipe du site Saphes sur MacBook", side: "right", texts: [saphesText2] },
+      { img: "saphes-board.webp", alt: "Sections Expertise et Programming Languages du site Saphes", full: true },
+      { img: "saphes-ipad.webp", alt: "Site Saphes sur iPad", side: "right", texts: [saphesText3, saphesText4] },
     ],
   },
   dieteticienne: {
@@ -92,28 +92,28 @@ export const projects: Record<string, Project> = {
       "Fleur is a registered dietitian specialising in Irritable Bowel Syndrome (IBS) and a content creator with a community of over 100,000 people on Instagram. The project involved designing a complete visual identity and a scalable website that reflects her expertise while creating a warm, trustworthy experience across every digital touchpoint.",
     date: "August 2026",
     url: "/about", // en attendant le vrai site, renvoie vers l'expérience pro
-    screenshot: "/assets/projects/dieteticienne-screenshot.png",
+    screenshot: "/assets/projects/dieteticienne-screenshot.webp",
     gallery: [
-      { img: "diet-phones.png", alt: "Version mobile du site Diététicienne du SII — écrans empilés", side: "left", texts: [dieteticienneText1] },
-      { img: "diet-laptop.png", alt: "Page d’accueil Diététicienne du SII sur MacBook", side: "right", texts: [dieteticienneText2] },
-      { img: "diet-board.png", alt: "Section PoopCast du site Diététicienne du SII", full: true },
-      { img: "diet-laptop2.png", alt: "Protocole FODMAP sur MacBook", side: "right", texts: [dieteticienneText3] },
+      { img: "diet-phones.webp", alt: "Version mobile du site Diététicienne du SII — écrans empilés", side: "left", texts: [dieteticienneText1] },
+      { img: "diet-laptop.webp", alt: "Page d’accueil Diététicienne du SII sur MacBook", side: "right", texts: [dieteticienneText2] },
+      { img: "diet-board.webp", alt: "Section PoopCast du site Diététicienne du SII", full: true },
+      { img: "diet-laptop2.webp", alt: "Protocole FODMAP sur MacBook", side: "right", texts: [dieteticienneText3] },
       // Charte graphique complète — carrousel des différentes pages du guide de style.
       {
         full: true,
         alt: "Pages de la charte graphique — typographie, palette, dégradés, éléments graphiques, moodboard",
         imgs: [
-          "diet-brand-typography.png",
-          "diet-brand-headlines.png",
-          "diet-brand-shades.png",
-          "diet-brand-colors.png",
-          "diet-brand-blur.png",
-          "diet-brand-elements.png",
-          "diet-brand-gradients.png",
-          "diet-brand-moodboard.png",
+          "diet-brand-typography.webp",
+          "diet-brand-headlines.webp",
+          "diet-brand-shades.webp",
+          "diet-brand-colors.webp",
+          "diet-brand-blur.webp",
+          "diet-brand-elements.webp",
+          "diet-brand-gradients.webp",
+          "diet-brand-moodboard.webp",
         ],
       },
-      { img: "diet-laptop3.png", alt: "Section vidéo du site sur MacBook", side: "right", texts: [dieteticienneText4] },
+      { img: "diet-laptop3.webp", alt: "Section vidéo du site sur MacBook", side: "right", texts: [dieteticienneText4] },
     ],
   },
   peftrust: {
@@ -122,7 +122,7 @@ export const projects: Record<string, Project> = {
       "PEFtrust is a fashion-tech SaaS company bringing Life Cycle Assessment (LCA) intelligence to fashion and lifestyle brands — from a single SKU to entire collections. I led the website redesign and partial rebrand as Project Manager, my first end-to-end ownership of a project.",
     date: "2022-2023",
     url: "https://www.peftrust.com",
-    logo: "/assets/exp-peftrust.png",
+    logo: "/assets/exp-peftrust.webp",
     secondaryCta: { label: "See my Professional Experience", href: "/about" },
     // Pas de grand aperçu pour ce projet — une section "brief" fait la
     // transition entre le hero et la galerie à la place.
@@ -131,11 +131,11 @@ export const projects: Record<string, Project> = {
       text: "PEFtrust helps fashion and lifestyle brands run Life Cycle Assessments (LCA) — from a single SKU to entire collections — and turn environmental data into carbon accounting, CSRD reporting and sourcing decisions. The website needed to become the first step of the sales funnel, translate that technical depth into a credible story for prospects, and support a partial rebrand — all within a fixed design budget and PEFtrust's existing brand guidelines.",
     },
     gallery: [
-      { img: "peftrust-hero.png", alt: "Page d’accueil du site PEFtrust — « From SKU to Strategy »", side: "left", texts: [peftrustText1] },
-      { img: "peftrust-lifecycle.png", alt: "Section Lifecycle Assessment du site PEFtrust", side: "right", texts: [peftrustText2] },
+      { img: "peftrust-hero.webp", alt: "Page d’accueil du site PEFtrust — « From SKU to Strategy »", side: "left", texts: [peftrustText1] },
+      { img: "peftrust-lifecycle.webp", alt: "Section Lifecycle Assessment du site PEFtrust", side: "right", texts: [peftrustText2] },
       // Les 2 états du dashboard ("Data capture" / "Analyze & Share") en mini-carrousel.
-      { imgs: ["peftrust-dashboard-1.png", "peftrust-dashboard-2.png"], alt: "Dashboard produit — Carbon Accounting et CSRD", side: "left", texts: [peftrustText3] },
-      { img: "peftrust-smarter.png", alt: "Section « Smarter Sustainability » du site PEFtrust", side: "right", texts: [peftrustText4] },
+      { imgs: ["peftrust-dashboard-1.webp", "peftrust-dashboard-2.webp"], alt: "Dashboard produit — Carbon Accounting et CSRD", side: "left", texts: [peftrustText3] },
+      { img: "peftrust-smarter.webp", alt: "Section « Smarter Sustainability » du site PEFtrust", side: "right", texts: [peftrustText4] },
     ],
   },
 };
