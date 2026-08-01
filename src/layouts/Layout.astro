@@ -28,6 +28,12 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
 
+    <!-- Favicon : icône soleil du site. Le SVG est utilisé par les navigateurs
+         modernes, le .ico sert de repli, le PNG pour l'écran d'accueil iOS. -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
