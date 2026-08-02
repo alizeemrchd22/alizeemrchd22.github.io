@@ -17,9 +17,23 @@ const ctas = [
   { label: "Visit Website", href: project.url },
   ...(project.secondaryCta ? [project.secondaryCta] : []),
 ];
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: project.title,
+  description: project.subtitle,
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  creator: { "@id": new URL("/#person", Astro.site).href },
+  ...(project.date ? { dateCreated: project.date } : {}),
+};
 ---
 
-<Layout title={`${project.title} — ${site.name}`} description={project.subtitle}>
+<Layout
+  title={`${project.title} — ${site.name}`}
+  description={project.subtitle}
+  structuredData={structuredData}
+>
 
   <main id="main">
     <PageHero

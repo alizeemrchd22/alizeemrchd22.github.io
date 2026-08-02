@@ -12,7 +12,7 @@ export const site = {
   tagline: "I turn raw data into clear, decision-ready insights — bridging data science, product and design.",
   // Petite phrase perso, plus légère (optionnelle).
   motto: "Smiling costs nothing and brings everything.",
-  location: "Paris, France · open to remote",
+  location: "Sydney, Australia · open to remote",
   email: "alizee.mrchd@icloud.com", // ← mets l'adresse que tu veux afficher publiquement
   // Affiché tel quel sur les boutons de contact ; phoneHref sert au lien tel:
   phone: "+61 423 477 305",

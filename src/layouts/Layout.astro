@@ -11,12 +11,56 @@ interface Props {
    *  branché (voir src/i18n/). Sert au sélecteur de langue à savoir s'il
    *  doit retomber sur l'anglais par défaut sur les pages pas encore traduites. */
   translated?: boolean;
+  /** Schéma JSON-LD supplémentaire propre à la page (ex. un projet). */
+  structuredData?: Record<string, unknown>;
 }
 const {
   title = `${site.name} — ${site.role}`,
   description = site.tagline,
   translated = false,
+  structuredData,
 } = Astro.props;
+
+// URLs absolues : indispensables pour les aperçus de partage et le canonique.
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL("/og-image.jpg", Astro.site).href;
+
+// Identité déclarée une seule fois, référencée par les autres schémas via @id.
+const personId = new URL("/#person", Astro.site).href;
+const jsonLd: Record<string, unknown>[] = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": personId,
+    name: site.name,
+    url: new URL("/", Astro.site).href,
+    image: ogImage,
+    jobTitle: site.role,
+    description: site.tagline,
+    email: `mailto:${site.email}`,
+    telephone: site.phone,
+    address: { "@type": "PostalAddress", addressLocality: "Sydney", addressCountry: "AU" },
+    sameAs: site.socials.map((s) => s.href),
+    knowsLanguage: ["fr", "en", "es"],
+    alumniOf: [
+      { "@type": "CollegeOrUniversity", name: "University of Technology Sydney" },
+      { "@type": "CollegeOrUniversity", name: "IPAG Business School" },
+    ],
+    knowsAbout: [
+      "Data Science", "Machine Learning", "Python", "SQL",
+      "UX/UI Design", "Project Management",
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    url: new URL("/", Astro.site).href,
+    name: `${site.name} — Portfolio`,
+    inLanguage: "en",
+    author: { "@id": personId },
+  },
+  ...(structuredData ? [structuredData] : []),
+];
 ---
 
 <!doctype html>
@@ -27,6 +71,9 @@ const {
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#191919" />
 
     <!-- Favicon : icône soleil du site. Le SVG est utilisé par les navigateurs
          modernes, le .ico sert de repli, le PNG pour l'écran d'accueil iOS. -->
@@ -34,10 +81,28 @@ const {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- Open Graph -->
+    <!-- Open Graph (LinkedIn, Facebook, WhatsApp, Slack…) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — ${site.role}`} />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={`${site.name} — ${site.role}`} />
+
+    <!-- Données structurées (schema.org) -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <!-- Police Kantumruy Pro (identique à la maquette) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
