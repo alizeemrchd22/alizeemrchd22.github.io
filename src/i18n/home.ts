@@ -40,12 +40,12 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "values.adventurous.text": "I embrace new challenges with curiosity and determination. Whether it's a new industry, technology or responsibility, I'm always eager to learn, adapt and stay ahead in a fast-changing world.",
 
     "projects.title": "Data Science Projects",
-    "projects.pitch.phishing": "A classifier that flags malicious URLs on the PhiUSIIL dataset — and a lesson in spotting data leakage.",
+    "projects.pitch.phishing": "A classifier that flags malicious URLs on the PhiUSIIL dataset, and a lesson in spotting data leakage.",
     "projects.pitch.socialMedia": "Predicting negative mental-health impact from usage patterns, then segmenting who is most at risk.",
     "projects.pitch.marketing": "Ranking prospects in a telecom campaign so the calls go to the people most likely to subscribe.",
 
     "backpack.title": "What's in my backpack ?",
-    "backpack.intro": "A mix of code, design and project tools I've picked up along the way — and actually use to get things done.",
+    "backpack.intro": "A mix of code, design and project tools I've picked up along the way, and actually use to get things done.",
     "backpack.pm": "Project Management",
     "backpack.ds": "Data Science",
     "backpack.design": "Design",
@@ -53,17 +53,17 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "experience.title": "So, what I've been up to ?",
     "experience.intro": "A mix of projects, challenges and roles that took me across industries. I've explored different worlds, picked up new skills, and learned how to connect the dots between business, tech and design.",
     "experience.ctaSeeFull": "See full experience",
-    "experience.saphes.desc": "Driving product and design work end-to-end — from user research and wireframes to shipped interfaces and project coordination.",
+    "experience.saphes.desc": "Driving product and design work end-to-end: from user research and wireframes to shipped interfaces and project coordination.",
     "experience.peftrust.desc": "Leading ISO 27001 certification programme, translating security standards into practical processes, and helping teams make security part of their everyday work.",
     "experience.maersk.desc": "Mapping and improving operational processes to make day-to-day logistics workflows clearer and more efficient.",
     "experience.ijc.desc": "Contributing to the design and build of a mobile application, from concept through to functional features.",
 
     "diplomas.title": "Diplomas & Certifications",
-    "diplomas.intro": "From international business and corporate finance to data science, my academic journey has taken me across countries — and across disciplines.",
+    "diplomas.intro": "From international business and corporate finance to data science, my academic journey has taken me across countries, and across disciplines.",
     "diplomas.cta": "My Data Science Project",
 
     "languages.title": "3 Fluent Language",
-    "languages.intro": "France, Spain, Panama, Australia — and quite a few places in between. Living and working across countries has shaped the way I communicate, adapt and approach new environments.",
+    "languages.intro": "France, Spain, Panama, Australia, and quite a few places in between. Living and working across countries has shaped the way I communicate, adapt and approach new environments.",
 
     "workethic.title": "My work Ethic",
     "workethic.subtitle": "I believe the best work is built on trust, curiosity and shared purpose.",
@@ -79,7 +79,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "workethic.quality.desc": "If something is worth doing, it's worth doing well. I strive to create work that is thoughtful, useful and built to last.",
 
     "recommendations.title": "Straight from the people I've worked with",
-    "recommendations.intro": "A couple of words from colleagues and managers — the kind of feedback that means more than any portfolio line.",
+    "recommendations.intro": "A couple of words from colleagues and managers, the kind of feedback that means more than any portfolio line.",
     "recommendations.hint": "View full recommendation on LinkedIn",
 
     "digcta.eyebrow": "Alizée Marchand",
@@ -118,10 +118,10 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "projects.title": "Projets Data Science",
     "projects.pitch.phishing": "Détecter automatiquement les URL malveillantes, en déjouant les variables piégées qui gonflent artificiellement les performances du modèle.",
     "projects.pitch.socialMedia": "Mesurer l'effet des réseaux sociaux sur la santé mentale, et identifier les facteurs de risque les plus déterminants.",
-    "projects.pitch.marketing": "Repérer, dans une campagne télécom, les clients à contacter en priorité — ceux qui ont le plus de chances de souscrire.",
+    "projects.pitch.marketing": "Repérer, dans une campagne télécom, les clients à contacter en priorité : ceux qui ont le plus de chances de souscrire.",
 
     "backpack.title": "Mes compétences couteau suisse",
-    "backpack.intro": "Data, design et gestion de projet : les outils que j'ai appris à manier au fil des projets — et dont je me sers vraiment au quotidien.",
+    "backpack.intro": "Data, design et gestion de projet : les outils que j'ai appris à manier au fil des projets, et dont je me sers vraiment au quotidien.",
     "backpack.pm": "Gestion de projet",
     "backpack.ds": "Data Science",
     "backpack.design": "Design",
@@ -129,17 +129,17 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "experience.title": "Mes expériences professionnelles",
     "experience.intro": "Différents postes et différents rôles, qui m'ont fait traverser plusieurs secteurs et plusieurs pays. J'y ai appris de nouvelles compétences, et surtout à relier le business, la tech et le design.",
     "experience.ctaSeeFull": "Voir toute l'expérience",
-    "experience.saphes.desc": "Piloter le produit et le design de bout en bout — de la recherche utilisateur aux wireframes, jusqu'aux interfaces livrées et à la coordination de projet.",
+    "experience.saphes.desc": "Piloter le produit et le design de bout en bout : de la recherche utilisateur aux wireframes, jusqu'aux interfaces livrées et à la coordination de projet.",
     "experience.peftrust.desc": "Diriger le programme de certification ISO 27001, traduire les normes de sécurité en processus concrets, et aider les équipes à faire de la sécurité un réflexe au quotidien.",
     "experience.maersk.desc": "Cartographier et améliorer les processus opérationnels pour rendre les flux logistiques quotidiens plus clairs et plus efficaces.",
     "experience.ijc.desc": "Contribuer à la conception et au développement d'une application mobile, du concept jusqu'aux fonctionnalités livrées.",
 
     "diplomas.title": "Diplômes & Certifications",
-    "diplomas.intro": "Du commerce international et de la finance d'entreprise à la data science, mon parcours académique m'a fait traverser plusieurs pays — et plusieurs disciplines.",
+    "diplomas.intro": "Du commerce international et de la finance d'entreprise à la data science, mon parcours académique m'a fait traverser plusieurs pays, et plusieurs disciplines.",
     "diplomas.cta": "Mon projet Data Science",
 
     "languages.title": "3 langues courantes",
-    "languages.intro": "France, Espagne, Panama, Australie — et quelques escales entre les deux. Vivre et travailler dans différents pays a façonné ma façon de communiquer, de m'adapter et d'aborder de nouveaux environnements.",
+    "languages.intro": "France, Espagne, Panama, Australie, et quelques escales entre les deux. Vivre et travailler dans différents pays a façonné ma façon de communiquer, de m'adapter et d'aborder de nouveaux environnements.",
 
     "workethic.title": "Mon éthique de travail",
     "workethic.subtitle": "Je crois que le meilleur travail se construit sur la confiance, la curiosité et un objectif partagé.",
@@ -155,7 +155,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "workethic.quality.desc": "Si quelque chose mérite d'être fait, il mérite d'être bien fait. Je m'efforce de produire un travail réfléchi, utile et durable.",
 
     "recommendations.title": "Directement de la part de ceux avec qui j'ai travaillé",
-    "recommendations.intro": "Quelques mots de collègues et de managers — le genre de retour qui compte plus que n'importe quelle ligne de portfolio.",
+    "recommendations.intro": "Quelques mots de collègues et de managers, le genre de retour qui compte plus que n'importe quelle ligne de portfolio.",
     "recommendations.hint": "Voir la recommandation complète sur LinkedIn",
 
     "digcta.eyebrow": "Alizée Marchand",
@@ -193,12 +193,12 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "values.adventurous.text": "Afronto cada nuevo reto con curiosidad y determinación. Ya sea una nueva industria, tecnología o responsabilidad, siempre estoy dispuesta a aprender, adaptarme y mantenerme a la vanguardia en un mundo que cambia rápido.",
 
     "projects.title": "Proyectos de Data Science",
-    "projects.pitch.phishing": "Un clasificador que detecta URLs maliciosas en el dataset PhiUSIIL — y una lección sobre fugas de datos.",
+    "projects.pitch.phishing": "Un clasificador que detecta URLs maliciosas en el dataset PhiUSIIL, y una lección sobre fugas de datos.",
     "projects.pitch.socialMedia": "Predecir el impacto negativo en la salud mental a partir de los patrones de uso, y luego identificar quién está más en riesgo.",
     "projects.pitch.marketing": "Detectar, en una campaña de telecomunicaciones, a qué clientes llamar primero: los que tienen más probabilidades de contratar.",
 
     "backpack.title": "¿Qué llevo en mi mochila?",
-    "backpack.intro": "Una mezcla de herramientas de código, diseño y gestión de proyectos que he ido reuniendo con el tiempo — y que realmente uso para sacar el trabajo adelante.",
+    "backpack.intro": "Una mezcla de herramientas de código, diseño y gestión de proyectos que he ido reuniendo con el tiempo, y que realmente uso para sacar el trabajo adelante.",
     "backpack.pm": "Gestión de proyectos",
     "backpack.ds": "Data Science",
     "backpack.design": "Diseño",
@@ -206,17 +206,17 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "experience.title": "Entonces, ¿en qué he estado?",
     "experience.intro": "Una mezcla de proyectos, retos y roles que me han llevado por distintas industrias. He explorado mundos diferentes, adquirido nuevas habilidades y aprendido a conectar negocio, tecnología y diseño.",
     "experience.ctaSeeFull": "Ver toda la experiencia",
-    "experience.saphes.desc": "Liderando el trabajo de producto y diseño de principio a fin — desde la investigación de usuarios y los wireframes hasta las interfaces entregadas y la coordinación del proyecto.",
+    "experience.saphes.desc": "Liderando el trabajo de producto y diseño de principio a fin: desde la investigación de usuarios y los wireframes hasta las interfaces entregadas y la coordinación del proyecto.",
     "experience.peftrust.desc": "Liderando el programa de certificación ISO 27001, traduciendo estándares de seguridad en procesos prácticos, y ayudando a los equipos a hacer de la seguridad parte de su día a día.",
     "experience.maersk.desc": "Mapeando y mejorando procesos operativos para que los flujos logísticos diarios sean más claros y eficientes.",
     "experience.ijc.desc": "Contribuyendo al diseño y desarrollo de una aplicación móvil, desde el concepto hasta funcionalidades reales.",
 
     "diplomas.title": "Diplomas y Certificaciones",
-    "diplomas.intro": "Desde los negocios internacionales y las finanzas corporativas hasta la ciencia de datos, mi trayectoria académica me ha llevado por distintos países — y distintas disciplinas.",
+    "diplomas.intro": "Desde los negocios internacionales y las finanzas corporativas hasta la ciencia de datos, mi trayectoria académica me ha llevado por distintos países, y distintas disciplinas.",
     "diplomas.cta": "Mi proyecto de Data Science",
 
     "languages.title": "3 idiomas con fluidez",
-    "languages.intro": "Francia, España, Panamá, Australia — y varias paradas entremedias. Vivir y trabajar en distintos países ha moldeado mi forma de comunicarme, adaptarme y afrontar nuevos entornos.",
+    "languages.intro": "Francia, España, Panamá, Australia, y varias paradas entremedias. Vivir y trabajar en distintos países ha moldeado mi forma de comunicarme, adaptarme y afrontar nuevos entornos.",
 
     "workethic.title": "Mi ética de trabajo",
     "workethic.subtitle": "Creo que el mejor trabajo se construye sobre la confianza, la curiosidad y un propósito compartido.",
@@ -232,7 +232,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "workethic.quality.desc": "Si algo merece hacerse, merece hacerse bien. Busco crear un trabajo reflexivo, útil y duradero.",
 
     "recommendations.title": "Directamente de quienes han trabajado conmigo",
-    "recommendations.intro": "Unas palabras de colegas y responsables — el tipo de comentario que vale más que cualquier línea de un portafolio.",
+    "recommendations.intro": "Unas palabras de colegas y responsables, el tipo de comentario que vale más que cualquier línea de un portafolio.",
     "recommendations.hint": "Ver la recomendación completa en LinkedIn",
 
     "digcta.eyebrow": "Alizée Marchand",
@@ -269,12 +269,12 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "values.adventurous.text": "我以好奇心和决心迎接每一个新挑战。无论是新的行业、新技术还是新的责任，我都乐于学习、适应，并在快速变化的世界中保持领先。",
 
     "projects.title": "数据科学项目",
-    "projects.pitch.phishing": "一个在 PhiUSIIL 数据集上识别恶意网址的分类器——也是一堂关于数据泄漏的课。",
+    "projects.pitch.phishing": "一个在 PhiUSIIL 数据集上识别恶意网址的分类器，也是一堂关于数据泄漏的课。",
     "projects.pitch.socialMedia": "根据使用习惯预测对心理健康的负面影响，并识别出风险最高的人群。",
-    "projects.pitch.marketing": "在电信营销活动中找出最值得优先致电的客户——也就是最有可能签约的那批人。",
+    "projects.pitch.marketing": "在电信营销活动中找出最值得优先致电的客户，也就是最有可能签约的那批人。",
 
     "backpack.title": "我的工具箱里有什么？",
-    "backpack.intro": "这是我一路积累下来的代码、设计和项目管理工具——而且是真正在用的那些。",
+    "backpack.intro": "这是我一路积累下来的代码、设计和项目管理工具，而且是真正在用的那些。",
     "backpack.pm": "项目管理",
     "backpack.ds": "数据科学",
     "backpack.design": "设计",
@@ -282,17 +282,17 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "experience.title": "那么，我最近都在做什么？",
     "experience.intro": "一系列跨越不同行业的项目、挑战和角色。我探索了不同的领域，学到了新技能，也学会了如何将商业、技术与设计联系起来。",
     "experience.ctaSeeFull": "查看完整经历",
-    "experience.saphes.desc": "全流程主导产品与设计工作——从用户调研、线框图到最终交付的界面与项目协调。",
+    "experience.saphes.desc": "全流程主导产品与设计工作：从用户调研、线框图到最终交付的界面与项目协调。",
     "experience.peftrust.desc": "主导 ISO 27001 认证项目，将安全标准转化为可落地的流程，帮助团队把安全融入日常工作。",
     "experience.maersk.desc": "梳理并优化运营流程，让日常物流工作更清晰、更高效。",
     "experience.ijc.desc": "参与一款移动应用的设计与开发，从概念构思到功能落地。",
 
     "diplomas.title": "学历与认证",
-    "diplomas.intro": "从国际商务、企业金融到数据科学，我的求学之路跨越了不同国家——也跨越了不同学科。",
+    "diplomas.intro": "从国际商务、企业金融到数据科学，我的求学之路跨越了不同国家，也跨越了不同学科。",
     "diplomas.cta": "我的数据科学项目",
 
     "languages.title": "精通3种语言",
-    "languages.intro": "法国、西班牙、巴拿马、澳大利亚——中间还经停了不少地方。在不同国家生活和工作，塑造了我沟通、适应和面对新环境的方式。",
+    "languages.intro": "法国、西班牙、巴拿马、澳大利亚，中间还经停了不少地方。在不同国家生活和工作，塑造了我沟通、适应和面对新环境的方式。",
 
     "workethic.title": "我的工作理念",
     "workethic.subtitle": "我相信最好的工作建立在信任、好奇心和共同目标之上。",
@@ -308,7 +308,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "workethic.quality.desc": "值得做的事，就值得做好。我努力让每一份工作都经得起推敲、切实有用、经久耐用。",
 
     "recommendations.title": "来自共事伙伴的真实评价",
-    "recommendations.intro": "来自同事和上级的几句话——这种反馈，比任何作品集里的一行字都更有分量。",
+    "recommendations.intro": "来自同事和上级的几句话，这种反馈，比任何作品集里的一行字都更有分量。",
     "recommendations.hint": "在领英查看完整推荐",
 
     "digcta.eyebrow": "Alizée Marchand",

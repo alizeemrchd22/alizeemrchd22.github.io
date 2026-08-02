@@ -9,7 +9,7 @@ export const site = {
   // Ton positionnement pro (affiché en gros dans le Hero). ← confirme / ajuste
   role: "Data Scientist",
   // Pitch en une phrase (le cœur de ta proposition de valeur). ← ajuste à ta voix
-  tagline: "I turn raw data into clear, decision-ready insights — bridging data science, product and design.",
+  tagline: "I turn raw data into clear, decision-ready insights, bridging data science, product and design.",
   // Petite phrase perso, plus légère (optionnelle).
   motto: "Smiling costs nothing and brings everything.",
   location: "Sydney, Australia · open to remote",
@@ -76,7 +76,7 @@ export const projects = [
 // --- Toolkit ("What's in my backpack?") ---
 export const toolkit = {
   intro:
-    "A mix of code, design and project tools I’ve picked up along the way — and actually use to get things done.",
+    "A mix of code, design and project tools I’ve picked up along the way, and actually use to get things done.",
   groups: [
     { label: "Data Science", items: ["Python", "SQL", "Data Visualization", "Exploratory Data Analysis (EDA)", "Statistical Analysis", "Feature Engineering", "Scikit-learn", "Pandas", "NumPy", "Prompt Engineering"] },
     { label: "Project Management", items: ["Agile", "Scrum", "Jira", "Sprint Planning", "Backlog Management", "Functional Specifications", "Client Workshops", "Testing", "Framework Training"] },
@@ -87,10 +87,10 @@ export const toolkit = {
 // --- Diplômes & certifications ---
 export const education = {
   intro:
-    "From international business and corporate finance to data science, my academic journey has taken me across countries — and across disciplines.",
+    "From international business and corporate finance to data science, my academic journey has taken me across countries, and across disciplines.",
   items: [
-    { school: "IPAG Business School", degree: "PGE Master — Corporate Finance", years: "2020-2025" }, // À COMPLÉTER : dates exactes
-    { school: "UTS (Sydney)", degree: "Master — Data & Innovation", years: "2025-2027" },            // À COMPLÉTER
+    { school: "IPAG Business School", degree: "PGE Master, Corporate Finance", years: "2020-2025" }, // À COMPLÉTER : dates exactes
+    { school: "UTS (Sydney)", degree: "Master, Data & Innovation", years: "2025-2027" },            // À COMPLÉTER
     { school: "LMU (Munich)", degree: "Bachelor of Honours", years: "2023-2024" },                    // À COMPLÉTER
   ],
 };
@@ -99,7 +99,7 @@ export const education = {
 export const geography = {
   title: "At home, almost everywhere",
   text:
-    "France, Spain, Panama, Australia — and quite a few places in between. Living and working across countries has shaped the way I communicate, adapt and approach new environments.",
+    "France, Spain, Panama, Australia, and quite a few places in between. Living and working across countries has shaped the way I communicate, adapt and approach new environments.",
 };
 
 // --- Langues ---

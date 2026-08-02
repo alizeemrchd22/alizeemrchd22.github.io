@@ -19,7 +19,7 @@ const slides = [
   {
     initials: "PW",
     name: "Paul Weinsberg",
-    role: "Web Architect — Developer & DevOps · Performance & Reliability as key metrics",
+    role: "Web Architect, Developer & DevOps · Performance & Reliability as key metrics",
     pull: "In short, she is a trustable and valuable collaborator who can elevate any team with her dynamism and collaborative mindset.",
   },
   {
@@ -31,7 +31,7 @@ const slides = [
   {
     initials: "PW",
     name: "Paul Weinsberg",
-    role: "Web Architect — Developer & DevOps · Performance & Reliability as key metrics",
+    role: "Web Architect, Developer & DevOps · Performance & Reliability as key metrics",
     pull: "Her enthusiasm is infectious, and her interpersonal strengths foster open, effective communication within the team.",
   },
 ];
@@ -71,7 +71,7 @@ const suns = Array.from({ length: 16 }, () => ({
   <div class="container">
     <header class="reco__head">
       <h2 class="section-title" data-i18n="recommendations.title">Straight from the people I’ve worked with</h2>
-      <p class="reco__intro" data-i18n="recommendations.intro">A couple of words from colleagues and managers — the kind of feedback that means more than any portfolio line.</p>
+      <p class="reco__intro" data-i18n="recommendations.intro">A couple of words from colleagues and managers, the kind of feedback that means more than any portfolio line.</p>
       <div class="reco__cta">
         <a href={`mailto:${site.email}`} class="btn btn--primary"><span data-i18n="common.letsWorkTogether">Let’s work together</span> <Arrow /></a>
       </div>
@@ -88,7 +88,7 @@ const suns = Array.from({ length: 16 }, () => ({
         href={linkedinUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={`Recommendation from ${slides[0].name} — read the full text on LinkedIn`}
+        aria-label={`Recommendation from ${slides[0].name}, read the full text on LinkedIn`}
       >
         <span class="reco__glow" aria-hidden="true"></span>
 
@@ -150,7 +150,7 @@ const suns = Array.from({ length: 16 }, () => ({
       avatarEl.textContent = s.initials;
       nameEl.textContent = s.name;
       roleEl.textContent = s.role;
-      card.setAttribute("aria-label", `Recommendation from ${s.name} — read the full text on LinkedIn`);
+      card.setAttribute("aria-label", `Recommendation from ${s.name}, read the full text on LinkedIn`);
       dots.forEach((d, i) => {
         d.classList.toggle("is-active", i === active);
         d.setAttribute("aria-selected", String(i === active));

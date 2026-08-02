@@ -34,7 +34,7 @@ export const dsProjects: DsProject[] = [
     index: "01",
     title: "Phishing URL Detection",
     short: "Phishing URL",
-    pitch: "A classifier that flags malicious URLs on the PhiUSIIL dataset — and a lesson in spotting data leakage.",
+    pitch: "A classifier that flags malicious URLs on the PhiUSIIL dataset, and a lesson in spotting data leakage.",
     period: "2025",
     type: "Machine Learning · Cybersecurity",
     context:
@@ -42,7 +42,7 @@ export const dsProjects: DsProject[] = [
     approach:
       "I audited every feature, removed the leaking ones (URL similarity index, HTML-derived fields only computable after the page is fetched), rebuilt a clean pipeline, then compared linear, tree-based and boosted models with stratified cross-validation.",
     impact:
-      "The honest model scores a few points lower on paper but actually generalises — and the write-up documents exactly which features to distrust and why.",
+      "The honest model scores a few points lower on paper but actually generalises, and the write-up documents exactly which features to distrust and why.",
     stack: ["Python", "scikit-learn", "XGBoost", "Pandas", "Matplotlib", "Jupyter"],
     // ⚠️ MÉTRIQUES À VÉRIFIER — remplace par tes vrais scores
     models: [
@@ -88,11 +88,11 @@ export const dsProjects: DsProject[] = [
     period: "2025",
     type: "Machine Learning · Marketing Analytics",
     context:
-      "Only 1 client in 9 subscribes, so a model that always answers “no” is already 88.7% accurate — and completely useless. On top of that, call duration leaks the outcome: you only know it once the call is over.",
+      "Only 1 client in 9 subscribes, so a model that always answers “no” is already 88.7% accurate, and completely useless. On top of that, call duration leaks the outcome: you only know it once the call is over.",
     approach:
       "I checked multicollinearity (VIF), log-transformed the skewed predictors, then built two model families: pre-contact models that exclude the leaking duration, and full models kept only as a benchmark. Each was tuned with GridSearchCV on PR-AUC over stratified 5-fold CV, against dummy baselines.",
     impact:
-      "Contacting only the top 5% of prospects ranked by the model captures 266 of the 927 subscribers — a 65% hit rate against an 11.3% baseline, roughly a 5.7× lift on campaign efficiency. The macro-economic context (euribor3m) turned out to dominate the decision.",
+      "Contacting only the top 5% of prospects ranked by the model captures 266 of the 927 subscribers: a 65% hit rate against an 11.3% baseline, roughly a 5.7× lift on campaign efficiency. The macro-economic context (euribor3m) turned out to dominate the decision.",
     stack: ["Python", "scikit-learn", "statsmodels", "Pandas", "NumPy", "Seaborn"],
     // ✅ Métriques réelles issues du notebook (PR-AUC en CV stratifiée 5-fold)
     models: [

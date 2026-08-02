@@ -13,7 +13,7 @@ const slides = [
   { img: "live-2.webp", label: "DANCING", caption: "Dancing has always been a huge part of my life. Whether it’s Salsa, Bachata or Kizomba, it has taught me far more than rhythm. It has strengthened my confidence, communication and ability to connect with people." },
   { img: "live-3.webp", label: "TRIATHLON", caption: "I’ve been practicing triathlon for several years, starting with the Spanish National Duathlon Championships. Today, my next goal is to complete the Ironman 70.3 Sydney." },
   { img: "live-4.webp", label: "MOTORBIKE", caption: "I finally got my motorcycle licence! I absolutely love my new bike and the freedom it brings. I promise I’m a careful rider." },
-  { img: "live-5.webp", label: "PAINTING", caption: "Art has always been part of my life. I paint in acrylic whenever I get a spare moment — and learning oil painting is next on my list." },
+  { img: "live-5.webp", label: "PAINTING", caption: "Art has always been part of my life. I paint in acrylic whenever I get a spare moment, and learning oil painting is next on my list." },
   { img: "live-6.webp", label: "TRAIL RUNNING", caption: "Trail running combines everything I love: nature, endurance and exploration. It’s a passion my father passed on to me, and one that has shaped who I am. My ultimate dream? One day crossing the finish line of La Diagonale des Fous, like my father did!" },
 ];
 const startIndex = 2; // CYCLING au centre, comme la maquette
@@ -30,7 +30,7 @@ const places = [
 ];
 ---
 
-<Layout title={`About me — ${site.name}`} description="What I live for — and the places that shaped the way I work.">
+<Layout title={`About me · ${site.name}`} description="What I live for, and the places that shaped the way I work.">
   <main id="main">
     <PageHero
       eyebrow="Alizée Marchand"
@@ -51,7 +51,7 @@ const places = [
         id="live-carousel"
         tabindex="0"
         role="group"
-        aria-label="Photos — use left and right arrow keys to browse"
+        aria-label="Photos : use left and right arrow keys to browse"
       >
         <ul class="live__track" id="live-track">
           {slides.map((s, i) => (
@@ -86,7 +86,7 @@ const places = [
         </header>
 
         <div class="places__map">
-          <img src="/assets/live/worldmap.webp" alt="Carte du monde — les pays où j’ai vécu et travaillé" width="1143" height="572" loading="lazy" />
+          <img src="/assets/live/worldmap.webp" alt="Carte du monde, les pays où j’ai vécu et travaillé" width="1143" height="572" loading="lazy" />
           {places.map((p) => (
             <span class:list={["places__pin", { "places__pin--left": p.side === "left" }]} style={`left:${p.x}%; top:${p.y}%`}>
               <span class="places__dot" aria-hidden="true"></span>
@@ -97,7 +97,7 @@ const places = [
 
         <div class="places__paras">
           <p>Each culture has taught me something different: a new way to communicate, to solve problems, to collaborate, or simply to see the world through another lens.</p>
-          <p>Today, those experiences shape the way I approach every project. They remind me that there is rarely one right answer—only better questions, different perspectives, and stronger solutions built together.</p>
+          <p>Today, those experiences shape the way I approach every project. They remind me that there is rarely one right answer, only better questions, different perspectives, and stronger solutions built together.</p>
         </div>
       </div>
     </section>
