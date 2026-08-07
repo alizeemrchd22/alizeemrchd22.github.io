@@ -25,7 +25,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
 
     "nav.home": "Home",
     "nav.competencies": "My Competencies",
-    "nav.portfolio": "My Portfolio",
+    "nav.portfolio": "Data Science",
     "nav.aboutme": "About Me",
 
     "hero.roles": "Data Science · UX/UI · Project Management",
@@ -84,7 +84,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
 
     "digcta.eyebrow": "Alizée Marchand",
     "digcta.title": "Let’s meet and have a talk!",
-    "digcta.sub": "I’m always up for a coffee, call or good iced coffee.",
+    "digcta.sub": "I’m always up for a call or a good iced coffee.",
 
     "footer.copyright": "© 2025 ALIZEE MARCHAND. All rights reserved.",
   },
@@ -101,7 +101,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
 
     "nav.home": "Accueil",
     "nav.competencies": "Mes compétences",
-    "nav.portfolio": "Mon portfolio",
+    "nav.portfolio": "Data Science",
     "nav.aboutme": "À propos de moi",
 
     "hero.roles": "Data Science · UX/UI · Gestion de projet",
@@ -178,7 +178,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
 
     "nav.home": "Inicio",
     "nav.competencies": "Mis competencias",
-    "nav.portfolio": "Mi portafolio",
+    "nav.portfolio": "Data Science",
     "nav.aboutme": "Sobre mí",
 
     "hero.roles": "Data Science · UX/UI · Gestión de proyectos",
@@ -254,7 +254,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
 
     "nav.home": "首页",
     "nav.competencies": "我的能力",
-    "nav.portfolio": "我的作品集",
+    "nav.portfolio": "数据科学",
     "nav.aboutme": "关于我",
 
     "hero.roles": "数据科学 · UX/UI · 项目管理",
