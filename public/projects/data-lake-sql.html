@@ -1,0 +1,637 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YouTube Data Lake — SQL — Alizée Marchand</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#191919;--pri:#FCFF40;--w:#fafafa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--w);font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;padding:48px 24px}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-weight:300;font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.02em;margin:0 0 8px}
+.sub{color:rgba(250,250,250,.55);margin:0 0 12px}
+.back{display:inline-block;margin-bottom:40px;color:var(--pri);text-decoration:none;border:1px solid rgba(252,255,64,.35);padding:10px 18px;border-radius:999px;font-size:14px}
+.back:hover{background:rgba(252,255,64,.08)}
+section{margin:44px 0}
+h2{font-weight:500;font-size:1.25rem;color:var(--pri);margin:0 0 4px}
+.f{margin:0 0 14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:rgba(250,250,250,.4)}
+pre{background:#111;border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:22px;overflow-x:auto}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:1.65;color:#e9e9e2;white-space:pre}
+</style></head><body><div class="wrap">
+<a class="back" href="/portfolio">← Back to projects</a>
+<h1>YouTube Trending Data Lake</h1>
+<p class="sub">Snowflake · Azure Blob Storage · SQL — 2.6M rows across 10 countries</p>
+<section><h2>Part 1 — Trending data (10 CSV files)</h2><p class="f">Part1_trending_csv.sql</p><pre><code>-- ===== TRENDING DATA (the 10 csv files) =====
+ 
+-- how to read the csv: comma separated, skip the header row
+CREATE OR REPLACE FILE FORMAT file_format_csv
+TYPE = &#x27;CSV&#x27;
+FIELD_DELIMITER = &#x27;,&#x27;
+SKIP_HEADER = 1
+NULL_IF = (&#x27;\\N&#x27;, &#x27;NULL&#x27;, &#x27;NUL&#x27;, &#x27;&#x27;)
+FIELD_OPTIONALLY_ENCLOSED_BY = &#x27;&quot;&#x27;
+;
+ 
+-- external table = just reads straight from the stage, nothing stored yet
+-- (checked the column order first by looking at the raw header row
+-- before writing this, that&#x27;s how i got c1..c11 right)
+CREATE OR REPLACE EXTERNAL TABLE ex_table_youtube_trending
+(
+    video_id         varchar        as (value:c1::varchar),
+    title            varchar        as (value:c2::varchar),
+    publishedat      timestamp_ntz  as (value:c3::timestamp_ntz),
+    channelid        varchar        as (value:c4::varchar),
+    channeltitle     varchar        as (value:c5::varchar),
+    categoryid       int            as (value:c6::int),
+    trending_date    date           as (value:c7::date),
+    view_count       int            as (value:c8::int),
+    likes            int            as (value:c9::int),
+    dislikes         int            as (value:c10::int),
+    comment_count    int            as (value:c11::int)
+)
+WITH LOCATION = @stage_assignment
+FILE_FORMAT = file_format_csv
+PATTERN = &#x27;.*youtube_trending_data[.]csv&#x27;;
+ 
+-- now actually build the real table. also grabbing the country
+-- from the filename (BR_youtube_trending_data.csv -&gt; BR) since
+-- all 10 countries get stacked into this one table
+CREATE OR REPLACE TABLE table_youtube_trending AS
+SELECT
+    video_id,
+    title,
+    publishedat,
+    channelid,
+    channeltitle,
+    categoryid,
+    trending_date,
+    view_count,
+    likes,
+    dislikes,
+    comment_count,
+    split_part(metadata$filename, &#x27;_&#x27;, 1)::varchar AS country
+FROM ex_table_youtube_trending;
+ 
+-- quick checks
+SELECT * FROM table_youtube_trending LIMIT 10;
+SELECT COUNT(*) FROM table_youtube_trending;
+SELECT DISTINCT country FROM table_youtube_trending; -- should be 10 countries
+SELECT DISTINCT country FROM table_youtube_trending;
+
+SELECT * FROM table_youtube_trending LIMIT 10;</code></pre></section><section><h2>Part 1 — Category data (10 JSON files)</h2><p class="f">part1_category_json.sql</p><pre><code>-- ===== CATEGORY DATA (the 10 json files) =====
+-- each file looks like { &quot;items&quot;: [ {&quot;id&quot;: &quot;10&quot;, &quot;snippet&quot;: {&quot;title&quot;: &quot;Music&quot;}}, ... ] }
+-- can&#x27;t read this as columns like the csv, need to unfold the array first
+ 
+CREATE OR REPLACE EXTERNAL TABLE ex_table_youtube_category
+WITH LOCATION = @stage_assignment
+FILE_FORMAT = (TYPE = JSON)
+PATTERN = &#x27;.*category_id[.]json&#x27;;
+ 
+-- LATERAL FLATTEN unfolds the items array so each category becomes
+-- its own row, same trick as before for getting country from filename
+CREATE OR REPLACE TABLE table_youtube_category AS
+SELECT
+    split_part(metadata$filename, &#x27;_&#x27;, 1)::varchar AS country,
+    item.value:id::int                 AS categoryid,
+    item.value:snippet:title::varchar  AS category_title
+FROM ex_table_youtube_category,
+LATERAL FLATTEN(input =&gt; value:items) item;
+ 
+SELECT * FROM table_youtube_category LIMIT 10;
+SELECT COUNT(*) FROM table_youtube_category;
+SELECT DISTINCT country FROM table_youtube_category;</code></pre></section><section><h2>Part 1 — Final table</h2><p class="f">part1_table_youtube.sql</p><pre><code>-- ===== FINAL TABLE =====
+-- combining the two. using LEFT JOIN so i don&#x27;t lose any trending
+-- video even if a categoryid doesn&#x27;t have a match (this actually
+-- comes up as a question in part 2)
+CREATE OR REPLACE TABLE table_youtube_final AS
+SELECT
+    UUID_STRING()      AS id,
+    t.video_id,
+    t.title,
+    t.publishedat,
+    t.channelid,
+    t.channeltitle,
+    t.categoryid,
+    c.category_title,
+    t.trending_date,
+    t.view_count,
+    t.likes,
+    t.dislikes,
+    t.comment_count,
+    t.country
+FROM table_youtube_trending t
+LEFT JOIN table_youtube_category c
+    ON t.country    = c.country
+   AND t.categoryid = c.categoryid;
+ 
+SELECT * FROM table_youtube_final LIMIT 10;
+ 
+-- brief says this should be 2,667,041 rows
+SELECT COUNT(*) FROM table_youtube_final;</code></pre></section><section><h2>Part 2 — Data cleaning</h2><p class="f">part2_data_cleaning.sql</p><pre><code>-- PART 2 - DATA CLEANING
+USE DATABASE assignment_1;
+
+-- In “table_youtube_category” which category_title has duplicates if we don’t take into account the categoryid (return only a single row)?
+SELECT category_title
+FROM table_youtube_category
+GROUP BY category_title
+HAVING COUNT(*) &gt; COUNT(DISTINCT country);
+
+-- My personal investigation of the issue: how many duplicates we have ? 
+
+SELECT country, categoryid, category_title
+FROM table_youtube_category
+WHERE category_title = &#x27;Comedy&#x27;;
+
+
+-- In “table_youtube_category” which category_title only appears in one country?
+
+SELECT category_title, COUNT(DISTINCT country) AS nb_countries
+FROM table_youtube_category
+GROUP BY category_title
+HAVING COUNT(DISTINCT country) = 1;
+
+
+
+-- In “table_youtube_final”, what is the categoryid of the missing category_titles?
+  
+SELECT DISTINCT categoryid
+FROM table_youtube_final
+WHERE category_title IS NULL;
+
+-- My personal investigation of the issue: For me the right reasoning in data cleaning is start by something broad and then go specific. 
+-- I am not gonna replace a value like that before knwowing how many missing values we have, and also to sheck and make sure that all the missing value belong 
+-- to only one categoryid, beause maybe that could have been different one, and not only 29 especially when we see a high number like 1563 missing titles in the table
+
+SELECT COUNT(*)
+FROM table_youtube_final
+WHERE category_title IS NULL;
+
+SELECT categoryid, COUNT(*) AS nb
+FROM table_youtube_final
+WHERE category_title IS NULL
+GROUP BY categoryid;
+
+-- Update the table_youtube_final to replace the NULL values in category_title with the answer from the previous question.
+
+UPDATE table_youtube_final
+SET category_title = &#x27;Nonprofits &amp; Activism&#x27;
+WHERE category_title IS NULL;
+
+-- I also decided to check that the correction went well, so i computed:
+
+SELECT COUNT(*)
+FROM table_youtube_final
+WHERE category_title IS NULL;
+
+SELECT category_title, COUNT(*)
+FROM table_youtube_final
+WHERE categoryid = 29
+GROUP BY category_title;
+
+
+-- In “table_youtube_final”, which video doesn’t have a channeltitle (return only the title)?
+
+SELECT title
+FROM table_youtube_final
+WHERE channeltitle IS NULL;
+  
+-- My personal investigation of the issue:
+
+SELECT COUNT(*)
+FROM table_youtube_final
+WHERE channeltitle IS NULL;
+
+SELECT *
+FROM table_youtube_final
+WHERE channeltitle IS NULL;
+
+-- Delete from “table_youtube_final“, any record with video_id = “#NAME?”
+-- this question means that some videos in the dataset don&#x27;t have id, like a problem happened and their id is now an error code, so as we cannot
+-- link it we need to delete them from the dataset
+
+SELECT COUNT(*)
+FROM table_youtube_final
+WHERE video_id = &#x27;#NAME?&#x27;;
+
+DELETE FROM table_youtube_final
+WHERE video_id = &#x27;#NAME?&#x27;;
+
+
+-- Create a new table called “table_youtube_duplicates”  containing only the “bad” duplicates by using the row_number() function.
+
+
+-- these aren&#x27;t exact duplicate rows, video_id + country + trending_date
+-- are the same but view_count/likes/dislikes/comment_count are different.
+-- the brief says to keep the one with the highest view_count so we keep
+-- rn equal to 1 (the highest view_count) for the official table and rn
+-- greater than 1 for the duplicates table.
+
+SELECT *
+FROM table_youtube_final
+QUALIFY COUNT(*) OVER (PARTITION BY video_id, country, trending_date) &gt; 1
+ORDER BY video_id, country, trending_date, view_count DESC;
+
+-- the result of this query show that we have 74932 duplicates which I thought was a lot. But after reading the brief we know that we have to achieve a final number of row of 2,597,494.
+-- So i tryed some calculation to check and 74932 / 2 = 37,466, so because we know that our actual number of lines is around 2,634,960 (after deleting the #NAME? rows in the previous step), 
+-- removing 37,466 bad duplicates gets us to exactly 2,597,494. Same number as 74932/2, so the math lines up before even running the delete.
+
+SELECT *,
+    ROW_NUMBER() OVER (
+        PARTITION BY video_id, country, trending_date
+        ORDER BY view_count DESC
+    ) AS rn
+FROM table_youtube_final
+QUALIFY COUNT(*) OVER (PARTITION BY video_id, country, trending_date) &gt; 1
+ORDER BY video_id, country, trending_date, view_count DESC;
+
+CREATE OR REPLACE TABLE table_youtube_duplicates AS
+SELECT *
+FROM table_youtube_final
+QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY video_id, country, trending_date
+    ORDER BY view_count DESC
+) &gt; 1;
+
+SELECT COUNT(*) FROM table_youtube_duplicates;
+
+
+-- Delete the duplicates in “table_youtube_final“ by using “table_youtube_duplicates”.
+
+DELETE FROM table_youtube_final
+WHERE id IN (SELECT id FROM table_youtube_duplicates);
+
+-- Count the number of rows in “table_youtube_final“ and check that it is equal to 2,597,494 rows.
+
+SELECT COUNT(*) FROM table_youtube_final;</code></pre></section><section><h2>Part 3 — Data analysis</h2><p class="f">part3.sql</p><pre><code>-- PART 3 : Data ANALYSIS 
+USE DATABASE assignment_1;
+
+-- What are the 3 most viewed videos for each country in the Gaming category for the trending_date = &#x27;2024-04-01&#x27;. Order the result by country and the rank.
+SELECT *
+FROM table_youtube_final
+WHERE category_title = &#x27;Gaming&#x27;
+  AND trending_date = &#x27;2024-04-01&#x27;;
+
+SELECT
+    country,
+    title,
+    view_count,
+    ROW_NUMBER() OVER (PARTITION BY country ORDER BY view_count DESC) AS rank
+FROM table_youtube_final
+WHERE category_title = &#x27;Gaming&#x27;
+  AND trending_date = &#x27;2024-04-01&#x27;;
+
+-- NOw I only keep rank 1 to 3 per country
+SELECT
+    country,
+    title,
+    view_count,
+    ROW_NUMBER() OVER (PARTITION BY country ORDER BY view_count DESC) AS rank
+FROM table_youtube_final
+WHERE category_title = &#x27;Gaming&#x27;
+  AND trending_date = &#x27;2024-04-01&#x27;
+QUALIFY rank &lt;= 3
+ORDER BY country, rank;
+
+
+-- For each country, count the number of distinct video with a title containing the word &quot;BTS&quot; (case insensitive) and order the result by count in a descending order
+
+-- My reasonning: first the ilike &#x27;%bts%&#x27; serve to finds &quot;bts&quot; anywhere in the title, in a not case sensitive way. Then  we have to use count(distinct video_id) instead of count(*) because some videos can have many lines in a data set, so we want only the numb of videos and not lines. 
+-- Then we will group then by county. 
+
+SELECT *
+FROM table_youtube_final
+WHERE title ILIKE &#x27;%BTS%&#x27;;
+
+SELECT
+    country,
+    COUNT(DISTINCT video_id) AS nb_videos
+FROM table_youtube_final
+WHERE title ILIKE &#x27;%BTS%&#x27;
+GROUP BY country
+ORDER BY nb_videos DESC;
+
+
+-- For each country, year and month (in a single column) and only for the year 2024, which video is the most viewed and what is its likes_ratio (defined as the percentage of likes against view_count) truncated to 2 decimals. Order the result by year_month and country.
+-- My reasonnning: first I will filter from wide to specific, so I filter by the year_month column and select only year 2024
+SELECT
+    country,
+    trending_date,
+    DATE_TRUNC(&#x27;month&#x27;, trending_date) AS year_month,
+    title,
+    view_count,
+    likes
+FROM table_youtube_final
+WHERE YEAR(trending_date) = 2024;
+
+-- Then I apply the same column as in the brief exemple and make sure the ratio for the likes is based on the number of views
+
+SELECT
+    country,                                    -- COUNTRY
+    DATE_TRUNC(&#x27;month&#x27;, trending_date) AS year_month,  -- YEAR_MONTH
+    title,                                       -- TITLE
+    channeltitle,                                -- CHANNELTITLE
+    category_title,                              -- CATEGORY_TITLE
+    view_count,                                  -- VIEW_COUNT
+    TRUNCATE(likes / view_count * 100, 2) AS likes_ratio  -- LIKES_RATIO
+FROM table_youtube_final
+WHERE YEAR(trending_date) = 2024
+QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY country, DATE_TRUNC(&#x27;month&#x27;, trending_date)
+    ORDER BY view_count DESC
+) = 1
+ORDER BY year_month, country;
+
+
+-- For each country, which category_title has the most distinct videos and what is its percentage (2 decimals) out of the total distinct number of videos of that country? Only look at the data from 2022. Order the result by category_title and country.
+-- MY reasoning: this question can be solved in two step, first we are asked to find which category as the most videos ( in video ID not lines in the dataset) so I will use the COUNT(DISTINCT video_id). 
+
+SELECT
+    country,
+    category_title,
+    COUNT(DISTINCT video_id) AS nb_videos
+FROM table_youtube_final
+WHERE YEAR(trending_date) = 2022
+GROUP BY country, category_title
+ORDER BY country, nb_videos DESC;
+
+-- Then I need to find the TOtal of videos all categories per country to get the denominator for the percentage 
+
+SELECT
+    country,
+    COUNT(DISTINCT video_id) AS total_videos
+FROM table_youtube_final
+WHERE YEAR(trending_date) = 2022
+GROUP BY country;
+
+-- I can finally do a final block
+WITH cat_counts AS (
+    SELECT
+        country,
+        category_title,
+        COUNT(DISTINCT video_id) AS nb_videos
+    FROM table_youtube_final
+    WHERE YEAR(trending_date) = 2022
+    GROUP BY country, category_title
+),
+country_totals AS (
+    SELECT
+        country,
+        COUNT(DISTINCT video_id) AS total_videos
+    FROM table_youtube_final
+    WHERE YEAR(trending_date) = 2022
+    GROUP BY country
+)
+SELECT
+    c.country,
+    c.category_title,
+    c.nb_videos AS total_category_video,
+    t.total_videos AS total_country_video,
+    TRUNCATE(c.nb_videos / t.total_videos * 100, 2) AS percentage
+FROM cat_counts c
+JOIN country_totals t ON c.country = t.country
+QUALIFY ROW_NUMBER() OVER (PARTITION BY c.country ORDER BY c.nb_videos DESC) = 1
+ORDER BY c.category_title, c.country;
+
+
+-- Which channeltitle has produced the most distinct videos and what is this number*100? 
+
+-- in a more simple way, the question is to find which  youtube channel has the most different like uniquevideos (using video id and not lines)  in the whole dataset (all countries, all dates combined), and how many videos that is.
+
+SELECT
+    channeltitle,
+    COUNT(DISTINCT video_id) AS nb_videos
+FROM table_youtube_final
+GROUP BY channeltitle
+ORDER BY nb_videos DESC
+LIMIT 1;</code></pre></section><section><h2>Part 4 — Data investigation</h2><p class="f">part4_data_investigation.sql</p><pre><code>----- General Investigation ------
+USE DATABASE assignment_1; 
+
+SELECT
+    category_title,
+    COUNT(DISTINCT video_id) AS nb_videos
+FROM table_youtube_final
+WHERE category_title NOT IN (&#x27;Music&#x27;, &#x27;Entertainment&#x27;)
+GROUP BY category_title
+ORDER BY nb_videos DESC;
+
+-- There is a clear gap after the top four: Sports (43,323), People &amp; Blogs (42,876), Gaming (41,615), and Comedy (18,605), so I will focus on these four categories.
+
+-- now let&#x27;s check if the presence of these categoryes being the top top of the categories is a longterm trend or a short term buzz
+
+SELECT
+    category_title,
+    YEAR(trending_date) AS year,
+    COUNT(DISTINCT video_id) AS nb_videos
+FROM table_youtube_final
+WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+GROUP BY category_title, YEAR(trending_date)
+ORDER BY category_title, year;
+
+-- the problem is that 2020 and 2024 might be partial years in the dataset, so let&#x27;s check
+SELECT
+    YEAR(trending_date) AS year,
+    MIN(trending_date) AS first_date,
+    MAX(trending_date) AS last_date,
+    COUNT(DISTINCT trending_date) AS nb_days_covered
+FROM table_youtube_final
+GROUP BY YEAR(trending_date)
+ORDER BY year;
+
+-- now we need to study the trend prpgression only on full years
+SELECT
+    category_title,
+    YEAR(trending_date) AS year,
+    COUNT(DISTINCT video_id) AS nb_videos
+FROM table_youtube_final
+WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+  AND YEAR(trending_date) IN (2021, 2022, 2023)
+GROUP BY category_title, YEAR(trending_date)
+ORDER BY category_title, year;
+
+WITH yearly AS (
+    SELECT
+        category_title,
+        YEAR(trending_date) AS year,
+        COUNT(DISTINCT video_id) AS nb_videos
+    FROM table_youtube_final
+    WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+      AND YEAR(trending_date) IN (2021, 2022, 2023)
+    GROUP BY category_title, YEAR(trending_date)
+)
+SELECT
+    category_title,
+    year,
+    nb_videos,
+    LAG(nb_videos) OVER (PARTITION BY category_title ORDER BY year) AS prev_year,
+    TRUNCATE(
+        (nb_videos - LAG(nb_videos) OVER (PARTITION BY category_title ORDER BY year))
+        / LAG(nb_videos) OVER (PARTITION BY category_title ORDER BY year) * 100,
+        2
+    ) AS pct_change
+FROM yearly
+ORDER BY category_title, year;
+
+-- I decided to normalize by days covered, to compare 2023 vs the partial 2024 properly ( we can now confirm that gamin has the most decline and People &amp; Blogs seem more stable )
+WITH yearly AS (
+    SELECT
+        category_title,
+        YEAR(trending_date) AS year,
+        COUNT(DISTINCT video_id) AS nb_videos,
+        COUNT(DISTINCT trending_date) AS nb_days,
+        TRUNCATE(COUNT(DISTINCT video_id) / COUNT(DISTINCT trending_date), 2) AS videos_per_day
+    FROM table_youtube_final
+    WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+      AND YEAR(trending_date) IN (2023, 2024)
+    GROUP BY category_title, YEAR(trending_date)
+)
+SELECT
+    category_title,
+    year,
+    videos_per_day,
+    LAG(videos_per_day) OVER (PARTITION BY category_title ORDER BY year) AS prev_rate,
+    TRUNCATE(
+        (videos_per_day - LAG(videos_per_day) OVER (PARTITION BY category_title ORDER BY year))
+        / LAG(videos_per_day) OVER (PARTITION BY category_title ORDER BY year) * 100,
+        2
+    ) AS pct_change_rate
+FROM yearly
+ORDER BY category_title, year;
+
+
+-------- DEEP CATEGORY ANALYSIS ---------
+
+-- Now I compute both the total per category for the top categories I have selected and the number of different unique channel it&#x27;s coming from
+SELECT
+    category_title,
+    COUNT(DISTINCT video_id) AS total_videos,
+    COUNT(DISTINCT channeltitle) AS nb_channels
+FROM table_youtube_final
+WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+GROUP BY category_title;
+
+-- Then I wanna analyze for those channels how many videos of them appeared in top of their category right ? to check if there is a monopole somewhere 
+
+SELECT
+    category_title,
+    channeltitle,
+    COUNT(DISTINCT video_id) AS nb_videos
+FROM table_youtube_final
+WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+GROUP BY category_title, channeltitle
+ORDER BY category_title, nb_videos DESC;
+
+-- here i am getting the top 5 of the channels that had the most videos in trends per category 
+
+SELECT
+    category_title,
+    channeltitle,
+    COUNT(DISTINCT video_id) AS nb_videos
+FROM table_youtube_final
+WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+GROUP BY category_title, channeltitle
+QUALIFY ROW_NUMBER() OVER (PARTITION BY category_title ORDER BY COUNT(DISTINCT video_id) DESC) &lt;= 5
+ORDER BY category_title, nb_videos DESC;
+
+-- now I calculate what this portion represent with a % 
+
+WITH cat_totals AS (
+    SELECT
+        category_title,
+        COUNT(DISTINCT video_id) AS total_videos
+    FROM table_youtube_final
+    WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+    GROUP BY category_title
+),
+top5_channels AS (
+    SELECT
+        category_title,
+        channeltitle,
+        COUNT(DISTINCT video_id) AS nb_videos
+    FROM table_youtube_final
+    WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+    GROUP BY category_title, channeltitle
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY category_title ORDER BY COUNT(DISTINCT video_id) DESC) &lt;= 5
+),
+top5_sum AS (
+    SELECT
+        category_title,
+        SUM(nb_videos) AS top5_total
+    FROM top5_channels
+    GROUP BY category_title
+)
+SELECT
+    t.category_title,
+    s.top5_total,
+    t.total_videos,
+    TRUNCATE(s.top5_total / t.total_videos * 100, 2) AS concentration_pct
+FROM top5_sum s
+JOIN cat_totals t ON s.category_title = t.category_title
+ORDER BY concentration_pct DESC;
+
+-- now I take a closer look to People &amp; Blogs to see it&#x27;s global performance across different countries
+
+SELECT
+    country,
+    category_title,
+    COUNT(DISTINCT video_id) AS nb_videos,
+    ROW_NUMBER() OVER (PARTITION BY country ORDER BY COUNT(DISTINCT video_id) DESC) AS rank_in_country
+FROM table_youtube_final
+WHERE category_title NOT IN (&#x27;Music&#x27;, &#x27;Entertainment&#x27;)
+GROUP BY country, category_title
+QUALIFY category_title = &#x27;People &amp; Blogs&#x27;
+ORDER BY rank_in_country;
+
+
+----- POPULARITY ANALYSIS ------
+
+-- The goal of this section is to know the turnover of videos being top trends, so for each video, in each country, how many different days it stays trending
+SELECT
+    category_title,
+    video_id,
+    country,
+    COUNT(DISTINCT trending_date) AS nb_days_trending
+FROM table_youtube_final
+WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+GROUP BY category_title, video_id, country;
+
+
+-- I compute the average per category because for the lower = more turnover = more new opportunities cycling in
+WITH video_country_days AS (
+    SELECT
+        category_title,
+        video_id,
+        country,
+        COUNT(DISTINCT trending_date) AS nb_days_trending
+    FROM table_youtube_final
+    WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+    GROUP BY category_title, video_id, country
+)
+SELECT
+    category_title,
+    TRUNCATE(AVG(nb_days_trending), 2) AS avg_days_trending_per_video
+FROM video_country_days
+GROUP BY category_title
+ORDER BY avg_days_trending_per_video ASC;
+
+-- I want now to know a bit more about the outcome of being in a top category, like is it actually worth it once you get in. A category could be easy to break into but with pretty low views once you&#x27;re there. This would add to the recommendation: not just &quot;it&#x27;s accessible&quot; but &quot;it&#x27;s accessible AND gets a decent audience&quot;
+
+SELECT
+    category_title,
+    TRUNCATE(AVG(view_count), 0) AS avg_views,
+    TRUNCATE(MEDIAN(view_count), 0) AS median_views
+FROM table_youtube_final
+WHERE category_title IN (&#x27;Sports&#x27;, &#x27;People &amp; Blogs&#x27;, &#x27;Gaming&#x27;, &#x27;Comedy&#x27;)
+GROUP BY category_title
+ORDER BY median_views DESC;
+
+--in previous results we learned that People &amp; Blogs are in the top 3 of all country except france. So let&#x27;s check xhat is the top in FRaNCE
+
+SELECT
+    category_title,
+    COUNT(DISTINCT video_id) AS nb_videos,
+    ROW_NUMBER() OVER (ORDER BY COUNT(DISTINCT video_id) DESC) AS rank_in_fr
+FROM table_youtube_final
+WHERE country = &#x27;FR&#x27;
+  AND category_title NOT IN (&#x27;Music&#x27;, &#x27;Entertainment&#x27;)
+GROUP BY category_title
+QUALIFY rank_in_fr &lt;= 3;</code></pre></section>
+</div></body></html>

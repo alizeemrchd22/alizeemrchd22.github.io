@@ -131,6 +131,26 @@ export const dsProjects: DsProject[] = [
     keywords: ["Data Warehousing", "ETL", "Medallion Architecture", "Dimensional Modeling", "Star Schema", "Data Cleaning"],
     codeUrl: "https://github.com/alizeemrchd22/sql-data-warehouse-project",
   },
+  {
+    id: "data-lake",
+    category: "engineering",
+    index: "05",
+    title: "YouTube Trending Data Lake",
+    short: "Data Lake",
+    pitch: "Building a queryable data lake over 2.6M YouTube trending records spread across 10 countries, in CSV and JSON.",
+    period: "2026",
+    type: "Data Engineering · Data Lake",
+    context:
+      "Ten countries, two incompatible formats: daily trending videos as CSV, category labels as JSON, all sitting in cloud storage. The country was not even a column, it was buried in the filename. Nothing could be queried as-is.",
+    approach:
+      "I layered the pipeline in Snowflake: external tables read the files straight from the Azure stage without duplicating them, materialized tables type the data and recover the country from the filename (LATERAL FLATTEN unfolds the nested JSON), and a final table joins both sides on country and category. Cleaning then handled orphan categories, a broken video_id and near-duplicate rows resolved with ROW_NUMBER.",
+    impact:
+      "2,667,041 raw rows became 2,597,494 trustworthy ones. The single final table answers questions the raw files could not: category concentration per country, how long a video stays trending, and which channels dominate each category.",
+    stack: ["Snowflake", "SQL", "Azure Blob Storage", "CSV", "JSON"],
+    keywords: ["Data Lake", "External Tables", "Semi-structured JSON", "Deduplication", "Data Quality", "Window Functions"],
+    codeUrl: "/projects/data-lake-sql.html",
+    pdfUrl: "/projects/data-lake-report.pdf",
+  },
 ];
 
 // Récapitulatif des outils, regroupés (section claire en bas de page)
