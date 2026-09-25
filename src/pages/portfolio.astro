@@ -32,10 +32,18 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
       </ul>
     </PageHero>
 
-    <!-- ============ LISTING DES PROJETS ============ -->
-    <!-- Grille en quinconce (colonnes CSS) : les tuiles se décalent
-         naturellement selon leur hauteur. Clic = pop-up, sauf si le projet
-         a une page dédiée (detailUrl). -->
+    <!-- ============ PROJET FAVORI (emplacement réservé) ============ -->
+    <!-- Section à designer plus tard, quand Alizée aura choisi le projet. -->
+    <section class="pfav" id="favorite">
+      <div class="container">
+        <h2 class="section-title pfav__title">My Favorite Project</h2>
+        <p class="pfav__soon">Coming soon.</p>
+      </div>
+    </section>
+
+    <!-- ============ LISTING DES PROJETS (section claire) ============ -->
+    <!-- Trois colonnes décalées : la répartition initiale est faite au build,
+         le JS rééquilibre vers la colonne la plus courte. -->
     <section class="plist" id="projects">
       <div class="container">
         <header class="plist__head">
@@ -54,47 +62,33 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
           </div>
         </header>
 
-        <!-- Colonnes rendues ici (et non créées en JS) : les styles scopés
-             d'Astro ne s'appliquent qu'aux éléments présents dans le template.
-             La répartition initiale est faite au build, le JS la rééquilibre. -->
         <div class="plist__grid" id="plist-grid">
           {[0, 1, 2].map((c) => (
             <div class="plist__col" data-col={c}>
               {dsProjects.filter((_, i) => i % 3 === c).map((p) => (
-              <article class="ptile" data-category={p.category}>
-                <div class="ptile__top">
+                <article class="ptile" data-category={p.category}>
                   <span class="ptile__cat">{p.category === "ml" ? "Machine Learning" : "Data Engineering"}</span>
-                  <span class="ptile__period">{p.period}</span>
-                </div>
-
-                {p.highlight && (
-                  <p class="ptile__stat">
-                    <span class="ptile__val">{p.highlight.value}</span>
-                    <span class="ptile__lab">{p.highlight.label}</span>
-                  </p>
-                )}
-
-                <h3 class="ptile__title">{p.title}</h3>
-                <p class="ptile__pitch">{p.pitch}</p>
-
-                <ul class="ptile__chips">
-                  {p.stack.slice(0, 3).map((s) => <li class="dchip">{s}</li>)}
-                </ul>
-
-                {p.detailUrl ? (
-                  <a class="ptile__cta" href={p.detailUrl}>Read the case study <Arrow /></a>
-                ) : (
-                  <button type="button" class="ptile__cta" data-open={p.id} aria-haspopup="dialog">
-                    See the details <Arrow />
-                  </button>
-                )}
-              </article>
+                  <h3 class="ptile__title">{p.title}</h3>
+                  <p class="ptile__pitch">{p.pitch}</p>
+                  {p.detailUrl ? (
+                    <a class="ptile__cta" href={p.detailUrl} aria-label={`Read the case study: ${p.title}`}></a>
+                  ) : (
+                    <button type="button" class="ptile__cta" data-open={p.id} aria-haspopup="dialog" aria-label={`See the details: ${p.title}`}></button>
+                  )}
+                </article>
               ))}
             </div>
           ))}
         </div>
 
         <p class="plist__empty" id="plist-empty" hidden>No project in this category yet.</p>
+      </div>
+
+      <!-- Curseur custom : rond jaune + flèche, comme sur le portfolio et About Me -->
+      <div class="plist__cursor" id="plist-cursor" aria-hidden="true">
+        <span class="plist__cursor-dot">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
       </div>
     </section>
 
@@ -370,87 +364,89 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
     .dcard__foot .btn { width: 100%; justify-content: center; }
   }
 
-  /* ---------- LISTING EN QUINCONCE ---------- */
-  .plist { background: var(--bg); padding-block: clamp(3.5rem, 7vw, 6rem); }
+  /* ---------- PROJET FAVORI (emplacement réservé) ---------- */
+  .pfav { background: var(--bg); padding-block: clamp(3rem, 6vw, 5rem); }
+  .pfav__title { text-align: center; }
+  .pfav__soon {
+    margin-top: 18px; text-align: center;
+    color: rgba(255,255,255,.35); font-size: 15px; letter-spacing: .04em;
+  }
+
+  /* ---------- LISTING (section claire, même courbe que la Toolbox) ---------- */
+  .plist {
+    position: relative;
+    background: var(--cream); color: var(--ink);
+    border-top-left-radius: var(--section-radius);
+    border-bottom-right-radius: var(--section-radius);
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
   .plist__head { max-width: 720px; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
-  .plist__sub { margin-top: 18px; color: rgba(255,255,255,.6); font-size: 18px; line-height: 1.55; }
+  .plist .section-title { color: var(--ink); }
+  .plist__sub { margin-top: 18px; color: rgba(25,25,25,.6); font-size: 18px; line-height: 1.55; }
 
   .plist__filters { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
   .pfilter {
     display: inline-flex; align-items: center; gap: 9px;
     padding: 11px 20px; border-radius: 999px; cursor: pointer;
-    background: transparent; border: 1px solid rgba(255,255,255,.16);
-    color: rgba(255,255,255,.72); font: inherit; font-size: 15px;
+    background: transparent; border: 1px solid rgba(25,25,25,.18);
+    color: rgba(25,25,25,.7); font: inherit; font-size: 15px;
     transition: background .25s, border-color .25s, color .25s;
   }
-  .pfilter:hover { border-color: rgba(252,255,64,.45); color: var(--white); }
-  .pfilter__n { font-size: 12px; opacity: .55; }
-  .pfilter.is-active { background: var(--primary); border-color: var(--primary); color: #191919; }
-  .pfilter.is-active .pfilter__n { opacity: .65; }
+  .pfilter:hover { border-color: rgba(25,25,25,.45); color: var(--ink); }
+  .pfilter__n { font-size: 12px; opacity: .5; }
+  .pfilter.is-active { background: #191919; border-color: #191919; color: var(--white); }
+  .pfilter.is-active .pfilter__n { opacity: .6; }
 
-  /* Vraies colonnes flex : les colonnes CSS ne permettent pas de décaler
-     le haut d'une colonne (la marge y est tronquée par la spec). Les tuiles
-     sont réparties en JS dans la colonne la plus courte (effet masonry),
-     et chaque colonne porte son propre décalage. */
+  /* Vraies colonnes flex : en colonnes CSS, la marge en haut d'une colonne
+     est tronquée par la spec, impossible d'y décaler les colonnes. */
   .plist__grid { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
   .plist__col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
-  /* `display: flex` l'emporte sur le display:none par défaut de [hidden] :
-     il faut donc masquer explicitement les tuiles et colonnes filtrées. */
+  /* `display: flex` l'emporte sur le display:none par défaut de [hidden] */
   .ptile[hidden], .plist__col[hidden] { display: none !important; }
   .plist__col[data-col="1"] { margin-top: 58px; }
   .plist__col[data-col="2"] { margin-top: 26px; }
-  /* Sans JS, les tuiles restent lisibles en grille fluide */
 
   .ptile {
     position: relative;
     display: flex; flex-direction: column; align-items: flex-start;
-    padding: clamp(24px, 2.4vw, 34px);
-    background: rgba(255,255,255,.04);
-    border: 1px solid rgba(255,255,255,.08);
+    padding: clamp(26px, 2.5vw, 38px);
+    background: #fff;
+    border: 1px solid rgba(25,25,25,.08);
     border-radius: 28px;
-    transition: transform .45s cubic-bezier(.22,1,.36,1), border-color .35s, background .35s;
+    transition: transform .45s cubic-bezier(.22,1,.36,1), box-shadow .35s;
   }
-  .ptile:hover { transform: translateY(-6px); border-color: rgba(252,255,64,.38); background: rgba(255,255,255,.055); }
+  .ptile:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(25,25,25,.10); }
 
-
-  .ptile__top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
   .ptile__cat {
     font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-    color: var(--primary); background: rgba(252,255,64,.08);
-    border: 1px solid rgba(252,255,64,.24); padding: 6px 13px; border-radius: 999px;
+    color: rgba(25,25,25,.45); margin-bottom: 18px;
   }
-  .ptile__period { font-size: 13px; color: rgba(255,255,255,.35); }
-
-  .ptile__stat { margin-bottom: 18px; }
-  .ptile__val {
-    display: block;
-    font-family: var(--font); font-weight: 300; letter-spacing: -.04em;
-    font-size: clamp(2.4rem, 3.6vw, 3.2rem); line-height: 1; color: var(--primary);
-  }
-  .ptile__lab {
-    display: block; margin-top: 10px;
-    font-size: 13px; letter-spacing: .04em; color: rgba(255,255,255,.5);
-  }
-
   .ptile__title {
     font-family: var(--font); font-weight: 400; letter-spacing: -.02em;
-    font-size: clamp(1.2rem, 1.8vw, 1.5rem); line-height: 1.2; color: var(--white);
+    font-size: clamp(1.3rem, 2vw, 1.7rem); line-height: 1.2; color: var(--ink);
   }
-  .ptile__pitch { margin-top: 14px; color: rgba(255,255,255,.62); font-size: 15.5px; line-height: 1.55; }
-  .ptile__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .ptile__pitch { margin-top: 14px; color: rgba(25,25,25,.6); font-size: 16px; line-height: 1.6; }
 
-  .ptile__cta {
-    display: inline-flex; align-items: center; gap: 10px;
-    margin-top: 26px; padding: 0; cursor: pointer;
-    background: none; border: none; font: inherit; font-size: 15px;
-    color: var(--primary); text-decoration: none;
-    transition: gap .3s ease;
+  /* Pas de libellé : la tuile entière est cliquable et le curseur devient une flèche */
+  .ptile__cta { position: absolute; inset: 0; border-radius: 28px; cursor: pointer; background: none; border: none; }
+  .ptile__cta:focus-visible { outline: 2px solid #191919; outline-offset: 3px; }
+
+  .plist__empty { margin-top: 24px; color: rgba(25,25,25,.5); }
+
+  /* Curseur flèche, repris du portfolio et de About Me */
+  .plist__cursor { position: fixed; top: 0; left: 0; z-index: 90; pointer-events: none; will-change: transform; }
+  .plist__cursor-dot {
+    display: flex; align-items: center; justify-content: center;
+    width: 84px; height: 84px; border-radius: 50%;
+    background: var(--primary); color: #191919;
+    opacity: 0; transform: translate(-50%, -50%) scale(0.2);
+    transition: opacity .3s ease, transform .35s cubic-bezier(.22,1,.36,1);
   }
-  .ptile__cta:hover { gap: 15px; }
-  /* Toute la tuile devient cliquable, sans imbriquer d'éléments interactifs */
-  .ptile__cta::after { content: ""; position: absolute; inset: 0; border-radius: 28px; }
-
-  .plist__empty { margin-top: 24px; color: rgba(255,255,255,.5); }
+  .plist__cursor.is-on .plist__cursor-dot { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .plist__cursor-dot svg { width: 30px; height: 30px; }
+  @media (pointer: fine) { .plist.cursor-on .ptile, .plist.cursor-on .ptile * { cursor: none; } }
+  @media (max-width: 768px) { .plist__cursor { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .plist__cursor { display: none; } .ptile { transition: none; } }
 
   @media (max-width: 1024px) {
     .plist__col[data-col="1"] { margin-top: 44px; }
@@ -589,6 +585,29 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
   layout();
   let rz;
   window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(layout, 150); });
+
+  // --- Curseur flèche sur la section listing ---
+  const plist = document.querySelector(".plist");
+  const pcursor = document.getElementById("plist-cursor");
+  const fine = window.matchMedia("(pointer: fine)").matches;
+  const noMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (plist && pcursor && fine && !noMotion) {
+    let raf = 0, cx = 0, cy = 0;
+    plist.addEventListener("mousemove", (e) => {
+      cx = e.clientX; cy = e.clientY;
+      if (!raf) raf = requestAnimationFrame(() => { pcursor.style.transform = `translate(${cx}px, ${cy}px)`; raf = 0; });
+    });
+    // le rond n'apparaît qu'au survol d'une tuile, pas de toute la section
+    grid?.addEventListener("mouseover", (e) => {
+      const on = e.target instanceof Element && e.target.closest(".ptile");
+      plist.classList.toggle("cursor-on", !!on);
+      pcursor.classList.toggle("is-on", !!on);
+    });
+    plist.addEventListener("mouseleave", () => {
+      plist.classList.remove("cursor-on");
+      pcursor.classList.remove("is-on");
+    });
+  }
 
   // --- Pop-ups ---
   document.querySelectorAll("[data-open]").forEach((btn) => {
