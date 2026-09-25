@@ -6,6 +6,9 @@ import DigCta from "../components/DigCta.astro";
 import Footer from "../components/Footer.astro";
 import { site } from "../data/content";
 import { dsProjects, toolbox } from "../data/dsProjects";
+
+const mlCount = dsProjects.filter((p) => p.category === "ml").length;
+const engCount = dsProjects.filter((p) => p.category === "engineering").length;
 ---
 
 <Layout
@@ -16,7 +19,7 @@ import { dsProjects, toolbox } from "../data/dsProjects";
     <PageHero
       eyebrow="Data Science Portfolio"
       title="Turning raw data into decisions you can act on."
-      sub="Three projects, from cybersecurity to marketing analytics. For each one: the problem, my approach, the models I actually ran, plus the code and the full report."
+      sub="Machine learning and data engineering projects, from cybersecurity to cloud pipelines. For each one: the problem, my approach, the code and the full report."
       ctas={[
         { label: "Let’s talk data", href: `mailto:${site.email}` },
         { label: "My competencies", href: "/competencies" },
@@ -29,48 +32,100 @@ import { dsProjects, toolbox } from "../data/dsProjects";
       </ul>
     </PageHero>
 
-    <!-- ============ PROJETS ============ -->
-    <section class="dprojects" id="projects">
+    <!-- ============ LISTING DES PROJETS ============ -->
+    <!-- Grille en quinconce (colonnes CSS) : les tuiles se décalent
+         naturellement selon leur hauteur. Clic = pop-up, sauf si le projet
+         a une page dédiée (detailUrl). -->
+    <section class="plist" id="projects">
       <div class="container">
-        {dsProjects.map((p, i) => (
-          <article class="dcard" id={p.id} style={`--i:${i}; z-index:${i + 1}`}>
-            <span class="dcard__glow" aria-hidden="true"></span>
-            <span class="dcard__index" aria-hidden="true">{p.index}</span>
+        <header class="plist__head">
+          <h2 class="section-title">Selected projects</h2>
+          <p class="plist__sub">Machine learning and data engineering, from raw files to answers a team can act on.</p>
+          <div class="plist__filters" role="group" aria-label="Filter projects by field">
+            {[
+              { id: "all", label: "All", n: dsProjects.length },
+              { id: "ml", label: "Machine Learning", n: mlCount },
+              { id: "engineering", label: "Data Engineering", n: engCount },
+            ].map((f) => (
+              <button type="button" class:list={["pfilter", { "is-active": f.id === "all" }]} data-filter={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
+                {f.label} <span class="pfilter__n">{f.n}</span>
+              </button>
+            ))}
+          </div>
+        </header>
 
-            <header class="dcard__head">
-              <div class="dcard__meta">
-                <span class="dchip dchip--yellow">{p.type}</span>
-                <span class="dcard__period">{p.period}</span>
+        <!-- Colonnes rendues ici (et non créées en JS) : les styles scopés
+             d'Astro ne s'appliquent qu'aux éléments présents dans le template.
+             La répartition initiale est faite au build, le JS la rééquilibre. -->
+        <div class="plist__grid" id="plist-grid">
+          {[0, 1, 2].map((c) => (
+            <div class="plist__col" data-col={c}>
+              {dsProjects.filter((_, i) => i % 3 === c).map((p) => (
+              <article class="ptile" data-category={p.category}>
+                <div class="ptile__top">
+                  <span class="ptile__cat">{p.category === "ml" ? "Machine Learning" : "Data Engineering"}</span>
+                  <span class="ptile__period">{p.period}</span>
+                </div>
+
+                {p.highlight && (
+                  <p class="ptile__stat">
+                    <span class="ptile__val">{p.highlight.value}</span>
+                    <span class="ptile__lab">{p.highlight.label}</span>
+                  </p>
+                )}
+
+                <h3 class="ptile__title">{p.title}</h3>
+                <p class="ptile__pitch">{p.pitch}</p>
+
+                <ul class="ptile__chips">
+                  {p.stack.slice(0, 3).map((s) => <li class="dchip">{s}</li>)}
+                </ul>
+
+                {p.detailUrl ? (
+                  <a class="ptile__cta" href={p.detailUrl}>Read the case study <Arrow /></a>
+                ) : (
+                  <button type="button" class="ptile__cta" data-open={p.id} aria-haspopup="dialog">
+                    See the details <Arrow />
+                  </button>
+                )}
+              </article>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <p class="plist__empty" id="plist-empty" hidden>No project in this category yet.</p>
+      </div>
+    </section>
+
+    <!-- Pop-ups : un <dialog> natif par projet (Échap et clic extérieur ferment) -->
+    {dsProjects.filter((p) => !p.detailUrl).map((p) => (
+      <dialog class="pmodal" id={`modal-${p.id}`} aria-label={p.title}>
+        <button type="button" class="pmodal__close" data-close aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <div class="pmodal__inner">
+          <div class="dcard__meta">
+            <span class="dchip dchip--yellow">{p.type}</span>
+            <span class="dcard__period">{p.period}</span>
+          </div>
+          <h2 class="pmodal__title">{p.title}</h2>
+          <p class="dcard__pitch">{p.pitch}</p>
+
+          <div class="pmodal__body">
+            <div class="pmodal__text">
+              <div class="dblock"><h3 class="dblock__label">The problem</h3><p>{p.context}</p></div>
+              <div class="dblock"><h3 class="dblock__label">My approach</h3><p>{p.approach}</p></div>
+              <div class="dblock"><h3 class="dblock__label">The outcome</h3><p>{p.impact}</p></div>
+            </div>
+
+            <aside class="dspec">
+              <div class="dspec__group">
+                <h3 class="dspec__label">Stack</h3>
+                <ul class="dspec__chips">{p.stack.map((s) => <li class="dchip">{s}</li>)}</ul>
               </div>
-              <h2 class="dcard__title">{p.title}</h2>
-              <p class="dcard__pitch">{p.pitch}</p>
-            </header>
 
-            <div class="dcard__body">
-              <div class="dcard__story">
-                <div class="dblock">
-                  <h3 class="dblock__label">The problem</h3>
-                  <p>{p.context}</p>
-                </div>
-                <div class="dblock">
-                  <h3 class="dblock__label">My approach</h3>
-                  <p>{p.approach}</p>
-                </div>
-                <div class="dblock">
-                  <h3 class="dblock__label">Outcome</h3>
-                  <p>{p.impact}</p>
-                </div>
-              </div>
-
-              <aside class="dspec">
-                <div class="dspec__group">
-                  <h3 class="dspec__label">Stack</h3>
-                  <ul class="dspec__chips">
-                    {p.stack.map((s) => <li class="dchip">{s}</li>)}
-                  </ul>
-                </div>
-
-                {p.models && p.models.length > 0 && (
+              {p.models && p.models.length > 0 && (
                 <div class="dspec__group">
                   <h3 class="dspec__label">Models trained</h3>
                   <ul class="dmodels">
@@ -83,37 +138,22 @@ import { dsProjects, toolbox } from "../data/dsProjects";
                     ))}
                   </ul>
                 </div>
-                )}
-
-                <div class="dspec__group">
-                  <h3 class="dspec__label">Keywords</h3>
-                  <ul class="dspec__chips">
-                    {p.keywords.map((k) => <li class="dchip dchip--soft">{k}</li>)}
-                  </ul>
-                </div>
-              </aside>
-            </div>
-
-            <footer class="dcard__foot">
-              <a href={p.codeUrl} class="btn btn--primary" target="_blank" rel="noopener noreferrer">
-                View the code
-                {p.codeUrl.includes("github.com") ? (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.36 1.11 2.94.85.09-.66.35-1.11.63-1.36-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05a9.36 9.36 0 015 0c1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0022 12.25C22 6.58 17.52 2 12 2z"/></svg>
-                ) : (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
-                )}
-              </a>
-              {p.pdfUrl && (
-              <a href={p.pdfUrl} class="btn btn--outline" download>
-                Download the report
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>
-              </a>
               )}
-            </footer>
-          </article>
-        ))}
-      </div>
-    </section>
+
+              <div class="dspec__group">
+                <h3 class="dspec__label">Keywords</h3>
+                <ul class="dspec__chips">{p.keywords.map((k) => <li class="dchip dchip--soft">{k}</li>)}</ul>
+              </div>
+            </aside>
+          </div>
+
+          <footer class="pmodal__foot">
+            <a href={p.codeUrl} class="btn btn--primary" target="_blank" rel="noopener noreferrer">View the code <Arrow /></a>
+            {p.pdfUrl && <a href={p.pdfUrl} class="btn btn--outline" download>Download the report <Arrow /></a>}
+          </footer>
+        </div>
+      </dialog>
+    ))}
 
     <DigCta />
 
@@ -305,7 +345,7 @@ import { dsProjects, toolbox } from "../data/dsProjects";
   .dtools__head { text-align: center; max-width: 640px; margin: 0 auto clamp(2.5rem, 5vw, 3.5rem); }
   .dtools__title { color: var(--ink); }
   .dtools__sub { margin-top: 18px; color: #6f6b67; font-size: 18px; }
-  .dtools__grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(1.5rem, 3vw, 2.5rem); }
+  .dtools__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.75rem, 3vw, 2.75rem) clamp(1.5rem, 3vw, 2.5rem); }
   .dtools__label {
     font-family: var(--font); font-size: 13px; font-weight: 600;
     letter-spacing: .12em; text-transform: uppercase; color: #191919;
@@ -329,6 +369,127 @@ import { dsProjects, toolbox } from "../data/dsProjects";
     .dtools__grid { grid-template-columns: 1fr; }
     .dcard__foot .btn { width: 100%; justify-content: center; }
   }
+
+  /* ---------- LISTING EN QUINCONCE ---------- */
+  .plist { background: var(--bg); padding-block: clamp(3.5rem, 7vw, 6rem); }
+  .plist__head { max-width: 720px; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+  .plist__sub { margin-top: 18px; color: rgba(255,255,255,.6); font-size: 18px; line-height: 1.55; }
+
+  .plist__filters { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .pfilter {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 11px 20px; border-radius: 999px; cursor: pointer;
+    background: transparent; border: 1px solid rgba(255,255,255,.16);
+    color: rgba(255,255,255,.72); font: inherit; font-size: 15px;
+    transition: background .25s, border-color .25s, color .25s;
+  }
+  .pfilter:hover { border-color: rgba(252,255,64,.45); color: var(--white); }
+  .pfilter__n { font-size: 12px; opacity: .55; }
+  .pfilter.is-active { background: var(--primary); border-color: var(--primary); color: #191919; }
+  .pfilter.is-active .pfilter__n { opacity: .65; }
+
+  /* Vraies colonnes flex : les colonnes CSS ne permettent pas de décaler
+     le haut d'une colonne (la marge y est tronquée par la spec). Les tuiles
+     sont réparties en JS dans la colonne la plus courte (effet masonry),
+     et chaque colonne porte son propre décalage. */
+  .plist__grid { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  .plist__col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+  /* `display: flex` l'emporte sur le display:none par défaut de [hidden] :
+     il faut donc masquer explicitement les tuiles et colonnes filtrées. */
+  .ptile[hidden], .plist__col[hidden] { display: none !important; }
+  .plist__col[data-col="1"] { margin-top: 58px; }
+  .plist__col[data-col="2"] { margin-top: 26px; }
+  /* Sans JS, les tuiles restent lisibles en grille fluide */
+
+  .ptile {
+    position: relative;
+    display: flex; flex-direction: column; align-items: flex-start;
+    padding: clamp(24px, 2.4vw, 34px);
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 28px;
+    transition: transform .45s cubic-bezier(.22,1,.36,1), border-color .35s, background .35s;
+  }
+  .ptile:hover { transform: translateY(-6px); border-color: rgba(252,255,64,.38); background: rgba(255,255,255,.055); }
+
+
+  .ptile__top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+  .ptile__cat {
+    font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--primary); background: rgba(252,255,64,.08);
+    border: 1px solid rgba(252,255,64,.24); padding: 6px 13px; border-radius: 999px;
+  }
+  .ptile__period { font-size: 13px; color: rgba(255,255,255,.35); }
+
+  .ptile__stat { margin-bottom: 18px; }
+  .ptile__val {
+    display: block;
+    font-family: var(--font); font-weight: 300; letter-spacing: -.04em;
+    font-size: clamp(2.4rem, 3.6vw, 3.2rem); line-height: 1; color: var(--primary);
+  }
+  .ptile__lab {
+    display: block; margin-top: 10px;
+    font-size: 13px; letter-spacing: .04em; color: rgba(255,255,255,.5);
+  }
+
+  .ptile__title {
+    font-family: var(--font); font-weight: 400; letter-spacing: -.02em;
+    font-size: clamp(1.2rem, 1.8vw, 1.5rem); line-height: 1.2; color: var(--white);
+  }
+  .ptile__pitch { margin-top: 14px; color: rgba(255,255,255,.62); font-size: 15.5px; line-height: 1.55; }
+  .ptile__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+
+  .ptile__cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 26px; padding: 0; cursor: pointer;
+    background: none; border: none; font: inherit; font-size: 15px;
+    color: var(--primary); text-decoration: none;
+    transition: gap .3s ease;
+  }
+  .ptile__cta:hover { gap: 15px; }
+  /* Toute la tuile devient cliquable, sans imbriquer d'éléments interactifs */
+  .ptile__cta::after { content: ""; position: absolute; inset: 0; border-radius: 28px; }
+
+  .plist__empty { margin-top: 24px; color: rgba(255,255,255,.5); }
+
+  @media (max-width: 1024px) {
+    .plist__col[data-col="1"] { margin-top: 44px; }
+    .plist__col[data-col="2"] { margin-top: 0; }
+  }
+  @media (max-width: 680px) {
+    .plist__col[data-col="1"], .plist__col[data-col="2"] { margin-top: 0; }
+  }
+
+  /* ---------- POP-UP PROJET ---------- */
+  .pmodal {
+    width: min(1040px, calc(100vw - 32px));
+    max-height: min(86vh, 900px);
+    padding: 0; border: 1px solid rgba(255,255,255,.1); border-radius: 32px;
+    background: #1c1c1c; color: var(--white);
+    overflow: hidden;
+  }
+  .pmodal::backdrop { background: rgba(10,10,10,.72); backdrop-filter: blur(6px); }
+  .pmodal__inner { overflow-y: auto; max-height: min(86vh, 900px); padding: clamp(28px, 4vw, 52px); }
+  .pmodal__title {
+    font-family: var(--font); font-weight: 300; letter-spacing: -.02em;
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem); line-height: 1.15; color: var(--white); margin-top: 18px;
+  }
+  .pmodal__body {
+    display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: clamp(2rem, 4vw, 3.5rem); margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  .pmodal__text { display: flex; flex-direction: column; gap: 30px; }
+  .pmodal__foot { display: flex; flex-wrap: wrap; gap: 16px; margin-top: clamp(2rem, 4vw, 3rem); }
+  .pmodal__close {
+    position: absolute; top: 18px; right: 18px; z-index: 2;
+    width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 999px; cursor: pointer;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); color: var(--white);
+    transition: background .25s, color .25s;
+  }
+  .pmodal__close:hover { background: var(--primary); color: #191919; }
+  @media (max-width: 860px) { .pmodal__body { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .ptile { transition: none; } }
 </style>
 
 <script>
@@ -383,4 +544,66 @@ import { dsProjects, toolbox } from "../data/dsProjects";
     layout();
     schedule();
   }
+</script>
+
+<script>
+  // --- Filtres : masquent les tuiles hors catégorie ---
+  const grid = document.getElementById("plist-grid");
+  const empty = document.getElementById("plist-empty");
+  const filters = document.querySelectorAll(".pfilter");
+
+  filters.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const want = btn.getAttribute("data-filter");
+      filters.forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-pressed", String(on));
+      });
+      let shown = 0;
+      grid?.querySelectorAll(".ptile").forEach((tile) => {
+        const ok = want === "all" || tile.getAttribute("data-category") === want;
+        tile.hidden = !ok;
+        if (ok) shown++;
+      });
+      if (empty) empty.hidden = shown > 0;
+      layout();
+    });
+  });
+
+  // --- Quinconce : rééquilibre les tuiles dans la colonne la plus courte ---
+  const cols = grid ? Array.from(grid.querySelectorAll(".plist__col")) : [];
+  const allTiles = grid ? Array.from(grid.querySelectorAll(".ptile")) : [];
+  function layout() {
+    if (!grid || !cols.length) return;
+    const n = window.innerWidth <= 680 ? 1 : window.innerWidth <= 1024 ? 2 : 3;
+    cols.forEach((c, i) => { c.hidden = i >= n; });
+    const h = new Array(n).fill(0);
+    allTiles.forEach((tile) => {
+      if (tile.hidden) return;
+      const i = h.indexOf(Math.min(...h));
+      cols[i].appendChild(tile);
+      h[i] += tile.offsetHeight + 24;
+    });
+  }
+  layout();
+  let rz;
+  window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(layout, 150); });
+
+  // --- Pop-ups ---
+  document.querySelectorAll("[data-open]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const dlg = document.getElementById(`modal-${btn.getAttribute("data-open")}`);
+      if (dlg instanceof HTMLDialogElement) dlg.showModal();
+    });
+  });
+
+  document.querySelectorAll(".pmodal").forEach((dlg) => {
+    if (!(dlg instanceof HTMLDialogElement)) return;
+    dlg.querySelector("[data-close]")?.addEventListener("click", () => dlg.close());
+    // clic sur le fond (hors de la zone de contenu) = fermeture
+    dlg.addEventListener("click", (e) => {
+      if (e.target === dlg) dlg.close();
+    });
+  });
 </script>

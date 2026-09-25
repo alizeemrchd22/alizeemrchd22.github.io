@@ -14,6 +14,10 @@ export interface DsProject {
   id: string;
   /** Sert aux filtres de la page : projets ML vs Data Engineering. */
   category: "ml" | "engineering";
+  /** Chiffre mis en avant sur la tuile du listing. Optionnel. */
+  highlight?: { value: string; label: string };
+  /** Page dédiée. Si absent, la tuile ouvre une pop-up. */
+  detailUrl?: string;
   index: string;
   title: string;
   short: string;      // libellé court pour le menu de navigation
@@ -33,6 +37,7 @@ export interface DsProject {
 export const dsProjects: DsProject[] = [
   {
     id: "phishing",
+    highlight: { value: "3", label: "feature configurations compared" },
     category: "ml",
     index: "01",
     title: "Phishing URL Detection",
@@ -59,6 +64,7 @@ export const dsProjects: DsProject[] = [
   },
   {
     id: "social-media",
+    highlight: { value: "23,678", label: "users analysed" },
     category: "ml",
     index: "02",
     title: "Social Media & Mental Health",
@@ -85,6 +91,7 @@ export const dsProjects: DsProject[] = [
   },
   {
     id: "marketing",
+    highlight: { value: "5.7×", label: "campaign efficiency lift" },
     category: "ml",
     index: "03",
     title: "Marketing Campaign Targeting",
@@ -114,6 +121,7 @@ export const dsProjects: DsProject[] = [
   },
   {
     id: "data-warehouse",
+    highlight: { value: "2", label: "source systems unified" },
     category: "engineering",
     index: "04",
     title: "SQL Data Warehouse",
@@ -133,6 +141,7 @@ export const dsProjects: DsProject[] = [
   },
   {
     id: "data-lake",
+    highlight: { value: "2.6M", label: "rows processed" },
     category: "engineering",
     index: "05",
     title: "YouTube Trending Data Lake",
