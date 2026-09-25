@@ -162,11 +162,11 @@ export const dsProjects: DsProject[] = [
   },
 ];
 
-// Récapitulatif des outils, regroupés (section claire en bas de page)
+// Récapitulatif des outils, par famille (section claire en bas de page).
+// Volontairement resserré : seulement ce sur quoi Alizée a réellement travaillé.
 export const toolbox = [
-  { label: "Languages", items: ["Python", "SQL", "R"] },
-  { label: "ML & Modeling", items: ["scikit-learn", "XGBoost", "HistGradientBoosting", "Random Forest", "K-Means"] },
-  { label: "Data & Stats", items: ["Pandas", "NumPy", "statsmodels", "SciPy"] },
-  { label: "Viz & Apps", items: ["Streamlit", "Seaborn", "Matplotlib", "Plotly"] },
-  { label: "Workflow", items: ["Jupyter", "VS Code", "Git", "Agile"] },
+  { label: "Languages & Databases", items: ["Python", "SQL", "PostgreSQL", "Snowflake"] },
+  { label: "Modelling", items: ["Logistic Regression", "Decision Tree", "Random Forest", "XGBoost", "HistGradientBoosting", "KNN"] },
+  { label: "Data & Stats", items: ["Pandas", "NumPy", "scikit-learn", "statsmodels", "SciPy"] },
+  { label: "Workflow", items: ["Jupyter", "Git", "DBeaver", "VS Code", "Agile"] },
 ];

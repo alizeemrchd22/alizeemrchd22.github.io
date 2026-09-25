@@ -161,18 +161,22 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
       <div class="container">
         <header class="dtools__head">
           <h2 class="section-title dtools__title">The toolbox behind it</h2>
-          <p class="dtools__sub">Everything I reach for, from first exploration to a shareable app.</p>
+          <p class="dtools__sub">Everything I actually reach for, from the first query to a model I can defend.</p>
         </header>
-        <div class="dtools__grid">
-          {toolbox.map((g) => (
-            <div class="dtools__group">
-              <h3 class="dtools__label">{g.label}</h3>
+        <ul class="dtools__rows">
+          {toolbox.map((g, i) => (
+            <li class="dtools__row" style={`--n:${i}`}>
+              <div class="dtools__side">
+                <span class="dtools__num">{String(i + 1).padStart(2, "0")}</span>
+                <h3 class="dtools__label">{g.label}</h3>
+                <span class="dtools__count">{g.items.length}</span>
+              </div>
               <ul class="dtools__chips">
-                {g.items.map((i) => <li class="dchip dchip--light">{i}</li>)}
+                {g.items.map((it) => <li class="dchip dchip--light">{it}</li>)}
               </ul>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
 
@@ -341,21 +345,35 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
     border-bottom-right-radius: var(--section-radius);
     padding-block: clamp(3.5rem, 7vw, 6rem);
   }
-  .dtools__head { text-align: center; max-width: 640px; margin: 0 auto clamp(2.5rem, 5vw, 3.5rem); }
+  .dtools__head { max-width: 640px; margin-bottom: clamp(2rem, 4vw, 3rem); }
   .dtools__title { color: var(--ink); }
   .dtools__sub { margin-top: 18px; color: #6f6b67; font-size: 18px; }
-  .dtools__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.75rem, 3vw, 2.75rem) clamp(1.5rem, 3vw, 2.5rem); }
-  .dtools__label {
-    font-family: var(--font); font-size: 13px; font-weight: 600;
-    letter-spacing: .12em; text-transform: uppercase; color: #191919;
-    padding-bottom: 14px; margin-bottom: 16px;
-    border-bottom: 1px solid rgba(25,25,25,.12);
+  /* Lignes plutôt que colonnes : une catégorie qui grossit pousse
+     simplement sa ligne vers le bas, sans tasser les autres. */
+  .dtools__rows { display: flex; flex-direction: column; }
+  .dtools__row {
+    display: grid; grid-template-columns: minmax(210px, 260px) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+    padding-block: clamp(1.75rem, 3vw, 2.5rem);
+    border-top: 1px solid rgba(25,25,25,.12);
+  }
+  .dtools__row:last-child { border-bottom: 1px solid rgba(25,25,25,.12); }
+
+  .dtools__side { display: flex; align-items: baseline; gap: 12px; }
+  .dtools__num {
+    font-family: var(--font); font-weight: 300; font-size: 15px;
+    color: rgba(25,25,25,.3); letter-spacing: .04em;
+  }
+  .dtools__count {
+    margin-left: auto;
+    font-size: 13px; color: rgba(25,25,25,.35);
   }
   .dtools__chips { display: flex; flex-wrap: wrap; gap: 8px; }
 
   /* ---------------- RESPONSIVE ---------------- */
   @media (max-width: 1024px) {
-    .dtools__grid { grid-template-columns: repeat(2, 1fr); }
+    .dtools__row { grid-template-columns: 1fr; gap: 1rem; }
   }
   @media (max-width: 900px) {
     .dtools { border-top-left-radius: clamp(60px,12vw,90px); border-bottom-right-radius: clamp(60px,12vw,90px); }
@@ -365,7 +383,7 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
     .dcard__index { font-size: 3.5rem; }
   }
   @media (max-width: 600px) {
-    .dtools__grid { grid-template-columns: 1fr; }
+    .dtools__side { gap: 10px; }
     .dcard__foot .btn { width: 100%; justify-content: center; }
   }
 
