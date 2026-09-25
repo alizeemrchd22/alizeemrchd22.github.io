@@ -121,6 +121,7 @@ export const dsProjects: DsProject[] = [
   },
   {
     id: "data-warehouse",
+    detailUrl: "/projects/data-warehouse",
     highlight: { value: "2", label: "source systems unified" },
     category: "engineering",
     index: "04",

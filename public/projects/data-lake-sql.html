@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>YouTube Data Lake — SQL — Alizée Marchand</title>
+<title>YouTube Data Lake · SQL · Alizée Marchand</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
 :root{--bg:#191919;--pri:#FCFF40;--w:#fafafa}
@@ -19,8 +19,8 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;li
 </style></head><body><div class="wrap">
 <a class="back" href="/portfolio">← Back to projects</a>
 <h1>YouTube Trending Data Lake</h1>
-<p class="sub">Snowflake · Azure Blob Storage · SQL — 2.6M rows across 10 countries</p>
-<section><h2>Part 1 — Trending data (10 CSV files)</h2><p class="f">Part1_trending_csv.sql</p><pre><code>-- ===== TRENDING DATA (the 10 csv files) =====
+<p class="sub">Snowflake · Azure Blob Storage · SQL · 2.6M rows across 10 countries</p>
+<section><h2>Part 1 · Trending data (10 CSV files)</h2><p class="f">Part1_trending_csv.sql</p><pre><code>-- ===== TRENDING DATA (the 10 csv files) =====
  
 -- how to read the csv: comma separated, skip the header row
 CREATE OR REPLACE FILE FORMAT file_format_csv
@@ -77,7 +77,7 @@ SELECT COUNT(*) FROM table_youtube_trending;
 SELECT DISTINCT country FROM table_youtube_trending; -- should be 10 countries
 SELECT DISTINCT country FROM table_youtube_trending;
 
-SELECT * FROM table_youtube_trending LIMIT 10;</code></pre></section><section><h2>Part 1 — Category data (10 JSON files)</h2><p class="f">part1_category_json.sql</p><pre><code>-- ===== CATEGORY DATA (the 10 json files) =====
+SELECT * FROM table_youtube_trending LIMIT 10;</code></pre></section><section><h2>Part 1 · Category data (10 JSON files)</h2><p class="f">part1_category_json.sql</p><pre><code>-- ===== CATEGORY DATA (the 10 json files) =====
 -- each file looks like { &quot;items&quot;: [ {&quot;id&quot;: &quot;10&quot;, &quot;snippet&quot;: {&quot;title&quot;: &quot;Music&quot;}}, ... ] }
 -- can&#x27;t read this as columns like the csv, need to unfold the array first
  
@@ -98,7 +98,7 @@ LATERAL FLATTEN(input =&gt; value:items) item;
  
 SELECT * FROM table_youtube_category LIMIT 10;
 SELECT COUNT(*) FROM table_youtube_category;
-SELECT DISTINCT country FROM table_youtube_category;</code></pre></section><section><h2>Part 1 — Final table</h2><p class="f">part1_table_youtube.sql</p><pre><code>-- ===== FINAL TABLE =====
+SELECT DISTINCT country FROM table_youtube_category;</code></pre></section><section><h2>Part 1 · Final table</h2><p class="f">part1_table_youtube.sql</p><pre><code>-- ===== FINAL TABLE =====
 -- combining the two. using LEFT JOIN so i don&#x27;t lose any trending
 -- video even if a categoryid doesn&#x27;t have a match (this actually
 -- comes up as a question in part 2)
@@ -126,7 +126,7 @@ LEFT JOIN table_youtube_category c
 SELECT * FROM table_youtube_final LIMIT 10;
  
 -- brief says this should be 2,667,041 rows
-SELECT COUNT(*) FROM table_youtube_final;</code></pre></section><section><h2>Part 2 — Data cleaning</h2><p class="f">part2_data_cleaning.sql</p><pre><code>-- PART 2 - DATA CLEANING
+SELECT COUNT(*) FROM table_youtube_final;</code></pre></section><section><h2>Part 2 · Data cleaning</h2><p class="f">part2_data_cleaning.sql</p><pre><code>-- PART 2 - DATA CLEANING
 USE DATABASE assignment_1;
 
 -- In “table_youtube_category” which category_title has duplicates if we don’t take into account the categoryid (return only a single row)?
@@ -261,7 +261,7 @@ WHERE id IN (SELECT id FROM table_youtube_duplicates);
 
 -- Count the number of rows in “table_youtube_final“ and check that it is equal to 2,597,494 rows.
 
-SELECT COUNT(*) FROM table_youtube_final;</code></pre></section><section><h2>Part 3 — Data analysis</h2><p class="f">part3.sql</p><pre><code>-- PART 3 : Data ANALYSIS 
+SELECT COUNT(*) FROM table_youtube_final;</code></pre></section><section><h2>Part 3 · Data analysis</h2><p class="f">part3.sql</p><pre><code>-- PART 3 : Data ANALYSIS 
 USE DATABASE assignment_1;
 
 -- What are the 3 most viewed videos for each country in the Gaming category for the trending_date = &#x27;2024-04-01&#x27;. Order the result by country and the rank.
@@ -402,7 +402,7 @@ SELECT
 FROM table_youtube_final
 GROUP BY channeltitle
 ORDER BY nb_videos DESC
-LIMIT 1;</code></pre></section><section><h2>Part 4 — Data investigation</h2><p class="f">part4_data_investigation.sql</p><pre><code>----- General Investigation ------
+LIMIT 1;</code></pre></section><section><h2>Part 4 · Data investigation</h2><p class="f">part4_data_investigation.sql</p><pre><code>----- General Investigation ------
 USE DATABASE assignment_1; 
 
 SELECT

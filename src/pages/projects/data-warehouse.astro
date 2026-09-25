@@ -1,0 +1,578 @@
+---
+// Page dédiée au projet SQL Data Warehouse. Contrairement aux autres projets
+// (qui s'ouvrent en pop-up depuis /portfolio), celui-ci est un projet personnel
+// documenté de bout en bout : il a donc sa propre page.
+import Layout from "../../layouts/Layout.astro";
+import Arrow from "../../components/Arrow.astro";
+import DigCta from "../../components/DigCta.astro";
+import Footer from "../../components/Footer.astro";
+import { site } from "../../data/content";
+
+const repo = "https://github.com/alizeemrchd22/sql-data-warehouse-project";
+
+// Les 4 étapes répétées à chaque couche : c'est la vraie leçon du projet.
+const steps = [
+  {
+    n: "01",
+    title: "Analysing",
+    text: "Before a single line of SQL, you sit with the people who own the source systems. Where does the data come from, what does it represent, how often is it refreshed, and what quality problems already exist? This is what keeps the warehouse aligned with the business instead of with the files.",
+  },
+  {
+    n: "02",
+    title: "Coding",
+    text: "Then the loading scripts. In Bronze the data lands almost exactly as it left the source, with no meaningful transformation, so the raw copy stays traceable and reusable.",
+  },
+  {
+    n: "03",
+    title: "Validating",
+    text: "After every load, the data is checked: did every file arrive, is the row count plausible, are the expected columns present, do the types match the schema? Catching it here is cheap; catching it three layers later is not.",
+  },
+  {
+    n: "04",
+    title: "Documentation & Version control",
+    text: "Scripts, technical documentation, schemas and the reasoning behind each decision go into Git. The history makes the project reproducible and lets a team work on it without stepping on each other.",
+  },
+];
+
+const layers = [
+  {
+    key: "bronze",
+    name: "Bronze",
+    role: "Raw",
+    definition: "Raw, unprocessed data exactly as it arrives from the source systems.",
+    objective: "Traceability and debugging.",
+    load: "Full load (truncate & insert)",
+    transform: "None. The data is stored as-is.",
+    naming: "<sourcesystem>_<entity>, where the original table name is kept, never renamed.",
+    example: "crm_cust_info",
+  },
+  {
+    key: "silver",
+    name: "Silver",
+    role: "Cleaned",
+    definition: "Clean and standardised data, prepared for analysis.",
+    objective: "Make each table trustworthy on its own.",
+    load: "Full load (truncate & insert)",
+    transform: "Cleaning, standardisation, normalisation, derived columns, enrichment.",
+    naming: "Same convention as Bronze: the lineage back to the source stays readable.",
+    example: "crm_sales_details",
+  },
+  {
+    key: "gold",
+    name: "Gold",
+    role: "Business",
+    definition: "Business-ready data, modelled for reporting and analytics.",
+    objective: "Answer business questions in a single query.",
+    load: "None: the Gold layer is made of views.",
+    transform: "Integration, aggregation, business logic and rules.",
+    naming: "<category>_<entity>, with business-aligned names: dim_customers, fact_sales.",
+    example: "fact_sales",
+  },
+];
+
+// Conventions que j'ai documentées avant de coder, pas après.
+const conventions = [
+  { rule: "snake_case, lowercase", detail: "English everywhere, no SQL reserved words as object names." },
+  { rule: "<table>_key", detail: "Every surrogate key in a dimension table carries the _key suffix, as in customer_key." },
+  { rule: "dwh_<column>", detail: "Prefix reserved for system-generated metadata, as in dwh_load_date." },
+  { rule: "load_<layer>", detail: "Loading procedures are named after the layer they fill, as in load_bronze." },
+];
+
+// Checklist de nettoyage appliquée à chaque table de la couche Silver.
+const cleaning = [
+  "Nulls and duplicates on the table key",
+  "Split composite columns with SUBSTRING",
+  "Unwanted spaces in categories and labels",
+  "Null or negative prices",
+  "Abbreviations expanded to full names",
+  "Integers converted to dates, zeroes turned into NULL",
+  "Coherence between start and end dates on historised rows",
+];
+---
+
+<Layout
+  title={`SQL Data Warehouse · ${site.name}`}
+  description="A PostgreSQL data warehouse built end to end: CRM and ERP sources, a Bronze/Silver/Gold architecture and a star schema ready for analysis."
+  structuredData={{
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: "SQL Data Warehouse",
+    description: "A PostgreSQL data warehouse built end to end, from CRM and ERP exports to a star schema.",
+    url: new URL("/projects/data-warehouse", Astro.site).href,
+    creator: { "@id": new URL("/#person", Astro.site).href },
+    keywords: ["Data Warehousing", "ETL", "Medallion Architecture", "Star Schema", "PostgreSQL", "SQL"],
+  }}
+>
+  <main id="main">
+    <!-- ============ HERO ============ -->
+    <section class="dwh-hero">
+      <span class="dwh-hero__glow" aria-hidden="true"></span>
+      <div class="container dwh-hero__inner">
+        <a class="dwh-back" href="/portfolio">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          Back to projects
+        </a>
+        <p class="dwh-hero__eyebrow">Data Engineering · Personal project · 2026</p>
+        <h1 class="dwh-hero__title">Building a data warehouse the way it is actually done.</h1>
+        <p class="dwh-hero__sub">
+          A PostgreSQL warehouse built end to end, from raw CRM and ERP exports to a star schema
+          a business user can query. Not a tutorial followed to the letter: a project where I wrote
+          the conventions, the checks and the documentation before writing the SQL.
+        </p>
+        <div class="dwh-hero__ctas">
+          <a href={repo} class="btn btn--primary" target="_blank" rel="noopener noreferrer">View the repository <Arrow /></a>
+          <a href="/about" class="btn btn--outline">My professional experience <Arrow /></a>
+        </div>
+        <ul class="dwh-facts">
+          <li><span>2</span> source systems</li>
+          <li><span>3</span> layers</li>
+          <li><span>6</span> source tables</li>
+          <li><span>1</span> star schema</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ CONTEXTE ============ -->
+    <section class="dwh-sec">
+      <div class="container dwh-grid">
+        <div class="dwh-grid__side">
+          <span class="dwh-kicker">The brief</span>
+        </div>
+        <div class="dwh-grid__main">
+          <p class="dwh-lead">
+            Sales, customer and product data lived in two disconnected systems: a CRM and an ERP.
+            The same customer existed on both sides under different keys, in different formats, and
+            the two sources sometimes disagreed on the same field.
+          </p>
+          <p>
+            Answering something as simple as <em>“which product line sells best in which country?”</em>
+            meant exporting from both systems and reconciling them by hand, every single time.
+            The goal was to stop doing that: one modelled layer, queryable directly, that anyone can
+            trust without knowing where the data originally came from.
+          </p>
+          <p>
+            I ran it as a personal project, on my own, precisely so I would have to make every
+            decision myself, including the boring ones about naming and documentation, which turned
+            out to be the ones that mattered most.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ARCHITECTURE ============ -->
+    <section class="dwh-sec dwh-sec--light">
+      <div class="container">
+        <header class="dwh-head">
+          <span class="dwh-kicker dwh-kicker--dark">The architecture</span>
+          <h2 class="dwh-h2">Why a medallion architecture</h2>
+          <p class="dwh-sub">
+            Inmon, Kimball, Data Vault, Medallion: each answers the same question differently.
+            I chose the medallion approach because it separates concerns cleanly: raw data stays
+            raw and auditable, cleaning happens in one place, and business logic never leaks into
+            the layer below it.
+          </p>
+        </header>
+
+        <figure class="dwh-fig">
+          <img src="/assets/projects/dw-dataflow.webp" alt="Data flow diagram: CRM and ERP sources feeding the Bronze, Silver and Gold layers, ending in fact_sales, dim_customers and dim_products" width="1431" height="888" loading="lazy" />
+          <figcaption>Data flow: six source tables from two systems, tracked through all three layers.</figcaption>
+        </figure>
+
+        <div class="dwh-layers">
+          {layers.map((l) => (
+            <article class:list={["dwl", `dwl--${l.key}`]}>
+              <header class="dwl__head">
+                <span class="dwl__dot" aria-hidden="true"></span>
+                <h3 class="dwl__name">{l.name}</h3>
+                <span class="dwl__role">{l.role}</span>
+              </header>
+              <p class="dwl__def">{l.definition}</p>
+              <dl class="dwl__specs">
+                <div><dt>Objective</dt><dd>{l.objective}</dd></div>
+                <div><dt>Load mode</dt><dd>{l.load}</dd></div>
+                <div><dt>Transformation</dt><dd>{l.transform}</dd></div>
+                <div><dt>Naming</dt><dd>{l.naming}</dd></div>
+              </dl>
+              <code class="dwl__ex">{l.example}</code>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LE PROCESSUS ============ -->
+    <section class="dwh-sec">
+      <span class="dwh-sec__glow" aria-hidden="true"></span>
+      <div class="container">
+        <header class="dwh-head">
+          <span class="dwh-kicker">The method</span>
+          <h2 class="dwh-h2">The same four steps, on every layer</h2>
+          <p class="dwh-sub">
+            This is the part I did not expect to be the real lesson. A layer is never “written”:
+            it is analysed, coded, validated and documented. Skip the first step and you build
+            the wrong thing quickly; skip the last and nobody can maintain it.
+          </p>
+        </header>
+
+        <ol class="dwh-steps">
+          {steps.map((s) => (
+            <li class="dws">
+              <span class="dws__n">{s.n}</span>
+              <div>
+                <h3 class="dws__title">{s.title}</h3>
+                <p class="dws__text">{s.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <div class="dwh-note">
+          <p>
+            Running this loop three times, once per layer, is what turned a pile of SQL scripts
+            into something that behaves like a project. Each layer ships only when its own checks pass.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONVENTIONS ============ -->
+    <section class="dwh-sec dwh-sec--light">
+      <div class="container">
+        <header class="dwh-head">
+          <span class="dwh-kicker dwh-kicker--dark">Standards</span>
+          <h2 class="dwh-h2">Conventions written before the code</h2>
+          <p class="dwh-sub">
+            Naming is not cosmetic in a warehouse. A table name has to say where the data came from,
+            or lineage is lost the moment someone else opens the database.
+          </p>
+        </header>
+
+        <ul class="dwh-conv">
+          {conventions.map((c) => (
+            <li class="dwc">
+              <code class="dwc__rule">{c.rule}</code>
+              <p class="dwc__detail">{c.detail}</p>
+            </li>
+          ))}
+        </ul>
+
+        <div class="dwh-check">
+          <h3 class="dwh-check__title">The Silver cleaning checklist</h3>
+          <p class="dwh-check__sub">Applied to every table, in order, from the broadest check to the most specific.</p>
+          <ol class="dwh-check__list">
+            {cleaning.map((c) => <li>{c}</li>)}
+          </ol>
+          <p class="dwh-check__more">
+            The trickiest one was the last. Products are historised, so the same product has several
+            successive versions, and some end dates in the source were earlier than their own start
+            date. Rather than keep a broken value, I rebuilt the end date from the next version's
+            start date with <code>LEAD()</code>, minus one day. Each version now ends the day before
+            the next begins, with no overlap and no invalid interval. The single row left without an
+            end date is the version currently in use.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MODÈLE ============ -->
+    <section class="dwh-sec">
+      <span class="dwh-sec__glow dwh-sec__glow--alt" aria-hidden="true"></span>
+      <div class="container">
+        <header class="dwh-head">
+          <span class="dwh-kicker">The model</span>
+          <h2 class="dwh-h2">From integration to a star schema</h2>
+          <p class="dwh-sub">
+            Once every Silver table was clean on its own, they were still separate. The Gold layer
+            is where they finally meet: an integration model first, to decide which tables join on
+            which keys, then the dimensional model itself.
+          </p>
+        </header>
+
+        <figure class="dwh-fig dwh-fig--dark">
+          <img src="/assets/projects/dw-integration.webp" alt="Integration model showing how the CRM and ERP tables relate through customer and product keys" width="1130" height="583" loading="lazy" />
+          <figcaption>Integration model: which tables connect, and on which keys, across CRM and ERP.</figcaption>
+        </figure>
+
+        <div class="dwh-twocol">
+          <p>
+            Reconciling the two systems meant arbitrating conflicts explicitly. Customer gender, for
+            instance, did not always agree between CRM and ERP. Rather than pick silently, the rule
+            was written down: <strong>trust the CRM first, fall back on the ERP only when the CRM has
+            nothing</strong>. A rule you can point to beats a value nobody can explain.
+          </p>
+          <p>
+            After every join, the same referential checks: orphan foreign keys, duplicated dimension
+            keys, row counts before and after the join, missing join keys, and key formats that look
+            equal but are not: <code>"CUST001"</code> on one side and <code>1</code> on the other
+            never match, however much they mean the same thing.
+          </p>
+        </div>
+
+        <figure class="dwh-fig dwh-fig--dark">
+          <img src="/assets/projects/dw-starschema.webp" alt="Sales Data Mart star schema: gold.fact_sales joined to gold.dim_customers and gold.dim_products" width="1429" height="756" loading="lazy" />
+          <figcaption>The Sales Data Mart: one fact table, two dimensions, surrogate keys throughout.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ CE QUE J'EN RETIENS ============ -->
+    <section class="dwh-sec dwh-sec--light">
+      <div class="container dwh-grid">
+        <div class="dwh-grid__side">
+          <span class="dwh-kicker dwh-kicker--dark">Takeaway</span>
+        </div>
+        <div class="dwh-grid__main">
+          <p class="dwh-lead">
+            What I took from this project is not the SQL. It is the order of operations.
+          </p>
+          <p>
+            I now know what a warehouse project looks like before it starts: understand the sources,
+            pick an architecture and justify it, design each layer on paper (definition, objective,
+            load mode, transformation), then build, validate and document one layer at a time, and
+            finish with a data catalog so the next person does not have to reverse-engineer anything.
+          </p>
+          <p>
+            The database is the visible part. The conventions, the checklists and the written
+            decisions are what make it survive contact with a second person.
+          </p>
+          <a href={repo} class="btn btn--primary dwh-cta" target="_blank" rel="noopener noreferrer">
+            See the full project on GitHub <Arrow />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <DigCta />
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ---------- HERO ---------- */
+  .dwh-hero {
+    position: relative; overflow: hidden;
+    background: var(--bg);
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(3.5rem, 7vw, 6rem);
+  }
+  /* Même gradient jaune que la bannière de contact, en plus large */
+  .dwh-hero__glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(58% 70% at 18% 8%, rgba(252,255,64,.16), rgba(252,255,64,.05) 46%, transparent 74%),
+      radial-gradient(46% 58% at 88% 92%, rgba(95,217,255,.12), transparent 70%);
+  }
+  .dwh-hero__inner { position: relative; z-index: 1; }
+
+  .dwh-back {
+    display: inline-flex; align-items: center; gap: 9px;
+    color: rgba(255,255,255,.55); font-size: 14px; text-decoration: none;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    transition: color .25s, gap .25s;
+  }
+  .dwh-back:hover { color: var(--primary); gap: 14px; }
+
+  .dwh-hero__eyebrow {
+    color: var(--primary); font-size: 13px; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase; margin-bottom: 20px;
+  }
+  .dwh-hero__title {
+    font-family: var(--font); font-weight: 300; letter-spacing: -.025em;
+    font-size: clamp(2.1rem, 5vw, 3.8rem); line-height: 1.08;
+    color: var(--white); max-width: 17ch;
+  }
+  .dwh-hero__sub {
+    margin-top: 26px; max-width: 62ch;
+    color: rgba(255,255,255,.65); font-size: 18px; line-height: 1.6;
+  }
+  .dwh-hero__ctas { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 36px; }
+
+  .dwh-facts {
+    display: flex; flex-wrap: wrap; gap: clamp(2rem, 5vw, 4rem);
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding-top: clamp(1.75rem, 3vw, 2.5rem);
+    border-top: 1px solid rgba(255,255,255,.1);
+  }
+  .dwh-facts li { color: rgba(255,255,255,.45); font-size: 14px; }
+  .dwh-facts span {
+    display: block;
+    font-family: var(--font); font-weight: 300; letter-spacing: -.03em;
+    font-size: clamp(2rem, 3.4vw, 2.8rem); line-height: 1; color: var(--primary);
+    margin-bottom: 8px;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  .dwh-sec { position: relative; background: var(--bg); padding-block: clamp(3.5rem, 7vw, 6rem); overflow: hidden; }
+  .dwh-sec__glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(42% 52% at 82% 12%, rgba(252,255,64,.10), transparent 68%);
+  }
+  .dwh-sec__glow--alt {
+    background: radial-gradient(44% 54% at 14% 84%, rgba(124,97,255,.14), transparent 70%);
+  }
+  .dwh-sec > .container { position: relative; z-index: 1; }
+
+  .dwh-sec--light {
+    background: var(--cream); color: var(--ink);
+    border-top-left-radius: var(--section-radius);
+    border-bottom-right-radius: var(--section-radius);
+  }
+
+  .dwh-grid { display: grid; grid-template-columns: minmax(180px, 240px) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); }
+  .dwh-grid__main p { font-size: 17px; line-height: 1.7; color: rgba(255,255,255,.62); }
+  .dwh-sec--light .dwh-grid__main p { color: rgba(25,25,25,.66); }
+  .dwh-grid__main p + p { margin-top: 20px; }
+  .dwh-lead { font-size: 20px !important; color: var(--white) !important; }
+  .dwh-sec--light .dwh-lead { color: var(--ink) !important; }
+
+  .dwh-kicker {
+    display: inline-block;
+    font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--primary);
+  }
+  .dwh-kicker--dark { color: rgba(25,25,25,.45); }
+
+  .dwh-head { max-width: 720px; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+  .dwh-h2 {
+    margin-top: 16px;
+    font-family: var(--font); font-weight: 300; letter-spacing: -.02em;
+    font-size: clamp(1.7rem, 3.4vw, 2.6rem); line-height: 1.14;
+    color: var(--white);
+  }
+  .dwh-sec--light .dwh-h2 { color: var(--ink); }
+  .dwh-sub { margin-top: 18px; font-size: 17px; line-height: 1.65; color: rgba(255,255,255,.6); }
+  .dwh-sec--light .dwh-sub { color: rgba(25,25,25,.6); }
+
+  /* ---------- FIGURES ---------- */
+  .dwh-fig { margin-block: clamp(2rem, 4vw, 3rem); }
+  .dwh-fig img {
+    width: 100%; height: auto; display: block;
+    border-radius: 20px; border: 1px solid rgba(25,25,25,.10);
+    background: #fff;
+  }
+  .dwh-fig figcaption {
+    margin-top: 14px; font-size: 14px; color: rgba(25,25,25,.5);
+  }
+  .dwh-fig--dark img { border-color: rgba(255,255,255,.12); }
+  .dwh-fig--dark figcaption { color: rgba(255,255,255,.45); }
+
+  /* ---------- COUCHES ---------- */
+  .dwh-layers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .dwl {
+    display: flex; flex-direction: column;
+    padding: clamp(22px, 2.2vw, 30px);
+    background: #fff; border: 1px solid rgba(25,25,25,.09);
+    border-radius: 24px;
+  }
+  .dwl__head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .dwl__dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dwl--bronze .dwl__dot { background: #c98b3e; }
+  .dwl--silver .dwl__dot { background: #9aa2ab; }
+  .dwl--gold   .dwl__dot { background: #d9b036; }
+  .dwl__name { font-family: var(--font); font-weight: 500; font-size: 1.15rem; color: var(--ink); }
+  .dwl__role {
+    margin-left: auto; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(25,25,25,.4);
+  }
+  .dwl__def { font-size: 15px; line-height: 1.55; color: rgba(25,25,25,.7); }
+  .dwl__specs { margin-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .dwl__specs dt {
+    font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(25,25,25,.4); margin-bottom: 5px;
+  }
+  .dwl__specs dd { margin: 0; font-size: 14.5px; line-height: 1.5; color: rgba(25,25,25,.72); }
+  .dwl__ex {
+    margin-top: 20px; align-self: flex-start;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px;
+    background: rgba(25,25,25,.05); border: 1px solid rgba(25,25,25,.09);
+    padding: 7px 13px; border-radius: 999px; color: rgba(25,25,25,.75);
+  }
+
+  /* ---------- ÉTAPES ---------- */
+  .dwh-steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(1.5rem, 3vw, 2.5rem); }
+  .dws { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px; align-items: start; }
+  .dws__n {
+    font-family: var(--font); font-weight: 300; font-size: 2rem; line-height: 1;
+    color: rgba(252,255,64,.35); letter-spacing: -.03em;
+  }
+  .dws__title { font-family: var(--font); font-weight: 500; font-size: 1.15rem; color: var(--white); }
+  .dws__text { margin-top: 12px; font-size: 15.5px; line-height: 1.62; color: rgba(255,255,255,.58); }
+
+  .dwh-note {
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding: clamp(22px, 2.5vw, 32px);
+    border-left: 2px solid var(--primary);
+    background: rgba(252,255,64,.04);
+    border-radius: 0 20px 20px 0;
+  }
+  .dwh-note p { font-size: 17px; line-height: 1.65; color: rgba(255,255,255,.75); max-width: 68ch; }
+
+  /* ---------- CONVENTIONS ---------- */
+  .dwh-conv { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .dwc {
+    padding: 22px 24px;
+    background: #fff; border: 1px solid rgba(25,25,25,.09); border-radius: 20px;
+  }
+  .dwc__rule {
+    display: inline-block; margin-bottom: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px;
+    color: var(--ink); background: rgba(252,255,64,.35);
+    padding: 5px 11px; border-radius: 7px;
+  }
+  .dwc__detail { font-size: 15px; line-height: 1.55; color: rgba(25,25,25,.66); }
+
+  .dwh-check {
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding: clamp(24px, 3vw, 40px);
+    background: #191919; border-radius: 28px;
+  }
+  .dwh-check__title { font-family: var(--font); font-weight: 400; font-size: 1.4rem; color: var(--white); }
+  .dwh-check__sub { margin-top: 10px; font-size: 15px; color: rgba(255,255,255,.5); }
+  .dwh-check__list {
+    margin-top: 26px; display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 12px 30px; counter-reset: chk; list-style: none;
+  }
+  .dwh-check__list li {
+    position: relative; padding-left: 34px; counter-increment: chk;
+    font-size: 15px; line-height: 1.55; color: rgba(255,255,255,.72);
+  }
+  .dwh-check__list li::before {
+    content: counter(chk, decimal-leading-zero);
+    position: absolute; left: 0; top: 1px;
+    font-size: 12px; color: var(--primary); letter-spacing: .06em;
+  }
+  .dwh-check__more {
+    margin-top: 28px; padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,.1);
+    font-size: 15.5px; line-height: 1.68; color: rgba(255,255,255,.6); max-width: 72ch;
+  }
+  .dwh-check__more code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px;
+    background: rgba(252,255,64,.12); color: var(--primary);
+    padding: 2px 7px; border-radius: 6px;
+  }
+
+  /* ---------- DEUX COLONNES ---------- */
+  .dwh-twocol {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    margin-block: clamp(2rem, 4vw, 3rem);
+  }
+  .dwh-twocol p { font-size: 16.5px; line-height: 1.7; color: rgba(255,255,255,.62); }
+  .dwh-twocol strong { color: var(--white); font-weight: 500; }
+  .dwh-twocol code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px;
+    background: rgba(255,255,255,.07); padding: 2px 7px; border-radius: 6px; color: rgba(255,255,255,.85);
+  }
+
+  .dwh-cta { margin-top: 32px; }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 960px) {
+    .dwh-layers, .dwh-steps, .dwh-conv, .dwh-twocol, .dwh-check__list { grid-template-columns: 1fr; }
+    .dwh-grid { grid-template-columns: 1fr; gap: 1rem; }
+  }
+  @media (max-width: 600px) {
+    .dwh-facts { gap: 1.75rem 2.5rem; }
+  }
+</style>

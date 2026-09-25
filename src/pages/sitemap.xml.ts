@@ -3,7 +3,7 @@ import { projects } from "../data/projects";
 
 // Sitemap généré au build, sans dépendance externe : les pages fixes du site
 // plus une entrée par projet du portfolio.
-const staticPaths = ["/", "/competencies", "/about", "/portfolio", "/about-me"];
+const staticPaths = ["/", "/competencies", "/about", "/portfolio", "/about-me", "/projects/data-warehouse"];
 
 export const GET: APIRoute = ({ site }) => {
   const paths = [
