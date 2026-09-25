@@ -67,9 +67,20 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
             <div class="plist__col" data-col={c}>
               {dsProjects.filter((_, i) => i % 3 === c).map((p) => (
                 <article class="ptile" data-category={p.category}>
-                  <span class="ptile__cat">{p.category === "ml" ? "Machine Learning" : "Data Engineering"}</span>
-                  <h3 class="ptile__title">{p.title}</h3>
-                  <p class="ptile__pitch">{p.pitch}</p>
+                  <div class="ptile__body">
+                    <span class:list={["ptile__tag", p.category === "ml" ? "ptile__tag--ml" : "ptile__tag--eng"]}>
+                      {p.category === "ml" ? "Machine Learning" : "Data Engineering"}
+                    </span>
+                    <h3 class="ptile__title">{p.title}</h3>
+                    <p class="ptile__pitch">{p.pitch}</p>
+                  </div>
+
+                  <img class="ptile__art" src={`/assets/projects/art-${p.id}.webp`} alt="" aria-hidden="true" loading="lazy" width="760" height="560" />
+
+                  <span class="ptile__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+
                   {p.detailUrl ? (
                     <a class="ptile__cta" href={p.detailUrl} aria-label={`Read the case study: ${p.title}`}></a>
                   ) : (
@@ -84,12 +95,6 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
         <p class="plist__empty" id="plist-empty" hidden>No project in this category yet.</p>
       </div>
 
-      <!-- Curseur custom : rond jaune + flèche, comme sur le portfolio et About Me -->
-      <div class="plist__cursor" id="plist-cursor" aria-hidden="true">
-        <span class="plist__cursor-dot">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </div>
     </section>
 
     <!-- Pop-ups : un <dialog> natif par projet (Échap et clic extérieur ferment) -->
@@ -403,53 +408,67 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
   .plist__col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
   /* `display: flex` l'emporte sur le display:none par défaut de [hidden] */
   .ptile[hidden], .plist__col[hidden] { display: none !important; }
-  .plist__col[data-col="1"] { margin-top: 58px; }
-  .plist__col[data-col="2"] { margin-top: 26px; }
+  .plist__col[data-col="1"] { margin-top: 96px; }
+  .plist__col[data-col="2"] { margin-top: 44px; }
 
   .ptile {
-    position: relative;
-    display: flex; flex-direction: column; align-items: flex-start;
-    padding: clamp(26px, 2.5vw, 38px);
-    background: #fff;
-    border: 1px solid rgba(25,25,25,.08);
-    border-radius: 28px;
-    transition: transform .45s cubic-bezier(.22,1,.36,1), box-shadow .35s;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    min-height: 430px;
+    background: #1a1a1a;
+    border-radius: 30px;
+    transition: transform .55s cubic-bezier(.22,1,.36,1), box-shadow .45s ease;
   }
-  .ptile:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(25,25,25,.10); }
+  .ptile:hover { transform: translateY(-10px); box-shadow: 0 26px 58px rgba(25,25,25,.22); }
 
-  .ptile__cat {
-    font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-    color: rgba(25,25,25,.45); margin-bottom: 18px;
+  .ptile__body { position: relative; z-index: 2; padding: clamp(26px, 2.5vw, 34px); }
+
+  .ptile__tag {
+    display: inline-block; margin-bottom: 20px;
+    font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+    padding: 7px 14px; border-radius: 999px;
   }
+  .ptile__tag--ml  { color: #FCFF40; background: rgba(252,255,64,.10); border: 1px solid rgba(252,255,64,.30); }
+  .ptile__tag--eng { color: #5FD9FF; background: rgba(95,217,255,.10); border: 1px solid rgba(95,217,255,.30); }
+
   .ptile__title {
     font-family: var(--font); font-weight: 400; letter-spacing: -.02em;
-    font-size: clamp(1.3rem, 2vw, 1.7rem); line-height: 1.2; color: var(--ink);
+    font-size: clamp(1.35rem, 2.1vw, 1.75rem); line-height: 1.18; color: var(--white);
   }
-  .ptile__pitch { margin-top: 14px; color: rgba(25,25,25,.6); font-size: 16px; line-height: 1.6; }
+  .ptile__pitch { margin-top: 14px; color: rgba(250,250,250,.58); font-size: 15.5px; line-height: 1.6; }
 
-  /* Pas de libellé : la tuile entière est cliquable et le curseur devient une flèche */
-  .ptile__cta { position: absolute; inset: 0; border-radius: 28px; cursor: pointer; background: none; border: none; }
-  .ptile__cta:focus-visible { outline: 2px solid #191919; outline-offset: 3px; }
+  /* Artwork : ancré en bas, il déborde légèrement et réagit au survol */
+  .ptile__art {
+    position: absolute; left: 50%; bottom: -8%;
+    width: 128%; height: auto; z-index: 1;
+    transform: translateX(-50%);
+    transition: transform .75s cubic-bezier(.22,1,.36,1), opacity .45s ease;
+    opacity: .92; pointer-events: none;
+  }
+  .ptile:hover .ptile__art { transform: translateX(-50%) translateY(-10px) scale(1.09); opacity: 1; }
+
+  /* Flèche : apparaît au survol, remplace l'ancien curseur custom */
+  .ptile__arrow {
+    position: absolute; top: 24px; right: 24px; z-index: 3;
+    display: flex; align-items: center; justify-content: center;
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--primary); color: #191919;
+    opacity: 0; transform: scale(.4) rotate(-35deg);
+    transition: opacity .4s ease, transform .5s cubic-bezier(.22,1,.36,1);
+  }
+  .ptile__arrow svg { width: 21px; height: 21px; }
+  .ptile:hover .ptile__arrow,
+  .ptile:focus-within .ptile__arrow { opacity: 1; transform: scale(1) rotate(0); }
+
+  .ptile__cta { position: absolute; inset: 0; z-index: 4; cursor: pointer; background: none; border: none; }
+  .ptile__cta:focus-visible { outline: 2px solid #191919; outline-offset: 4px; border-radius: 30px; }
 
   .plist__empty { margin-top: 24px; color: rgba(25,25,25,.5); }
 
-  /* Curseur flèche, repris du portfolio et de About Me */
-  .plist__cursor { position: fixed; top: 0; left: 0; z-index: 90; pointer-events: none; will-change: transform; }
-  .plist__cursor-dot {
-    display: flex; align-items: center; justify-content: center;
-    width: 84px; height: 84px; border-radius: 50%;
-    background: var(--primary); color: #191919;
-    opacity: 0; transform: translate(-50%, -50%) scale(0.2);
-    transition: opacity .3s ease, transform .35s cubic-bezier(.22,1,.36,1);
-  }
-  .plist__cursor.is-on .plist__cursor-dot { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  .plist__cursor-dot svg { width: 30px; height: 30px; }
-  @media (pointer: fine) { .plist.cursor-on .ptile, .plist.cursor-on .ptile * { cursor: none; } }
-  @media (max-width: 768px) { .plist__cursor { display: none; } }
-  @media (prefers-reduced-motion: reduce) { .plist__cursor { display: none; } .ptile { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .ptile, .ptile__art, .ptile__arrow { transition: none; } }
 
   @media (max-width: 1024px) {
-    .plist__col[data-col="1"] { margin-top: 44px; }
+    .plist__col[data-col="1"] { margin-top: 70px; }
     .plist__col[data-col="2"] { margin-top: 0; }
   }
   @media (max-width: 680px) {
@@ -585,29 +604,6 @@ const engCount = dsProjects.filter((p) => p.category === "engineering").length;
   layout();
   let rz;
   window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(layout, 150); });
-
-  // --- Curseur flèche sur la section listing ---
-  const plist = document.querySelector(".plist");
-  const pcursor = document.getElementById("plist-cursor");
-  const fine = window.matchMedia("(pointer: fine)").matches;
-  const noMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (plist && pcursor && fine && !noMotion) {
-    let raf = 0, cx = 0, cy = 0;
-    plist.addEventListener("mousemove", (e) => {
-      cx = e.clientX; cy = e.clientY;
-      if (!raf) raf = requestAnimationFrame(() => { pcursor.style.transform = `translate(${cx}px, ${cy}px)`; raf = 0; });
-    });
-    // le rond n'apparaît qu'au survol d'une tuile, pas de toute la section
-    grid?.addEventListener("mouseover", (e) => {
-      const on = e.target instanceof Element && e.target.closest(".ptile");
-      plist.classList.toggle("cursor-on", !!on);
-      pcursor.classList.toggle("is-on", !!on);
-    });
-    plist.addEventListener("mouseleave", () => {
-      plist.classList.remove("cursor-on");
-      pcursor.classList.remove("is-on");
-    });
-  }
 
   // --- Pop-ups ---
   document.querySelectorAll("[data-open]").forEach((btn) => {
