@@ -55,8 +55,8 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "experience.ctaSeeFull": "See full experience",
     "experience.saphes.desc": "Driving product and design work end-to-end: from user research and wireframes to shipped interfaces and project coordination.",
     "experience.peftrust.desc": "Leading ISO 27001 certification programme, translating security standards into practical processes, and helping teams make security part of their everyday work.",
-    "experience.maersk.desc": "Mapping and improving operational processes to make day-to-day logistics workflows clearer and more efficient.",
-    "experience.ijc.desc": "Contributing to the design and build of a mobile application, from concept through to functional features.",
+    "experience.maersk.desc": "Partnering with operational teams on cost visibility and container flow optimisation, with weekly P&L reporting and variance analysis across LatAm.",
+    "experience.ijc.desc": "Running the business development, marketing and quality departments of a junior enterprise, setting pricing and value propositions, and owning budgeting and VAT.",
 
     "diplomas.title": "Diplomas & Certifications",
     "diplomas.intro": "From international business and corporate finance to data science, my academic journey has taken me across countries, and across disciplines.",
@@ -131,8 +131,8 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "experience.ctaSeeFull": "Voir toute l'expérience",
     "experience.saphes.desc": "Piloter le produit et le design de bout en bout : de la recherche utilisateur aux wireframes, jusqu'aux interfaces livrées et à la coordination de projet.",
     "experience.peftrust.desc": "Diriger le programme de certification ISO 27001, traduire les normes de sécurité en processus concrets, et aider les équipes à faire de la sécurité un réflexe au quotidien.",
-    "experience.maersk.desc": "Cartographier et améliorer les processus opérationnels pour rendre les flux logistiques quotidiens plus clairs et plus efficaces.",
-    "experience.ijc.desc": "Contribuer à la conception et au développement d'une application mobile, du concept jusqu'aux fonctionnalités livrées.",
+    "experience.maersk.desc": "Travail avec les équipes opérationnelles sur la visibilité des coûts et l'optimisation des flux de conteneurs, avec reporting P&L hebdomadaire et analyse des écarts sur la zone Amérique latine.",
+    "experience.ijc.desc": "Direction des pôles business development, marketing et qualité d'une junior-entreprise, définition du positionnement tarifaire et de l'offre, et pilotage du budget et de la TVA.",
 
     "diplomas.title": "Diplômes & Certifications",
     "diplomas.intro": "Du commerce international et de la finance d'entreprise à la data science, mon parcours académique m'a fait traverser plusieurs pays, et plusieurs disciplines.",
@@ -208,8 +208,8 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "experience.ctaSeeFull": "Ver toda la experiencia",
     "experience.saphes.desc": "Liderando el trabajo de producto y diseño de principio a fin: desde la investigación de usuarios y los wireframes hasta las interfaces entregadas y la coordinación del proyecto.",
     "experience.peftrust.desc": "Liderando el programa de certificación ISO 27001, traduciendo estándares de seguridad en procesos prácticos, y ayudando a los equipos a hacer de la seguridad parte de su día a día.",
-    "experience.maersk.desc": "Mapeando y mejorando procesos operativos para que los flujos logísticos diarios sean más claros y eficientes.",
-    "experience.ijc.desc": "Contribuyendo al diseño y desarrollo de una aplicación móvil, desde el concepto hasta funcionalidades reales.",
+    "experience.maersk.desc": "Colaboración con los equipos operativos en la visibilidad de costes y la optimización del flujo de contenedores, con reporting semanal de P&L y análisis de desviaciones en Latinoamérica.",
+    "experience.ijc.desc": "Dirección de los departamentos de desarrollo de negocio, marketing y calidad de una junior empresa, definiendo precios y propuesta de valor, y gestionando presupuesto e IVA.",
 
     "diplomas.title": "Diplomas y Certificaciones",
     "diplomas.intro": "Desde los negocios internacionales y las finanzas corporativas hasta la ciencia de datos, mi trayectoria académica me ha llevado por distintos países, y distintas disciplinas.",
@@ -284,8 +284,8 @@ export const homeDict: Record<Lang, Record<string, string>> = {
     "experience.ctaSeeFull": "查看完整经历",
     "experience.saphes.desc": "全流程主导产品与设计工作：从用户调研、线框图到最终交付的界面与项目协调。",
     "experience.peftrust.desc": "主导 ISO 27001 认证项目，将安全标准转化为可落地的流程，帮助团队把安全融入日常工作。",
-    "experience.maersk.desc": "梳理并优化运营流程，让日常物流工作更清晰、更高效。",
-    "experience.ijc.desc": "参与一款移动应用的设计与开发，从概念构思到功能落地。",
+    "experience.maersk.desc": "与运营团队合作提升成本可见度、优化集装箱周转，并负责拉美区域的每周损益报告与差异分析。",
+    "experience.ijc.desc": "负责一家初级企业的业务拓展、市场与质量部门，制定定价与价值主张，并统筹预算与增值税申报。",
 
     "diplomas.title": "学历与认证",
     "diplomas.intro": "从国际商务、企业金融到数据科学，我的求学之路跨越了不同国家，也跨越了不同学科。",
