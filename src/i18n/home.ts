@@ -25,7 +25,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
 
     "nav.home": "Home",
     "nav.competencies": "My Competencies",
-    "nav.portfolio": "Data Science",
+    "nav.portfolio": "Data Science / Engineering",
     "nav.aboutme": "About Me",
 
     "hero.roles": "Data Science · UX/UI · Project Management",
@@ -101,7 +101,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
 
     "nav.home": "Accueil",
     "nav.competencies": "Mes compétences",
-    "nav.portfolio": "Data Science",
+    "nav.portfolio": "Data Science / Engineering",
     "nav.aboutme": "À propos de moi",
 
     "hero.roles": "Data Science · UX/UI · Gestion de projet",
@@ -178,7 +178,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
 
     "nav.home": "Inicio",
     "nav.competencies": "Mis competencias",
-    "nav.portfolio": "Data Science",
+    "nav.portfolio": "Data Science / Engineering",
     "nav.aboutme": "Sobre mí",
 
     "hero.roles": "Data Science · UX/UI · Gestión de proyectos",
@@ -254,7 +254,7 @@ export const homeDict: Record<Lang, Record<string, string>> = {
 
     "nav.home": "首页",
     "nav.competencies": "我的能力",
-    "nav.portfolio": "数据科学",
+    "nav.portfolio": "数据科学与工程",
     "nav.aboutme": "关于我",
 
     "hero.roles": "数据科学 · UX/UI · 项目管理",

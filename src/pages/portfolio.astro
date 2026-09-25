@@ -24,7 +24,7 @@ import { dsProjects, toolbox } from "../data/dsProjects";
     >
       <ul class="dhero__stats">
         <li><span>{dsProjects.length}</span> projects</li>
-        <li><span>{dsProjects.reduce((n, p) => n + p.models.length, 0)}</span> models trained</li>
+        <li><span>{dsProjects.reduce((n, p) => n + (p.models?.length ?? 0), 0)}</span> models trained</li>
         <li><span>Python</span> first</li>
       </ul>
     </PageHero>
@@ -70,6 +70,7 @@ import { dsProjects, toolbox } from "../data/dsProjects";
                   </ul>
                 </div>
 
+                {p.models && p.models.length > 0 && (
                 <div class="dspec__group">
                   <h3 class="dspec__label">Models trained</h3>
                   <ul class="dmodels">
@@ -82,6 +83,7 @@ import { dsProjects, toolbox } from "../data/dsProjects";
                     ))}
                   </ul>
                 </div>
+                )}
 
                 <div class="dspec__group">
                   <h3 class="dspec__label">Keywords</h3>
@@ -101,10 +103,12 @@ import { dsProjects, toolbox } from "../data/dsProjects";
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
                 )}
               </a>
+              {p.pdfUrl && (
               <a href={p.pdfUrl} class="btn btn--outline" download>
                 Download the report
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>
               </a>
+              )}
             </footer>
           </article>
         ))}

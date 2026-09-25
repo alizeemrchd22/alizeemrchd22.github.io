@@ -12,6 +12,8 @@ export interface DsModel {
 
 export interface DsProject {
   id: string;
+  /** Sert aux filtres de la page : projets ML vs Data Engineering. */
+  category: "ml" | "engineering";
   index: string;
   title: string;
   short: string;      // libellé court pour le menu de navigation
@@ -22,15 +24,16 @@ export interface DsProject {
   approach: string;
   impact: string;
   stack: string[];
-  models: DsModel[];
+  models?: DsModel[];
   keywords: string[];
   codeUrl: string;
-  pdfUrl: string;
+  pdfUrl?: string;
 }
 
 export const dsProjects: DsProject[] = [
   {
     id: "phishing",
+    category: "ml",
     index: "01",
     title: "Phishing URL Detection",
     short: "Phishing URL",
@@ -56,6 +59,7 @@ export const dsProjects: DsProject[] = [
   },
   {
     id: "social-media",
+    category: "ml",
     index: "02",
     title: "Social Media & Mental Health",
     short: "Social Media",
@@ -81,6 +85,7 @@ export const dsProjects: DsProject[] = [
   },
   {
     id: "marketing",
+    category: "ml",
     index: "03",
     title: "Marketing Campaign Targeting",
     short: "Marketing Campaign",
@@ -106,6 +111,25 @@ export const dsProjects: DsProject[] = [
     // les graphiques) + rapport PDF. Fichiers dans public/projects/.
     codeUrl: "/projects/marketing-campaign-code.html",
     pdfUrl: "/projects/marketing-campaign-report.pdf",
+  },
+  {
+    id: "data-warehouse",
+    category: "engineering",
+    index: "04",
+    title: "SQL Data Warehouse",
+    short: "Data Warehouse",
+    pitch: "Turning raw CRM and ERP exports into an analytics-ready star schema, through a Bronze/Silver/Gold pipeline.",
+    period: "2026",
+    type: "Data Engineering · Data Warehousing",
+    context:
+      "Sales, customer and product data lived in two disconnected systems, a CRM and an ERP, with overlapping keys and inconsistent formats. Answering a simple business question meant reconciling exports by hand every time.",
+    approach:
+      "I built a layered warehouse in PostgreSQL: a Bronze layer that lands the raw exports untouched, a Silver layer that cleans, types and reconciles keys across both systems, and a Gold layer modelled as a star schema with fact and dimension tables ready for analysis.",
+    impact:
+      "Business questions on customer behaviour, product performance and sales trends now come down to a single SQL query against the Gold layer, instead of a manual reconciliation.",
+    stack: ["PostgreSQL", "SQL", "DBeaver", "Git", "Draw.io"],
+    keywords: ["Data Warehousing", "ETL", "Medallion Architecture", "Dimensional Modeling", "Star Schema", "Data Cleaning"],
+    codeUrl: "https://github.com/alizeemrchd22/sql-data-warehouse-project",
   },
 ];
 
